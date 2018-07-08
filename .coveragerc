@@ -1,0 +1,12 @@
+[run]
+source = project
+omit =
+    *__init__.py
+    */admin.py
+    */migrations/*
+    */settings/*
+    */tests/*
+    */wsgi.py
+
+[html]
+directory = reports/coverage

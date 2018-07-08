@@ -1,0 +1,11 @@
+*.sublime-project
+*.sublime-workspace
+
+venv
+__pycache__
+*.pyc
+.DS_Store
+
+.coverage
+reports/coverage/*
+!reports/coverage/.gitkeep
