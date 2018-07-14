@@ -4,5 +4,6 @@ from django.urls import include, path
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    path('accounts/', include('project.apps.accounts.urls', namespace='accounts'))
+    path('accounts/', include('project.apps.accounts.urls', namespace='accounts')),
+    path('tmdb/', include('project.apps.tmdb.urls', namespace='tmdb'))
 ]

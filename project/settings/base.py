@@ -19,6 +19,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'project.apps.accounts.apps.AccountsConfig',
+    'project.apps.tmdb.apps.TMDbConfig',
     'project.core.apps.CoreConfig',
 ]
 
