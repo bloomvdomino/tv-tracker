@@ -5,6 +5,21 @@ from project.core.models import BaseModel
 
 
 class Progress(BaseModel):
+    RETURNING = 'returning'
+    PLANNED = 'planned'
+    IN_PRODUCTION = 'in_production'
+    ENDED = 'ended'
+    CANCELED = 'canceled'
+    PILOT = 'pilot'
+    SHOW_STATUS_CHOICES = (
+        (RETURNING, "Returning Series"),
+        (PLANNED, "Planned"),
+        (IN_PRODUCTION, "In Production"),
+        (ENDED, "Ended"),
+        (CANCELED, "Canceled"),
+        (PILOT, "Pilot")
+    )
+
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
                              verbose_name="user")
 
@@ -12,6 +27,8 @@ class Progress(BaseModel):
     show_name = models.CharField(max_length=64, verbose_name="show name")
     show_poster_path = models.CharField(max_length=64, blank=True, default='',
                                         verbose_name="show poster path")
+    show_status = models.CharField(max_length=16, choices=SHOW_STATUS_CHOICES,
+                                   verbose_name="show status")
 
     current_season = models.PositiveSmallIntegerField(default=0, verbose_name="current season")
     current_episode = models.PositiveSmallIntegerField(default=0, verbose_name="current episode")
@@ -23,6 +40,6 @@ class Progress(BaseModel):
 
     class Meta:
         unique_together = (('user', 'show_id'),)
-        ordering = ['-created']
+        ordering = ['next_air_date', 'show_name', 'show_id']
         verbose_name = "progress"
         verbose_name_plural = "progresses"
