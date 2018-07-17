@@ -11,7 +11,7 @@ class ProgressSerializer(serializers.ModelSerializer):
         model = Progress
         fields = ('user', 'show_id', 'show_name', 'show_poster_path', 'show_status',
                   'show_status_text', 'current_season', 'current_episode', 'next_season',
-                  'next_episode', 'next_air_date')
+                  'next_episode', 'next_air_date', 'updated')
 
     def get_show_status_text(self, obj):
         return obj.get_show_status_display()
