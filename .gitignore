@@ -1,6 +1,7 @@
 *.sublime-project
 *.sublime-workspace
 
+.env
 venv
 __pycache__
 *.pyc

@@ -1,8 +1,20 @@
 import datetime
 import os
 
+import dj_database_url
+from decouple import Csv, config
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+ENV = config('ENV')  # prod, local or test
+
+SECRET_KEY = config('SECRET_KEY')
+
+DEBUG = ENV == 'local'
+
+TEMPLATE_DEBUG = DEBUG
 
 
 # Application definition
@@ -51,6 +63,10 @@ TEMPLATES = [
         },
     },
 ]
+
+DATABASES = {
+    'default': dj_database_url.parse(config('DATABASE_URL'))
+}
 
 WSGI_APPLICATION = 'project.wsgi.application'
 
@@ -112,6 +128,11 @@ REST_FRAMEWORK = {
 }
 
 
+# Django CORS Headers
+
+CORS_ORIGIN_WHITELIST = config('CORS_ORIGIN_WHITELIST', cast=Csv())
+
+
 # Django REST Framework JWT
 
 JWT_AUTH = {
@@ -121,3 +142,9 @@ JWT_AUTH = {
     'JWT_PAYLOAD_GET_USERNAME_HANDLER': 'project.apps.accounts.jwt.payload_username_handler',
     'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=30),
 }
+
+
+if ENV == 'test':
+    PASSWORD_HASHERS = [
+        'django.contrib.auth.hashers.MD5PasswordHasher',
+    ]
