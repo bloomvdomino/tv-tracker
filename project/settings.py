@@ -16,6 +16,8 @@ DEBUG = ENV == 'local'
 
 TEMPLATE_DEBUG = DEBUG
 
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
+
 
 # Application definition
 
