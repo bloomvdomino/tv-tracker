@@ -10,7 +10,7 @@ class User(AbstractBaseUser, PermissionsMixin, BaseUUIDModel):
     email = models.EmailField(unique=True, verbose_name="email")
 
     max_followed_progresses = models.PositiveSmallIntegerField(
-        default=8, verbose_name="max number of followed progresses")
+        default=8, verbose_name="max followed progresses")
 
     is_active = models.BooleanField(default=True, verbose_name="active")
     is_staff = models.BooleanField(default=False, verbose_name="staff")
