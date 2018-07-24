@@ -153,12 +153,6 @@ JWT_AUTH = {
 }
 
 
-if ENV == 'test':
-    PASSWORD_HASHERS = [
-        'django.contrib.auth.hashers.MD5PasswordHasher',
-    ]
-
-
 # Django Admin
 
 ADMIN_PATH = config('ADMIN_PATH')
@@ -176,3 +170,9 @@ SUIT_CONFIG = {
         },
     )
 }
+
+
+if ENV == 'test':
+    PASSWORD_HASHERS = [
+        'django.contrib.auth.hashers.MD5PasswordHasher',
+    ]
