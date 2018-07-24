@@ -24,6 +24,7 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
 INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
+    'suit',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -53,7 +54,7 @@ ROOT_URLCONF = 'project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'project/templates/')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -117,6 +118,12 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'resources' + STATIC_URL)
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'project' + STATIC_URL),
+]
+
 
 # Django REST Framework
 
@@ -150,3 +157,22 @@ if ENV == 'test':
     PASSWORD_HASHERS = [
         'django.contrib.auth.hashers.MD5PasswordHasher',
     ]
+
+
+# Django Admin
+
+ADMIN_PATH = config('ADMIN_PATH')
+
+SUIT_CONFIG = {
+    'ADMIN_NAME': 'TV Tracker',
+
+    'SEARCH_URL': '',
+
+    'MENU': (
+        '-',
+        {
+            'app': 'apps_accounts',
+            'models': ('user',),
+        },
+    )
+}

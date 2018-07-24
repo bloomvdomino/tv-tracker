@@ -10,3 +10,6 @@ __pycache__
 .coverage
 reports/coverage/*
 !reports/coverage/.gitkeep
+
+resources/static/*
+!resources/static/.gitkeep
