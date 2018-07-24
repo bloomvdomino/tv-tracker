@@ -7,7 +7,8 @@ from rest_framework_jwt.settings import api_settings
 def payload_handler(user):
     payload = {
         'email': user.email,
-        'exp': datetime.datetime.utcnow() + api_settings.JWT_EXPIRATION_DELTA
+        'exp': datetime.datetime.utcnow() + api_settings.JWT_EXPIRATION_DELTA,
+        'max_followed_progresses': user.max_followed_progresses
     }
 
     if api_settings.JWT_ALLOW_REFRESH:

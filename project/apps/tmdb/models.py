@@ -22,6 +22,7 @@ class Progress(BaseModel):
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
                              verbose_name="user")
+    followed = models.BooleanField(default=False, verbose_name="followed")
 
     show_id = models.PositiveIntegerField(verbose_name="show ID")
     show_name = models.CharField(max_length=64, verbose_name="show name")
@@ -40,6 +41,6 @@ class Progress(BaseModel):
 
     class Meta:
         unique_together = (('user', 'show_id'),)
-        ordering = ['next_air_date', 'show_name', 'show_id']
+        ordering = ['-followed', 'next_air_date', 'show_name', 'show_id']
         verbose_name = "progress"
         verbose_name_plural = "progresses"
