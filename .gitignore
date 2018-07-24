@@ -11,5 +11,5 @@ __pycache__
 reports/coverage/*
 !reports/coverage/.gitkeep
 
-resources/static/*
-!resources/static/.gitkeep
+staticfiles/*
+!staticfiles/.gitkeep
