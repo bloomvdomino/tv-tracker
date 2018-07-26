@@ -24,3 +24,11 @@ class User(AbstractBaseUser, PermissionsMixin, BaseUUIDModel):
         ordering = ['-created']
         verbose_name = "user"
         verbose_name_plural = "users"
+
+    @property
+    def added_progresses_count(self):
+        return self.progress_set.count()
+
+    @property
+    def followed_progresses_count(self):
+        return self.progress_set.filter(followed=True).count()
