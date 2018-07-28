@@ -1,7 +1,8 @@
 from rest_framework import generics
 from rest_framework.permissions import AllowAny
 
-from .serializers import EmailSerializer, PasswordSerializer, SignupSerializer
+from .serializers import (EmailSerializer, PasswordSerializer,
+                          ProfileSerializer, SignupSerializer)
 
 
 class SignupView(generics.CreateAPIView):
@@ -20,6 +21,13 @@ class EmailView(generics.UpdateAPIView):
 class PasswordView(generics.UpdateAPIView):
     serializer_class = PasswordSerializer
     http_method_names = ['put']
+
+    def get_object(self):
+        return self.request.user
+
+
+class ProfileView(generics.RetrieveAPIView):
+    serializer_class = ProfileSerializer
 
     def get_object(self):
         return self.request.user

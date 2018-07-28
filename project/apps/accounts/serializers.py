@@ -93,3 +93,10 @@ class PasswordSerializer(PasswordConfirmSerializer,
         instance.set_password(validated_data['password'])
         instance.save()
         return instance
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('max_followed_progresses',)
+        read_only_fields = ('max_followed_progresses',)
