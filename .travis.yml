@@ -1,13 +1,23 @@
 language: python
+
 python:
   - 3.6
+
 services:
   - postgresql
+
 install:
   - pip install -r requirements/travis.txt
+
 before_script:
   - psql -c 'create database travis_ci_test;' -U postgres
+  - cp .env.sample .env
+
 script:
   - fab coverage:project,report
+
 after_success:
   - coveralls
+
+env:
+  - ENV=test DATABASE_URL=postgres://postgres:@localhost:/travis_ci_test
