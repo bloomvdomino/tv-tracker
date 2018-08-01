@@ -18,7 +18,7 @@ class UserModelTests(TestCase):
             with self.subTest():
                 self.assertTrue(issubclass(self.model, c))
 
-    def test_meta(self):
+    def test_ordering(self):
         self.assertEqual(self.model._meta.ordering, ['-created'])
 
     def test_objects(self):
