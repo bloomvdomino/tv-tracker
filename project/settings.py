@@ -35,6 +35,7 @@ INSTALLED_APPS = [
 
     'project.apps.accounts.apps.AccountsConfig',
     'project.apps.tmdb.apps.TMDbConfig',
+    'project.apps.website.apps.WebsiteConfig',
     'project.core.apps.CoreConfig',
 ]
 
