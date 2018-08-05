@@ -169,6 +169,10 @@ SUIT_CONFIG = {
             'app': 'apps_accounts',
             'models': ('user',),
         },
+        {
+            'app': 'apps_website',
+            'models': ('contact',),
+        },
     )
 }
 
