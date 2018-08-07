@@ -4,11 +4,7 @@ python:
   - 3.6
 
 addons:
-  postgresql: "10"
-  apt:
-    packages:
-    - postgresql-10
-    - postgresql-client-10
+  postgresql: "9.6"
 
 install:
   - pip install -r requirements/travis.txt
@@ -24,4 +20,4 @@ after_success:
   - coveralls
 
 env:
-  - ENV=test DATABASE_URL=postgres://postgres:@localhost:/travis_ci_test PGPORT=5433
+  - ENV=test DATABASE_URL=postgres://postgres:@localhost:/travis_ci_test
