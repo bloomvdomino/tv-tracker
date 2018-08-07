@@ -16,7 +16,7 @@ class ContactModelTests(TestCase):
     def test_ordering(self):
         self.assertEqual(self.model._meta.ordering, ['-created'])
 
-    def test_user(self):
+    def test_email(self):
         field = self.model._meta.get_field('email')
         self.assertEqual(type(field), models.EmailField)
         self.assertFalse(field.blank)
