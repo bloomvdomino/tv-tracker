@@ -1,8 +1,15 @@
-from django.contrib.auth import password_validation
+from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 
 from .jwt import create_token
 from .models import User
+
+
+class PasswordField(serializers.CharField):
+    def __init__(self, *args, **kwargs):
+        kwargs.update(write_only=True)
+        super().__init__(*args, **kwargs)
+        self.validators.append(validate_password)
 
 
 class PasswordConfirmSerializer(serializers.Serializer):
@@ -16,7 +23,6 @@ class PasswordConfirmSerializer(serializers.Serializer):
         data = super().validate(data)
         if data['password'] != data['password_confirm']:
             raise serializers.ValidationError("Incorrect password confirmation.")
-        del data['password_confirm']
         return data
 
 
@@ -31,11 +37,6 @@ class CurrentPasswordSerializer(serializers.Serializer):
         if not self.instance.check_password(value):
             raise serializers.ValidationError("Incorrect current password.")
         return value
-
-    def validate(self, data):
-        data = super().validate(data)
-        del data['current_password']
-        return data
 
 
 class TokenSerializer(serializers.Serializer):
@@ -52,18 +53,14 @@ class TokenSerializer(serializers.Serializer):
 class SignupSerializer(PasswordConfirmSerializer,
                        TokenSerializer,
                        serializers.ModelSerializer):
+    password = PasswordField()
+
     class Meta:
         model = User
         fields = ('email', 'password', 'password_confirm', 'token')
-        extra_kwargs = {
-            'password': {'write_only': True}
-        }
-
-    def validate_password(self, value):
-        password_validation.validate_password(password=value)
-        return value
 
     def create(self, validated_data):
+        validated_data.pop('password_confirm')
         return User.objects.create_user(**validated_data)
 
 
@@ -78,16 +75,11 @@ class EmailSerializer(CurrentPasswordSerializer,
 class PasswordSerializer(PasswordConfirmSerializer,
                          CurrentPasswordSerializer,
                          serializers.ModelSerializer):
+    password = PasswordField()
+
     class Meta:
         model = User
         fields = ('password', 'password_confirm', 'current_password')
-        extra_kwargs = {
-            'password': {'write_only': True}
-        }
-
-    def validate_password(self, value):
-        password_validation.validate_password(password=value)
-        return value
 
     def update(self, instance, validated_data):
         instance.set_password(validated_data['password'])
