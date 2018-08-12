@@ -34,7 +34,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'project.apps.accounts.apps.AccountsConfig',
+    'project.apps.emails.apps.EmailsConfig',
     'project.apps.tmdb.apps.TMDbConfig',
+    'project.apps.website.apps.WebsiteConfig',
     'project.core.apps.CoreConfig',
 ]
 
@@ -117,6 +119,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 STATIC_URL = '/static/'
 
 # Extra places for collectstatic to find static files.
@@ -168,11 +171,35 @@ SUIT_CONFIG = {
             'app': 'apps_accounts',
             'models': ('user',),
         },
+        {
+            'app': 'apps_emails',
+            'models': (
+                {
+                    'model': 'sendgridemail',
+                    'label': 'SendGrid'
+                },
+            ),
+        },
+        {
+            'app': 'apps_website',
+            'models': ('contact',),
+        },
     )
 }
+
+
+# Email
+
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
+
+SENDGRID_SANDBOX_MODE = config('SENDGRID_SANDBOX_MODE', cast=bool)
+
+SENDGRID_API_KEY = config('SENDGRID_API_KEY')
 
 
 if ENV == 'test':
     PASSWORD_HASHERS = [
         'django.contrib.auth.hashers.MD5PasswordHasher',
     ]
+
+    SENDGRID_SANDBOX_MODE = True

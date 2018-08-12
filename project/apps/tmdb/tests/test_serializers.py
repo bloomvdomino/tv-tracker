@@ -10,8 +10,7 @@ class ProgressSerializerTests(TestCase):
         self.serializer = ProgressSerializer
 
     def test_subclass(self):
-        self.assertTrue(
-            issubclass(self.serializer, serializers.ModelSerializer))
+        self.assertTrue(issubclass(self.serializer, serializers.ModelSerializer))
 
     def test_model(self):
         self.assertEqual(self.serializer.Meta.model, Progress)

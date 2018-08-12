@@ -1,14 +1,28 @@
 from unittest.mock import patch
 
+from django.contrib.auth.password_validation import validate_password
 from django.test import TestCase
 from rest_framework import serializers
 
 from project.apps.accounts.models import User
 
 from ..serializers import (CurrentPasswordSerializer, EmailSerializer,
-                           PasswordConfirmSerializer, PasswordSerializer,
-                           ProfileSerializer, SignupSerializer,
-                           TokenSerializer)
+                           PasswordConfirmSerializer, PasswordField,
+                           PasswordSerializer, ProfileSerializer,
+                           SignupSerializer, TokenSerializer)
+
+
+class PasswordFieldTests(TestCase):
+    def setUp(self):
+        self.field = PasswordField
+
+    def test_subclass(self):
+        self.assertTrue(issubclass(self.field, serializers.CharField))
+
+    def test__init__(self):
+        field = self.field()
+        self.assertTrue(field.write_only)
+        self.assertIn(validate_password, field.validators)
 
 
 class PasswordConfirmSerializerTests(TestCase):
@@ -19,7 +33,7 @@ class PasswordConfirmSerializerTests(TestCase):
         self.assertTrue(issubclass(self.serializer, serializers.Serializer))
 
     def test_password_confirm(self):
-        field = self.serializer._declared_fields.get('password_confirm')
+        field = self.serializer._declared_fields['password_confirm']
         self.assertEqual(type(field), serializers.CharField)
         self.assertTrue(field.write_only)
 
@@ -37,8 +51,7 @@ class PasswordConfirmSerializerTests(TestCase):
             'password': '123',
             'password_confirm': '123'
         }
-        data = self.serializer().validate(data)
-        self.assertEqual(data, {'password': '123'})
+        self.assertEqual(self.serializer().validate(data), data)
 
 
 class CurrentPasswordSerializerTests(TestCase):
@@ -49,7 +62,7 @@ class CurrentPasswordSerializerTests(TestCase):
         self.assertTrue(issubclass(self.serializer, serializers.Serializer))
 
     def test_current_password(self):
-        field = self.serializer._declared_fields.get('current_password')
+        field = self.serializer._declared_fields['current_password']
         self.assertEqual(type(field), serializers.CharField)
         self.assertTrue(field.write_only)
 
@@ -64,11 +77,6 @@ class CurrentPasswordSerializerTests(TestCase):
         value = self.serializer(instance=user).validate_current_password('foo123')
         self.assertEqual(value, 'foo123')
 
-    def test_validate(self):
-        data = {'current_password': '123'}
-        data = self.serializer().validate(data)
-        self.assertNotIn('current_password', data)
-
 
 class TokenSerializerTests(TestCase):
     def setUp(self):
@@ -78,7 +86,7 @@ class TokenSerializerTests(TestCase):
         self.assertTrue(issubclass(self.serializer, serializers.Serializer))
 
     def test_token(self):
-        field = self.serializer._declared_fields.get('token')
+        field = self.serializer._declared_fields['token']
         self.assertEqual(type(field), serializers.SerializerMethodField)
 
     @patch('project.apps.accounts.serializers.create_token', return_value='foobar')
@@ -108,21 +116,15 @@ class SignupSerializerTests(TestCase):
             with self.subTest():
                 self.assertIn(field, fields)
 
-    def test_extra_kwargs(self):
-        extra_kwargs = self.serializer.Meta.extra_kwargs
-        self.assertEqual(len(extra_kwargs), 1)
-        self.assertTrue(extra_kwargs['password']['write_only'])
-
-    @patch('project.apps.accounts.serializers.password_validation')
-    def test_validate_password(self, password_validation):
-        value = self.serializer().validate_password('foo123')
-        password_validation.validate_password.assert_called_once_with(password='foo123')
-        self.assertEqual(value, 'foo123')
+    def test_password(self):
+        field = self.serializer._declared_fields['password']
+        self.assertEqual(type(field), PasswordField)
 
     def test_create(self):
         validated_data = {
             'email': 'u@test.com',
-            'password': 'foo123'
+            'password': 'foo123',
+            'password_confirm': 'foo123'
         }
         user = self.serializer().create(validated_data)
         self.assertEqual(user.email, validated_data['email'])
@@ -170,16 +172,9 @@ class PasswordSerializerTests(TestCase):
             with self.subTest():
                 self.assertIn(field, fields)
 
-    def test_extra_kwargs(self):
-        extra_kwargs = self.serializer.Meta.extra_kwargs
-        self.assertEqual(len(extra_kwargs), 1)
-        self.assertTrue(extra_kwargs['password']['write_only'])
-
-    @patch('project.apps.accounts.serializers.password_validation')
-    def test_validate_password(self, password_validation):
-        value = self.serializer().validate_password('foo123')
-        password_validation.validate_password.assert_called_once_with(password='foo123')
-        self.assertEqual(value, 'foo123')
+    def test_password(self):
+        field = self.serializer._declared_fields['password']
+        self.assertEqual(type(field), PasswordField)
 
     def test_update(self):
         user = User.objects.create_user('u@test.com', 'foo123')

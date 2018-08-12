@@ -1,4 +1,5 @@
 from rest_framework import mixins, viewsets
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.test import APITestCase
 
 from project.apps.accounts.models import User
@@ -18,6 +19,9 @@ class ProgressViewSetTests(APITestCase):
         self.assertTrue(issubclass(self.viewset, mixins.DestroyModelMixin))
         self.assertTrue(issubclass(self.viewset, mixins.ListModelMixin))
         self.assertTrue(issubclass(self.viewset, viewsets.GenericViewSet))
+
+    def test_permission_classes(self):
+        self.assertEqual(self.viewset.permission_classes, [IsAuthenticated])
 
     def test_serializer_class(self):
         self.assertEqual(self.viewset.serializer_class, ProgressSerializer)
