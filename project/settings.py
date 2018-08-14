@@ -110,9 +110,16 @@ TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
-USE_L10N = True
+USE_L10N = False
 
 USE_TZ = True
+
+
+# Date and time formats
+
+DATE_FORMAT = 'Y/m/d'
+
+DATETIME_FORMAT = 'Y/m/d H:i:s'
 
 
 # Static files (CSS, JavaScript, Images)
