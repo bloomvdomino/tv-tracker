@@ -1,7 +1,8 @@
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 from django.db import models
 from django.test import TestCase, override_settings
+from sendgrid.helpers.mail import Category
 
 from project.core.models import BaseModel
 
@@ -33,13 +34,43 @@ class SendGridEmailModelTests(TestCase):
 
     @override_settings(SENDGRID_SANDBOX_MODE=True)
     def test_sandbox_mode_enabled(self):
-        mail_settings = self.model()._build_mail_settings()
+        mail_settings = self.model._build_mail_settings()
         self.assertTrue(mail_settings.sandbox_mode.enable)
 
     @override_settings(SENDGRID_SANDBOX_MODE=False)
     def test_sandbox_mode_disabled(self):
-        mail_settings = self.model()._build_mail_settings()
+        mail_settings = self.model._build_mail_settings()
         self.assertFalse(mail_settings.sandbox_mode.enable)
+
+    def test_add_categories_empty(self):
+        email = self.model()
+        mail = MagicMock()
+        email._add_categories(mail)
+        mail.add_category.assert_not_called()
+
+    def test_add_categories_single(self):
+        email = self.model(categories='foo')
+        mail = MagicMock()
+
+        email._add_categories(mail)
+
+        mail.add_category.assert_called_once()
+        (category,), _ = mail.add_category.call_args_list[0]
+        self.assertEqual(type(category), Category)
+        self.assertEqual(category.name, 'foo')
+
+    def test_add_categories_multiple(self):
+        email = self.model(categories='foo, bar')
+        mail = MagicMock()
+
+        email._add_categories(mail)
+
+        self.assertEqual(mail.add_category.call_count, 2)
+        ((category_1,), _), ((category_2,), _) = mail.add_category.call_args_list
+        self.assertEqual(type(category_1), Category)
+        self.assertEqual(category_1.name, 'foo')
+        self.assertEqual(type(category_2), Category)
+        self.assertEqual(category_2.name, 'bar')
 
 
 @patch('project.apps.emails.models.sendgrid.SendGridAPIClient')
