@@ -45,5 +45,6 @@ class SendGridEmail(BaseModel):
         return mail_settings
 
     def _add_categories(self, mail):
-        for category in [Category(c.strip()) for c in self.categories.split(',') if c]:
+        categories = [Category(c.strip()) for c in self.categories.split(',') if c]
+        for category in categories:
             mail.add_category(category)

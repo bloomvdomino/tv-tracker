@@ -1,5 +1,5 @@
-import datetime
 import os
+from datetime import timedelta
 
 import dj_database_url
 from decouple import Csv, config
@@ -156,10 +156,10 @@ CORS_ORIGIN_WHITELIST = config('CORS_ORIGIN_WHITELIST', cast=Csv())
 
 JWT_AUTH = {
     'JWT_ALLOW_REFRESH': True,
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=7),
+    'JWT_EXPIRATION_DELTA': timedelta(days=7),
     'JWT_PAYLOAD_HANDLER': 'project.apps.accounts.jwt.payload_handler',
     'JWT_PAYLOAD_GET_USERNAME_HANDLER': 'project.apps.accounts.jwt.payload_username_handler',
-    'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=30),
+    'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=30),
 }
 
 
@@ -176,7 +176,7 @@ SUIT_CONFIG = {
         '-',
         {
             'app': 'apps_accounts',
-            'models': ('user',),
+            'models': ('user', 'passwordresettoken'),
         },
         {
             'app': 'apps_emails',
