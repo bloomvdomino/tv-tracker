@@ -144,7 +144,7 @@ class PasswordResetViewPutTests(APITestCase):
         self.user.refresh_from_db()
         self.assertTrue(self.user.check_password(self.data['password']))
         self.token.refresh_from_db()
-        self.assertFalse(self.token.is_valid)
+        self.assertFalse(self.token.valid)
 
     def test_400_distinct_passwords(self):
         self.data['password'] = 'foobar123!'

@@ -63,14 +63,18 @@ class UserAdmin(admin.ModelAdmin):
 
 @admin.register(PasswordResetToken)
 class PasswordResetTokenAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'is_valid', 'created')
+    list_display = ('id', 'user', 'valid', 'used', 'expired', 'created')
     search_fields = ('user__email',)
-    fields = ('id', 'user', 'is_valid', 'created')
-    readonly_fields = ('id', 'user', 'is_valid', 'created')
+    fields = ('id', 'user', 'valid', 'used', 'expired', 'created')
+    readonly_fields = ('id', 'user', 'valid', 'used', 'expired', 'created')
 
-    def is_valid(self, obj):
-        return obj.is_valid
-    is_valid.boolean = True
+    def valid(self, obj):
+        return obj.valid
+    valid.boolean = True
+
+    def expired(self, obj):
+        return obj.expired
+    expired.boolean = True
 
     def has_add_permission(self, request):
         return False

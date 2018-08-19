@@ -48,10 +48,10 @@ class PasswordResetToken(BaseUUIDModel):
         verbose_name_plural = "password reset tokens"
 
     @property
-    def is_valid(self):
-        return not (self.used or self.is_expired)
+    def valid(self):
+        return not (self.used or self.expired)
 
     @property
-    def is_expired(self):
+    def expired(self):
         expiration = self.created + timedelta(days=settings.PASSWORD_RESET_TIMEOUT_DAYS)
         return expiration <= timezone.now()

@@ -219,7 +219,7 @@ class PasswordResetTokenSerializerTests(TestCase):
         self.assertEqual(PasswordResetToken.objects.count(), 1)
         self.assertEqual(token.user, user)
         self.assertFalse(token.used)
-        send.assert_called_once_with(user.email, data={'token': token.id})
+        send.assert_called_once_with(user.email, data={'token': str(token.id)})
 
     @patch('project.apps.accounts.serializers.SendGridEmail.send')
     def test_create_not_created(self, send):
@@ -253,9 +253,9 @@ class PasswordResetSerializerTests(TestCase):
         self.assertEqual(type(field), PasswordField)
         self.assertTrue(field.required)
 
-    @patch('project.apps.accounts.serializers.PasswordResetToken.is_valid',
+    @patch('project.apps.accounts.serializers.PasswordResetToken.valid',
            new_callable=PropertyMock(return_value=True))
-    def test_validate_valid(self, is_valid):
+    def test_validate_valid(self, valid):
         token = PasswordResetToken()
         data = {
             'password': 'foo123',
@@ -263,9 +263,9 @@ class PasswordResetSerializerTests(TestCase):
         }
         self.assertEqual(self.serializer(instance=token).validate(data), data)
 
-    @patch('project.apps.accounts.serializers.PasswordResetToken.is_valid',
+    @patch('project.apps.accounts.serializers.PasswordResetToken.valid',
            new_callable=PropertyMock(return_value=False))
-    def test_validate_invalid(self, is_valid):
+    def test_validate_invalid(self, valid):
         token = PasswordResetToken()
         data = {
             'password': 'foo123',

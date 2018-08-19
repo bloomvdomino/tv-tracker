@@ -107,7 +107,7 @@ class PasswordResetTokenSerializer(serializers.ModelSerializer):
             instance.user = user
             instance.save()
             sendgrid_email = SendGridEmail.objects.get(title='password-reset')
-            sendgrid_email.send(user.email, data={'token': instance.id})
+            sendgrid_email.send(user.email, data={'token': str(instance.id)})
         return instance
 
 
@@ -125,7 +125,7 @@ class PasswordResetSerializer(PasswordConfirmSerializer,
 
     def validate(self, data):
         data = super().validate(data)
-        if not self.instance.is_valid:
+        if not self.instance.valid:
             raise serializers.ValidationError("Invalid password reset token.")
         return data
 

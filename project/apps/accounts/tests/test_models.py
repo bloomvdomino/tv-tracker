@@ -108,32 +108,32 @@ class PasswordResetTokenModelTests(TestCase):
         self.assertEqual(type(field), models.BooleanField)
         self.assertFalse(field.default)
 
-    @patch('project.apps.accounts.models.PasswordResetToken.is_expired',
+    @patch('project.apps.accounts.models.PasswordResetToken.expired',
            new_callable=PropertyMock(return_value=False))
-    def test_is_valid_true(self, is_expired):
-        self.assertTrue(self.model(used=False).is_valid)
+    def test_valid_true(self, expired):
+        self.assertTrue(self.model(used=False).valid)
 
-    @patch('project.apps.accounts.models.PasswordResetToken.is_expired',
+    @patch('project.apps.accounts.models.PasswordResetToken.expired',
            new_callable=PropertyMock(return_value=False))
-    def test_is_valid_false_1(self, is_expired):
-        self.assertFalse(self.model(used=True).is_valid)
+    def test_valid_false_1(self, expired):
+        self.assertFalse(self.model(used=True).valid)
 
-    @patch('project.apps.accounts.models.PasswordResetToken.is_expired',
+    @patch('project.apps.accounts.models.PasswordResetToken.expired',
            new_callable=PropertyMock(return_value=True))
-    def test_is_valid_false_2(self, is_expired):
-        self.assertFalse(self.model(used=False).is_valid)
+    def test_valid_false_2(self, expired):
+        self.assertFalse(self.model(used=False).valid)
 
-    @patch('project.apps.accounts.models.PasswordResetToken.is_expired',
+    @patch('project.apps.accounts.models.PasswordResetToken.expired',
            new_callable=PropertyMock(return_value=True))
-    def test_is_valid_false_3(self, is_expired):
-        self.assertFalse(self.model(used=True).is_valid)
+    def test_valid_false_3(self, expired):
+        self.assertFalse(self.model(used=True).valid)
 
     @patch('django.utils.timezone.now', return_value=datetime(2018, 8, 4, tzinfo=timezone.utc))
-    def test_is_expired_false(self, now):
+    def test_expired_false(self, now):
         request = self.model(created=datetime(2018, 8, 2, tzinfo=timezone.utc))
-        self.assertFalse(request.is_expired)
+        self.assertFalse(request.expired)
 
     @patch('django.utils.timezone.now', return_value=datetime(2018, 8, 4, tzinfo=timezone.utc))
-    def test_is_expired_true(self, now):
+    def test_expired_true(self, now):
         request = self.model(created=datetime(2018, 8, 1, tzinfo=timezone.utc))
-        self.assertTrue(request.is_expired)
+        self.assertTrue(request.expired)
