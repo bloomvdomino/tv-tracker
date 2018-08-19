@@ -1,5 +1,5 @@
-import datetime
 import os
+from datetime import timedelta
 
 import dj_database_url
 from decouple import Csv, config
@@ -110,9 +110,16 @@ TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
-USE_L10N = True
+USE_L10N = False
 
 USE_TZ = True
+
+
+# Date and time formats
+
+DATE_FORMAT = 'Y/m/d'
+
+DATETIME_FORMAT = 'Y/m/d H:i:s'
 
 
 # Static files (CSS, JavaScript, Images)
@@ -149,10 +156,10 @@ CORS_ORIGIN_WHITELIST = config('CORS_ORIGIN_WHITELIST', cast=Csv())
 
 JWT_AUTH = {
     'JWT_ALLOW_REFRESH': True,
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=7),
+    'JWT_EXPIRATION_DELTA': timedelta(days=7),
     'JWT_PAYLOAD_HANDLER': 'project.apps.accounts.jwt.payload_handler',
     'JWT_PAYLOAD_GET_USERNAME_HANDLER': 'project.apps.accounts.jwt.payload_username_handler',
-    'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=30),
+    'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=30),
 }
 
 
@@ -169,7 +176,7 @@ SUIT_CONFIG = {
         '-',
         {
             'app': 'apps_accounts',
-            'models': ('user',),
+            'models': ('user', 'passwordresettoken'),
         },
         {
             'app': 'apps_emails',
@@ -192,9 +199,9 @@ SUIT_CONFIG = {
 
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
 
-SENDGRID_SANDBOX_MODE = config('SENDGRID_SANDBOX_MODE', cast=bool)
-
 SENDGRID_API_KEY = config('SENDGRID_API_KEY')
+
+SENDGRID_SANDBOX_MODE = config('SENDGRID_SANDBOX_MODE', cast=bool)
 
 
 if ENV == 'test':
