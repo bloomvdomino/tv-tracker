@@ -1,3 +1,4 @@
+import functools
 import re
 
 from fabric.api import local
@@ -11,6 +12,7 @@ class SwitchEnv:
         self.original_content = ''
 
     def __call__(self, func):
+        @functools.wraps(func)
         def wrapper(*args, **kwargs):
             try:
                 self.get_original_content()
@@ -43,19 +45,22 @@ class SwitchEnv:
         print(f"Switching back from test to {self.original_env} environment.")
 
 
+switch_env = SwitchEnv
+
+
 def lint():
     local('isort -rc project')
     local('flake8 --max-line-length=99 --exclude=migrations project')
 
 
-@SwitchEnv()
+@switch_env()
 def coverage(module='project', html='html'):
     lint()
     local(f'coverage run manage.py test {module}')
     local(f'coverage {html}')
 
 
-@SwitchEnv()
+@switch_env()
 def test(module='project'):
     lint()
     local(f'./manage.py test {module}')
