@@ -13,7 +13,6 @@ class UserManager(BaseUserManager):
         """
         Create a user with the given email, password and extra fields.
         """
-
         extra_fields.update(is_staff=False, is_superuser=False)
         return self._create_user(email, password, **extra_fields)
 
@@ -21,6 +20,5 @@ class UserManager(BaseUserManager):
         """
         Create a superuser with the given email, password and extra fields.
         """
-
         extra_fields.update(is_staff=True, is_superuser=True)
         return self._create_user(email, password, **extra_fields)

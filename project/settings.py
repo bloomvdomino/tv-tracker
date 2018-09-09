@@ -56,7 +56,9 @@ ROOT_URLCONF = 'project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'project/templates/')],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'project/templates/')
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -69,11 +71,15 @@ TEMPLATES = [
     },
 ]
 
+WSGI_APPLICATION = 'project.wsgi.application'
+
+
+# Database
+# https://docs.djangoproject.com/en/2.1/ref/settings/#databases
+
 DATABASES = {
     'default': dj_database_url.parse(config('DATABASE_URL'))
 }
-
-WSGI_APPLICATION = 'project.wsgi.application'
 
 
 # Authentication
@@ -99,6 +105,14 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+
+# Password hashers
+
+if ENV == 'test':
+    PASSWORD_HASHERS = [
+        'django.contrib.auth.hashers.MD5PasswordHasher',
+    ]
 
 
 # Internationalization
@@ -201,12 +215,7 @@ DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
 
 SENDGRID_API_KEY = config('SENDGRID_API_KEY')
 
-SENDGRID_SANDBOX_MODE = config('SENDGRID_SANDBOX_MODE', cast=bool)
-
-
 if ENV == 'test':
-    PASSWORD_HASHERS = [
-        'django.contrib.auth.hashers.MD5PasswordHasher',
-    ]
-
     SENDGRID_SANDBOX_MODE = True
+else:
+    SENDGRID_SANDBOX_MODE = config('SENDGRID_SANDBOX_MODE', cast=bool)

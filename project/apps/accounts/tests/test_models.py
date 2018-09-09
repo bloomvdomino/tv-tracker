@@ -108,23 +108,19 @@ class PasswordResetTokenModelTests(TestCase):
         self.assertEqual(type(field), models.BooleanField)
         self.assertFalse(field.default)
 
-    @patch('project.apps.accounts.models.PasswordResetToken.expired',
-           new_callable=PropertyMock(return_value=False))
+    @patch('project.apps.accounts.models.PasswordResetToken.expired', new_callable=PropertyMock(return_value=False))
     def test_valid_true(self, expired):
         self.assertTrue(self.model(used=False).valid)
 
-    @patch('project.apps.accounts.models.PasswordResetToken.expired',
-           new_callable=PropertyMock(return_value=False))
+    @patch('project.apps.accounts.models.PasswordResetToken.expired', new_callable=PropertyMock(return_value=False))
     def test_valid_false_1(self, expired):
         self.assertFalse(self.model(used=True).valid)
 
-    @patch('project.apps.accounts.models.PasswordResetToken.expired',
-           new_callable=PropertyMock(return_value=True))
+    @patch('project.apps.accounts.models.PasswordResetToken.expired', new_callable=PropertyMock(return_value=True))
     def test_valid_false_2(self, expired):
         self.assertFalse(self.model(used=False).valid)
 
-    @patch('project.apps.accounts.models.PasswordResetToken.expired',
-           new_callable=PropertyMock(return_value=True))
+    @patch('project.apps.accounts.models.PasswordResetToken.expired', new_callable=PropertyMock(return_value=True))
     def test_valid_false_3(self, expired):
         self.assertFalse(self.model(used=True).valid)
 

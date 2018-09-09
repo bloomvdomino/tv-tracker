@@ -24,12 +24,9 @@ class UserManagerTests(TestCase):
     @patch('project.apps.accounts.managers.UserManager._create_user')
     def test_create_user(self, _create_user):
         self.manager().create_user('u@test.com', '123', is_staff=True, is_superuser=True, foo=123)
-        _create_user.assert_called_once_with(
-            'u@test.com', '123', is_staff=False, is_superuser=False, foo=123)
+        _create_user.assert_called_once_with('u@test.com', '123', is_staff=False, is_superuser=False, foo=123)
 
     @patch('project.apps.accounts.managers.UserManager._create_user')
     def test_create_superuser(self, _create_user):
-        self.manager().create_superuser(
-            'u@test.com', '123', is_staff=False, is_superuser=False, foo=123)
-        _create_user.assert_called_once_with(
-            'u@test.com', '123', is_staff=True, is_superuser=True, foo=123)
+        self.manager().create_superuser('u@test.com', '123', is_staff=False, is_superuser=False, foo=123)
+        _create_user.assert_called_once_with('u@test.com', '123', is_staff=True, is_superuser=True, foo=123)
