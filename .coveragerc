@@ -1,11 +1,13 @@
 [run]
 source = project
 omit =
+    project/settings.py
     *__init__.py
     */admin.py
+    */apps.py
     */migrations/*
-    */settings/*
     */tests/*
+    */urls.py
     */wsgi.py
 
 [html]

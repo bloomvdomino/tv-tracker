@@ -50,7 +50,7 @@ switch_env = SwitchEnv
 
 def lint():
     local('isort -rc project')
-    local('flake8 --max-line-length=99 --exclude=migrations project')
+    local('flake8 --max-line-length=119 --exclude=migrations project')
 
 
 @switch_env()

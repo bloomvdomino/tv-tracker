@@ -13,12 +13,11 @@ from .managers import UserManager
 class User(AbstractBaseUser, PermissionsMixin, BaseUUIDModel):
     email = models.EmailField(unique=True, verbose_name="email")
 
-    max_followed_progresses = models.PositiveSmallIntegerField(
-        default=8, verbose_name="max followed progresses")
-
     is_active = models.BooleanField(default=True, verbose_name="active")
     is_staff = models.BooleanField(default=False, verbose_name="staff")
     is_superuser = models.BooleanField(default=False, verbose_name="superuser")
+
+    max_followed_progresses = models.PositiveSmallIntegerField(default=8, verbose_name="max followed progresses")
 
     objects = UserManager()
 
@@ -39,7 +38,7 @@ class User(AbstractBaseUser, PermissionsMixin, BaseUUIDModel):
 
 
 class PasswordResetToken(BaseUUIDModel):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="user")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, models.CASCADE, verbose_name="user")
     used = models.BooleanField(default=False, verbose_name="used")
 
     class Meta:

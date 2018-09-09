@@ -253,8 +253,7 @@ class PasswordResetSerializerTests(TestCase):
         self.assertEqual(type(field), PasswordField)
         self.assertTrue(field.required)
 
-    @patch('project.apps.accounts.serializers.PasswordResetToken.valid',
-           new_callable=PropertyMock(return_value=True))
+    @patch('project.apps.accounts.serializers.PasswordResetToken.valid', new_callable=PropertyMock(return_value=True))
     def test_validate_valid(self, valid):
         token = PasswordResetToken()
         data = {
@@ -263,8 +262,7 @@ class PasswordResetSerializerTests(TestCase):
         }
         self.assertEqual(self.serializer(instance=token).validate(data), data)
 
-    @patch('project.apps.accounts.serializers.PasswordResetToken.valid',
-           new_callable=PropertyMock(return_value=False))
+    @patch('project.apps.accounts.serializers.PasswordResetToken.valid', new_callable=PropertyMock(return_value=False))
     def test_validate_invalid(self, valid):
         token = PasswordResetToken()
         data = {
