@@ -66,11 +66,11 @@ class UserModelProgressesTests(TestCase):
         self.u1 = User.objects.create_user('u1@test.com', 'foo123')
         self.u2 = User.objects.create_user('u2@test.com', 'foo123')
 
-        Progress.objects.create(user=self.u1, show_id=1, show_name='Shooter', followed=True)
-        Progress.objects.create(user=self.u1, show_id=2, show_name='Impastor', followed=True)
+        Progress.objects.create(user=self.u1, show_id=1, show_name='Shooter', is_followed=True)
+        Progress.objects.create(user=self.u1, show_id=2, show_name='Impastor', is_followed=True)
 
-        Progress.objects.create(user=self.u2, show_id=1, show_name='Shooter', followed=True)
-        Progress.objects.create(user=self.u2, show_id=2, show_name='Impastor', followed=False)
+        Progress.objects.create(user=self.u2, show_id=1, show_name='Shooter', is_followed=True)
+        Progress.objects.create(user=self.u2, show_id=2, show_name='Impastor', is_followed=False)
 
     def test_added_progresses_count_1(self):
         self.assertEqual(self.u1.added_progresses_count, 2)

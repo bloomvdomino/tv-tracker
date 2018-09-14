@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.utils import timezone
 
 from project.core.models import BaseModel
 
@@ -21,7 +22,7 @@ class Progress(BaseModel):
     )
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, models.CASCADE, verbose_name="user")
-    followed = models.BooleanField(default=False, verbose_name="followed")
+    is_followed = models.BooleanField(default=False, verbose_name="followed")
 
     show_id = models.PositiveIntegerField(verbose_name="show ID")
     show_name = models.CharField(max_length=64, verbose_name="show name")
@@ -36,6 +37,18 @@ class Progress(BaseModel):
 
     class Meta:
         unique_together = (('user', 'show_id'),)
-        ordering = ['-followed', 'next_air_date', 'show_name', 'show_id']
+        ordering = ['-is_followed', 'next_air_date', 'show_name', 'show_id']
         verbose_name = "progress"
         verbose_name_plural = "progresses"
+
+    @property
+    def is_scheduled(self):
+        return self.next_air_date is not None
+
+    @property
+    def is_available(self):
+        return self.is_scheduled and self.next_air_date <= timezone.localdate()
+
+    @property
+    def is_finished(self):
+        return self.show_status in [self.ENDED, self.CANCELED] and not self.is_scheduled

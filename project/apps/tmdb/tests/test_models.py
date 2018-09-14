@@ -1,3 +1,6 @@
+from datetime import date
+from unittest.mock import patch
+
 from django.db import models
 from django.test import TestCase
 
@@ -19,7 +22,7 @@ class ProgressModelTests(TestCase):
 
     def test_ordering(self):
         self.assertEqual(
-            self.model._meta.ordering, ['-followed', 'next_air_date', 'show_name', 'show_id'])
+            self.model._meta.ordering, ['-is_followed', 'next_air_date', 'show_name', 'show_id'])
 
     def test_show_status_choices(self):
         self.assertEqual(self.model.RETURNING, 'returning')
@@ -45,8 +48,8 @@ class ProgressModelTests(TestCase):
         self.assertFalse(field.blank)
         self.assertFalse(field.null)
 
-    def test_followed(self):
-        field = self.model._meta.get_field('followed')
+    def test_is_followed(self):
+        field = self.model._meta.get_field('is_followed')
         self.assertEqual(type(field), models.BooleanField)
         self.assertFalse(field.default)
 
@@ -109,3 +112,42 @@ class ProgressModelTests(TestCase):
         self.assertEqual(type(field), models.DateField)
         self.assertTrue(field.blank)
         self.assertTrue(field.null)
+
+    def test_is_scheduled_true(self):
+        progress = self.model(next_air_date=date(2018, 9, 1))
+        self.assertTrue(progress.is_scheduled)
+
+    def test_is_scheduled_false(self):
+        progress = self.model()
+        self.assertFalse(progress.is_scheduled)
+
+    @patch('django.utils.timezone.localdate', return_value=date(2018, 9, 5))
+    def test_is_available_true(self, localdate):
+        progress = self.model(next_air_date=date(2018, 9, 5))
+        self.assertTrue(progress.is_available)
+
+    @patch('django.utils.timezone.localdate', return_value=date(2018, 9, 5))
+    def test_is_available_false_1(self, localdate):
+        progress = self.model(next_air_date=date(2018, 9, 6))
+        self.assertFalse(progress.is_available)
+
+    @patch('django.utils.timezone.localdate', return_value=date(2018, 9, 5))
+    def test_is_available_false_2(self, localdate):
+        progress = self.model()
+        self.assertFalse(progress.is_available)
+
+    def test_is_finished_true_1(self):
+        progress = self.model(show_status=self.model.ENDED)
+        self.assertTrue(progress.is_finished)
+
+    def test_is_finished_true_2(self):
+        progress = self.model(show_status=self.model.CANCELED)
+        self.assertTrue(progress.is_finished)
+
+    def test_is_finished_false_1(self):
+        progress = self.model(show_status=self.model.ENDED, next_air_date=date(2018, 9, 1))
+        self.assertFalse(progress.is_finished)
+
+    def test_is_finished_false_2(self):
+        progress = self.model(show_status=self.model.CANCELED, next_air_date=date(2018, 9, 1))
+        self.assertFalse(progress.is_finished)
