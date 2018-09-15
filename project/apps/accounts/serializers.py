@@ -2,8 +2,8 @@ from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 
 from project.apps.emails.models import SendGridEmail
+from project.core.jwt import create_token
 
-from .jwt import create_token
 from .models import PasswordResetToken, User
 
 

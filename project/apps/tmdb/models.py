@@ -47,7 +47,7 @@ class Progress(BaseModel):
 
     @property
     def is_available(self):
-        return self.is_scheduled and self.next_air_date <= timezone.localdate()
+        return self.is_scheduled and self.next_air_date <= timezone.now().date()
 
     @property
     def is_finished(self):

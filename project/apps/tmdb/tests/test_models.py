@@ -1,8 +1,9 @@
-from datetime import date
+from datetime import date, datetime
 from unittest.mock import patch
 
 from django.db import models
 from django.test import TestCase
+from django.utils import timezone
 
 from project.apps.accounts.models import User
 from project.core.models import BaseModel
@@ -121,18 +122,18 @@ class ProgressModelTests(TestCase):
         progress = self.model()
         self.assertFalse(progress.is_scheduled)
 
-    @patch('django.utils.timezone.localdate', return_value=date(2018, 9, 5))
-    def test_is_available_true(self, localdate):
+    @patch('django.utils.timezone.now', return_value=datetime(2018, 9, 5, tzinfo=timezone.utc))
+    def test_is_available_true(self, now):
         progress = self.model(next_air_date=date(2018, 9, 5))
         self.assertTrue(progress.is_available)
 
-    @patch('django.utils.timezone.localdate', return_value=date(2018, 9, 5))
-    def test_is_available_false_1(self, localdate):
+    @patch('django.utils.timezone.now', return_value=datetime(2018, 9, 5, tzinfo=timezone.utc))
+    def test_is_available_false_1(self, now):
         progress = self.model(next_air_date=date(2018, 9, 6))
         self.assertFalse(progress.is_available)
 
-    @patch('django.utils.timezone.localdate', return_value=date(2018, 9, 5))
-    def test_is_available_false_2(self, localdate):
+    @patch('django.utils.timezone.now', return_value=datetime(2018, 9, 5, tzinfo=timezone.utc))
+    def test_is_available_false_2(self, now):
         progress = self.model()
         self.assertFalse(progress.is_available)
 
