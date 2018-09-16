@@ -171,8 +171,8 @@ CORS_ORIGIN_WHITELIST = config('CORS_ORIGIN_WHITELIST', cast=Csv())
 JWT_AUTH = {
     'JWT_ALLOW_REFRESH': True,
     'JWT_EXPIRATION_DELTA': timedelta(days=7),
-    'JWT_PAYLOAD_HANDLER': 'project.apps.accounts.jwt.payload_handler',
-    'JWT_PAYLOAD_GET_USERNAME_HANDLER': 'project.apps.accounts.jwt.payload_username_handler',
+    'JWT_PAYLOAD_HANDLER': 'project.core.jwt.payload_handler',
+    'JWT_PAYLOAD_GET_USERNAME_HANDLER': 'project.core.jwt.payload_username_handler',
     'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=30),
 }
 

@@ -34,7 +34,7 @@ class User(AbstractBaseUser, PermissionsMixin, BaseUUIDModel):
 
     @property
     def followed_progresses_count(self):
-        return self.progress_set.filter(followed=True).count()
+        return self.progress_set.filter(is_followed=True).count()
 
 
 class PasswordResetToken(BaseUUIDModel):

@@ -5,10 +5,10 @@ omit =
     *__init__.py
     */admin.py
     */apps.py
-    */migrations/*
-    */tests/*
     */urls.py
     */wsgi.py
+    */migrations/*
+    */tests/*
 
 [html]
 directory = reports/coverage

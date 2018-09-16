@@ -17,10 +17,10 @@ class ProgressSerializerTests(TestCase):
 
     def test_fields(self):
         fields = self.serializer.Meta.fields
-        self.assertEqual(len(fields), 13)
-        for field in ['user', 'followed', 'show_id', 'show_name', 'show_poster_path',
-                      'show_status', 'show_status_text', 'current_season', 'current_episode',
-                      'next_season', 'next_episode', 'next_air_date', 'updated']:
+        self.assertEqual(len(fields), 16)
+        for field in ['user', 'show_id', 'show_name', 'show_poster_path', 'show_status', 'show_status_text',
+                      'current_season', 'current_episode', 'next_season', 'next_episode', 'next_air_date',
+                      'updated', 'is_followed', 'is_scheduled', 'is_available', 'is_finished']:
             with self.subTest():
                 self.assertIn(field, fields)
 
