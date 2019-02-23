@@ -8,12 +8,18 @@ from project.apps.accounts.models import User
 from project.apps.emails.models import SendGridEmail
 
 from ..models import PasswordResetToken
-from ..serializers import (CurrentPasswordSerializer, EmailSerializer,
-                           PasswordConfirmSerializer, PasswordField,
-                           PasswordResetSerializer,
-                           PasswordResetTokenSerializer, PasswordSerializer,
-                           ProfileSerializer, SignupSerializer,
-                           TokenSerializer)
+from ..serializers import (
+    CurrentPasswordSerializer,
+    EmailSerializer,
+    PasswordConfirmSerializer,
+    PasswordField,
+    PasswordResetSerializer,
+    PasswordResetTokenSerializer,
+    PasswordSerializer,
+    ProfileSerializer,
+    SignupSerializer,
+    TokenSerializer,
+)
 
 
 class PasswordFieldTests(TestCase):

@@ -6,11 +6,22 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.test import APITestCase
 
 from ..models import PasswordResetToken, User
-from ..serializers import (EmailSerializer, PasswordResetSerializer,
-                           PasswordResetTokenSerializer, PasswordSerializer,
-                           ProfileSerializer, SignupSerializer)
-from ..views import (EmailView, PasswordResetTokenView, PasswordResetView,
-                     PasswordView, ProfileView, SignupView)
+from ..serializers import (
+    EmailSerializer,
+    PasswordResetSerializer,
+    PasswordResetTokenSerializer,
+    PasswordSerializer,
+    ProfileSerializer,
+    SignupSerializer,
+)
+from ..views import (
+    EmailView,
+    PasswordResetTokenView,
+    PasswordResetView,
+    PasswordView,
+    ProfileView,
+    SignupView,
+)
 
 
 class SignupViewTests(APITestCase):
