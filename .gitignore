@@ -1,15 +1,10 @@
-*.sublime-project
-*.sublime-workspace
-
 .env
 venv
 __pycache__
 *.pyc
 .DS_Store
 
-.coverage
-reports/coverage/*
-!reports/coverage/.gitkeep
-
 staticfiles/*
 !staticfiles/.gitkeep
+
+.vscode

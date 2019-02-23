@@ -6,11 +6,22 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.test import APITestCase
 
 from ..models import PasswordResetToken, User
-from ..serializers import (EmailSerializer, PasswordResetSerializer,
-                           PasswordResetTokenSerializer, PasswordSerializer,
-                           ProfileSerializer, SignupSerializer)
-from ..views import (EmailView, PasswordResetTokenView, PasswordResetView,
-                     PasswordView, ProfileView, SignupView)
+from ..serializers import (
+    EmailSerializer,
+    PasswordResetSerializer,
+    PasswordResetTokenSerializer,
+    PasswordSerializer,
+    ProfileSerializer,
+    SignupSerializer,
+)
+from ..views import (
+    EmailView,
+    PasswordResetTokenView,
+    PasswordResetView,
+    PasswordView,
+    ProfileView,
+    SignupView,
+)
 
 
 class SignupViewTests(APITestCase):
@@ -135,7 +146,7 @@ class PasswordResetViewPutTests(APITestCase):
         self.token = PasswordResetToken.objects.create(user=self.user)
         self.data = {
             'password': 'bar321',
-            'password_confirm': 'bar321'
+            'password_confirm': 'bar321',
         }
 
     def test_200(self):
@@ -162,7 +173,7 @@ class PasswordResetViewPutTests(APITestCase):
 
     def test_404(self):
         response = self.client.put(self.url.format(uuid.uuid4()), data=self.data)
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 403)
 
 
 class ProfileViewTests(APITestCase):

@@ -2,9 +2,14 @@ from rest_framework import generics
 from rest_framework.permissions import AllowAny
 
 from .models import PasswordResetToken
-from .serializers import (EmailSerializer, PasswordResetSerializer,
-                          PasswordResetTokenSerializer, PasswordSerializer,
-                          ProfileSerializer, SignupSerializer)
+from .serializers import (
+    EmailSerializer,
+    PasswordResetSerializer,
+    PasswordResetTokenSerializer,
+    PasswordSerializer,
+    ProfileSerializer,
+    SignupSerializer,
+)
 
 
 class SignupView(generics.CreateAPIView):

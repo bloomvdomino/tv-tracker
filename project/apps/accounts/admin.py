@@ -42,13 +42,13 @@ class UserAdmin(admin.ModelAdmin):
     list_display = ('email', 'added_progresses_count', 'followed_progresses_count', 'max_followed_progresses',
                     'is_active', 'is_staff', 'is_superuser', 'created')
     list_filter = (AddedProgressesFilter, FollowedProgressesFilter, 'is_active', 'is_staff', 'is_superuser')
-    search_fields = ('id', 'email',)
+    search_fields = ('id', 'email')
     fieldsets = (
         (None, {
-            'fields': ('id', 'created', 'email', 'is_active', 'is_staff', 'is_superuser')
+            'fields': ('id', 'created', 'email', 'is_active', 'is_staff', 'is_superuser'),
         }),
         ("Progresses", {
-            'fields': ('added_progresses_count', 'followed_progresses_count', 'max_followed_progresses')
+            'fields': ('added_progresses_count', 'followed_progresses_count', 'max_followed_progresses'),
         }),
     )
     readonly_fields = ('id', 'is_superuser', 'added_progresses_count', 'followed_progresses_count', 'created')

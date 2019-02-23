@@ -8,12 +8,18 @@ from project.apps.accounts.models import User
 from project.apps.emails.models import SendGridEmail
 
 from ..models import PasswordResetToken
-from ..serializers import (CurrentPasswordSerializer, EmailSerializer,
-                           PasswordConfirmSerializer, PasswordField,
-                           PasswordResetSerializer,
-                           PasswordResetTokenSerializer, PasswordSerializer,
-                           ProfileSerializer, SignupSerializer,
-                           TokenSerializer)
+from ..serializers import (
+    CurrentPasswordSerializer,
+    EmailSerializer,
+    PasswordConfirmSerializer,
+    PasswordField,
+    PasswordResetSerializer,
+    PasswordResetTokenSerializer,
+    PasswordSerializer,
+    ProfileSerializer,
+    SignupSerializer,
+    TokenSerializer,
+)
 
 
 class PasswordFieldTests(TestCase):
@@ -44,7 +50,7 @@ class PasswordConfirmSerializerTests(TestCase):
     def test_validate_invalid(self):
         data = {
             'password': '123',
-            'password_confirm': '321'
+            'password_confirm': '321',
         }
         with self.assertRaises(serializers.ValidationError) as e:
             self.serializer().validate(data)
@@ -53,7 +59,7 @@ class PasswordConfirmSerializerTests(TestCase):
     def test_validate_valid(self):
         data = {
             'password': '123',
-            'password_confirm': '123'
+            'password_confirm': '123',
         }
         self.assertEqual(self.serializer().validate(data), data)
 
@@ -128,7 +134,7 @@ class SignupSerializerTests(TestCase):
         validated_data = {
             'email': 'u@test.com',
             'password': 'foo123',
-            'password_confirm': 'foo123'
+            'password_confirm': 'foo123',
         }
         user = self.serializer().create(validated_data)
         self.assertEqual(user.email, validated_data['email'])
@@ -258,7 +264,7 @@ class PasswordResetSerializerTests(TestCase):
         token = PasswordResetToken()
         data = {
             'password': 'foo123',
-            'password_confirm': 'foo123'
+            'password_confirm': 'foo123',
         }
         self.assertEqual(self.serializer(instance=token).validate(data), data)
 
@@ -267,7 +273,7 @@ class PasswordResetSerializerTests(TestCase):
         token = PasswordResetToken()
         data = {
             'password': 'foo123',
-            'password_confirm': 'foo123'
+            'password_confirm': 'foo123',
         }
         with self.assertRaises(serializers.ValidationError) as e:
             self.serializer(instance=token).validate(data)

@@ -1,8 +1,13 @@
 import sendgrid
 from django.conf import settings
 from django.db import models
-from sendgrid.helpers.mail import (Category, Email, Mail, MailSettings,
-                                   SandBoxMode)
+from sendgrid.helpers.mail import (
+    Category,
+    Email,
+    Mail,
+    MailSettings,
+    SandBoxMode,
+)
 
 from project.core.models import BaseModel
 

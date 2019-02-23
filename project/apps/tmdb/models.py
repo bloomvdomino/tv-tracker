@@ -18,7 +18,7 @@ class Progress(BaseModel):
         (IN_PRODUCTION, "In Production"),
         (ENDED, "Ended"),
         (CANCELED, "Canceled"),
-        (PILOT, "Pilot")
+        (PILOT, "Pilot"),
     )
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, models.CASCADE, verbose_name="user")

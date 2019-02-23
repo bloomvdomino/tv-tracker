@@ -38,7 +38,7 @@ class ProgressModelTests(TestCase):
             ('in_production', 'In Production'),
             ('ended', 'Ended'),
             ('canceled', 'Canceled'),
-            ('pilot', 'Pilot')
+            ('pilot', 'Pilot'),
         ))
 
     def test_user(self):

@@ -8,11 +8,11 @@ from decouple import Csv, config
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-ENV = config('ENV')  # prod, local or test
+ENV = config('ENV')  # prod, dev or test
 
 SECRET_KEY = config('SECRET_KEY')
 
-DEBUG = ENV == 'local'
+DEBUG = ENV == 'dev'
 
 TEMPLATE_DEBUG = DEBUG
 
@@ -57,7 +57,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, 'project/templates/')
+            os.path.join(BASE_DIR, 'project/templates/'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'project.wsgi.application'
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
 DATABASES = {
-    'default': dj_database_url.parse(config('DATABASE_URL'))
+    'default': dj_database_url.parse(config('DATABASE_URL')),
 }
 
 
@@ -197,7 +197,7 @@ SUIT_CONFIG = {
             'models': (
                 {
                     'model': 'sendgridemail',
-                    'label': 'SendGrid'
+                    'label': 'SendGrid',
                 },
             ),
         },
@@ -205,7 +205,7 @@ SUIT_CONFIG = {
             'app': 'apps_website',
             'models': ('contact',),
         },
-    )
+    ),
 }
 
 

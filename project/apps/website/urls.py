@@ -6,5 +6,5 @@ from .views import ContactView
 app_name = WebsiteConfig.label
 
 urlpatterns = [
-    path('contact/', ContactView.as_view(), name='contact')
+    path('contact/', ContactView.as_view(), name='contact'),
 ]
