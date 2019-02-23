@@ -4,6 +4,8 @@ services:
     build:
       context: .
       dockerfile: docker/dev.Dockerfile
+    networks:
+      - tt
     ports:
       - "8000:80"
     volumes:
@@ -19,6 +21,8 @@ services:
     environment:
       POSTGRES_DB: tt
       POSTGRES_USER: tt
+    networks:
+      - tt
     ports:
       - "5432:5432"
     volumes:
@@ -27,3 +31,6 @@ services:
         target: /var/lib/postgresql/data
 volumes:
   dbdata:
+networks:
+  tt:
+    name: tt
