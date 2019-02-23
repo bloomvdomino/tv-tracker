@@ -11,7 +11,7 @@ before_install:
   - cp .env.example .env
 
 install:
-  - docker-compose up -d
+  - docker-compose build
 
 script:
   - sh scripts/lint.sh
