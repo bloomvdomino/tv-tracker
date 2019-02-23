@@ -11,5 +11,5 @@ urlpatterns = [
     path('accounts/', include('project.apps.accounts.urls', namespace='accounts')),
     path('tmdb/', include('project.apps.tmdb.urls', namespace='tmdb')),
 
-    path(settings.ADMIN_PATH, admin.site.urls)
+    path(settings.ADMIN_PATH, admin.site.urls),
 ]

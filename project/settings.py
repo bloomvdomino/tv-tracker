@@ -57,7 +57,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, 'project/templates/')
+            os.path.join(BASE_DIR, 'project/templates/'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'project.wsgi.application'
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
 DATABASES = {
-    'default': dj_database_url.parse(config('DATABASE_URL'))
+    'default': dj_database_url.parse(config('DATABASE_URL')),
 }
 
 
@@ -197,7 +197,7 @@ SUIT_CONFIG = {
             'models': (
                 {
                     'model': 'sendgridemail',
-                    'label': 'SendGrid'
+                    'label': 'SendGrid',
                 },
             ),
         },
@@ -205,7 +205,7 @@ SUIT_CONFIG = {
             'app': 'apps_website',
             'models': ('contact',),
         },
-    )
+    ),
 }
 
 

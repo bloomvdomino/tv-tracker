@@ -39,7 +39,7 @@ class ProgressViewSetCreateTests(APITestCase):
         self.data = {
             'show_id': 1,
             'show_name': 'Vikings',
-            'show_status': Progress.RETURNING
+            'show_status': Progress.RETURNING,
         }
 
     def test_201(self):
@@ -57,7 +57,7 @@ class ProgressViewSetUpdateTests(APITestCase):
         self.client.force_authenticate(user=self.user_1)
         self.progress = Progress.objects.create(user=self.user_1, show_id=1, show_name='Vikings')
         self.data = {
-            'show_status': Progress.ENDED
+            'show_status': Progress.ENDED,
         }
 
     def test_200(self):

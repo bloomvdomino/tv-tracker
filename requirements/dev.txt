@@ -2,5 +2,6 @@
 
 coverage==4.5.1
 Fabric3==1.14.post1
-flake8==3.5.0
+flake8==3.7.6
+flake8-commas==2.0.0
 isort==4.3.4

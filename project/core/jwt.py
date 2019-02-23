@@ -7,7 +7,7 @@ from rest_framework_jwt.settings import api_settings
 def payload_handler(user):
     payload = {
         'email': user.email,
-        'exp': datetime.utcnow() + api_settings.JWT_EXPIRATION_DELTA
+        'exp': datetime.utcnow() + api_settings.JWT_EXPIRATION_DELTA,
     }
 
     if api_settings.JWT_ALLOW_REFRESH:

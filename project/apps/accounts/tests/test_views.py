@@ -135,7 +135,7 @@ class PasswordResetViewPutTests(APITestCase):
         self.token = PasswordResetToken.objects.create(user=self.user)
         self.data = {
             'password': 'bar321',
-            'password_confirm': 'bar321'
+            'password_confirm': 'bar321',
         }
 
     def test_200(self):
