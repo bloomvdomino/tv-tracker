@@ -18,7 +18,7 @@ RUN apk update \
         openssl-dev \
         postgresql-dev \
     && pip install --no-cache-dir --upgrade pip setuptools \
-    && pip install --no-cache-dir -r requirements/local.txt \
+    && pip install --no-cache-dir -r requirements/dev.txt \
     && apk del .build-deps \
     && rm -vrf /var/cache/apk/*
 
