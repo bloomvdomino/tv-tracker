@@ -1,7 +1,14 @@
 #!/bin/bash
 
+# https://devcenter.heroku.com/articles/container-registry-and-runtime
+
 set -e
 
-echo "$HEROKU_AUTH_TOKEN" | docker login -u _ --password-stdin registry.heroku.com
-docker build -f docker/prod.Dockerfile -t registry.heroku.com/"$HEROKU_APP_NAME"/web .
-docker push registry.heroku.com/"$HEROKU_APP_NAME"/web
+heroku_app_name=api-tv-tracker
+process_type=web
+tag=registry.heroku.com/$heroku_app_name/$process_type
+
+docker build -f docker/prod.Dockerfile -t $tag .
+docker push $tag
+heroku container:release $process_type
+docker rmi $(docker images $tag -q)
