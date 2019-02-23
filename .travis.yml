@@ -14,3 +14,11 @@ script:
 
 after_script:
   - docker-compose down -v
+
+deploy:
+  provider: heroku
+  api_key: UISn9nfLQUwnj26/Z3ESiRmz8iPoSomJSiri5Huxm3sH48hVUhUuEMVmrxH+3DeNNjsloR3NOU0fZP6LDnFB9Zk1SYMBbXQszlXsnXjUIcyPsyCmVVx/v5WMkPP47OYVfqJ6cML42wX7btm09FF7uVU3KyFSpb8hiIz2iwHm77xwD1DpgmUjhLDr9/3bRh90c2L3O1F+EHhi2jSUNWSgstuWkE3hBGUxfUW6yaCCgMF/a48vfI7L8CCJyC0EI5kfrULbrtDk5bp9cqlLPrpYZAzvsn3YdKU9lLptT/zfMBi1yzhSAzv7O7tRVxLN61n8279PJghk/iMzVIyrTxgTJs6dKikAL2CuiYwX9736Oaa5K91Bl+U6/x8ds/MVdkdFy6X57DlEshmDmgUrOHopQnbCuqH9OV+Urq+weaBOzzo/KSd+GtJyYV42W6YmjJjMsMKgUf4KpVXw+u9gXCAJtrA6xqfs40JUn/GDKf9b9wAPDoi42MRQxyLcPmIn0UYGFW9RRKPedSWXgKg9cUtI/WNqxICnaRn19xfyDcBgP2E7MHxOpqbx5xiJFmJh8hGHTN3AaKBrrzD0PcZcsgq/dCzT2RaLIojOVhCHZ7lRh5ewAhL+V8aTgyfxYDzUbIko+FCgCqHIzpfxT9G/cNgiin8FucFi5FM9sJz9CkauZiY=
+  app: api-tv-tracker
+  on:
+    all_branches: true
+    tags: true
