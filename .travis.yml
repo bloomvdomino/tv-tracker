@@ -6,12 +6,12 @@ python:
 services:
   - docker
 
-install:
-  - docker-compose build
-
-before_script:
+before_install:
   - sudo service postgresql stop
   - cp .env.example .env
+
+install:
+  - docker-compose up
 
 script:
   - sh scripts/lint.sh
