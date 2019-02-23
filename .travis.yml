@@ -11,8 +11,11 @@ before_install:
   - cp .env.example .env
 
 install:
-  - docker-compose up
+  - docker-compose up -d
 
 script:
   - sh scripts/lint.sh
   - sh scripts/test.sh
+
+after_script:
+  - docker-compose down -v
