@@ -173,7 +173,7 @@ class PasswordResetViewPutTests(APITestCase):
 
     def test_404(self):
         response = self.client.put(self.url.format(uuid.uuid4()), data=self.data)
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 404)
 
 
 class ProfileViewTests(APITestCase):
