@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView
 from rest_framework import mixins, viewsets
 
@@ -17,7 +18,7 @@ class ProgressViewSet(mixins.CreateModelMixin,
         return Progress.objects.filter(user=self.request.user)
 
 
-class V2ProgressesView(TemplateView):
+class V2ProgressesView(LoginRequiredMixin, TemplateView):
     template_name = 'tmdb/progresses.html'
 
 

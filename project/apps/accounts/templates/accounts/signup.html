@@ -1,5 +1,25 @@
 {% extends "core/base.html" %}
 
 {% block content %}
-signup page
+<form method="post" novalidate>
+    {% csrf_token %}
+
+    {{ form.non_field_errors }}
+
+    <label for="{{ form.email.id_for_label }}">Email:</label>
+    {{ form.email }}
+    {{ form.email.errors }}
+
+    <label for="{{ form.password.id_for_label }}">Password:</label>
+    {{ form.password }}
+    {{ form.password.errors }}
+
+    <label for="{{ form.password_confirm.id_for_label }}">Confirm Password:</label>
+    {{ form.password_confirm }}
+    {{ form.password_confirm.errors }}
+
+    <div class="btn-section">
+        <input class="button-primary" type="submit" value="Signup"></input>
+    </div>
+</form>
 {% endblock %}

@@ -4,6 +4,7 @@
     <div class="container">
         <div class="header-section">
             <img src="{% static 'core/img/logo_without_title.png' %}" class="logo" alt="Logo">
+
             {% if user.is_authenticated %}
             {% include 'core/header_item.html' with url_name="tmdb:v2_progresses" text="Progresses" %}
             {% endif %}

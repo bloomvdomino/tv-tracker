@@ -1,7 +1,7 @@
 {% extends "core/base.html" %}
 
 {% block content %}
-<form method="post">
+<form method="post" novalidate>
     {% csrf_token %}
 
     {{ form.non_field_errors }}
@@ -16,7 +16,7 @@
 
     <div class="btn-section">
         <input class="button-primary" type="submit" value="Login"></input>
-        <a class="button-primary" href="">
+        <a class="button-primary" href="{% url 'accounts:v2_password_reset' %}">
             Forgot My Password
         </a>
     </div>

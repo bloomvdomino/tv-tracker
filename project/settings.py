@@ -136,6 +136,15 @@ DATE_FORMAT = 'Y/m/d'
 DATETIME_FORMAT = 'Y/m/d H:i:s'
 
 
+# Login/Logout URLs
+
+LOGIN_REDIRECT_URL = 'tmdb:v2_progresses'
+
+LOGIN_URL = 'accounts:v2_login'
+
+LOGOUT_REDIRECT_URL = 'tmdb:v2_popular_shows'
+
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
@@ -213,6 +222,20 @@ SUIT_CONFIG = {
 # Email
 
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
+
+if ENV == 'prod':
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST = 'smtp.sendgrid.net'
+    EMAIL_PORT = 587
+    EMAIL_USE_TLS = True
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+    EMAIL_HOST = 'localhost'
+    EMAIL_PORT = 25
+    EMAIL_USE_TLS = False
+
+EMAIL_HOST_USER = config('SENDGRID_USERNAME')
+EMAIL_HOST_PASSWORD = config('SENDGRID_PASSWORD')
 
 SENDGRID_API_KEY = config('SENDGRID_API_KEY')
 
