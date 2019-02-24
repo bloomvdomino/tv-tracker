@@ -1,0 +1,4 @@
+{% url url_name as url %}
+<a href={{ url }} class="header-item {% if request.path == url %}active{% endif %}">
+    {{ text }}
+</a>

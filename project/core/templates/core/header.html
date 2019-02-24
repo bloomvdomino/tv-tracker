@@ -1,0 +1,26 @@
+{% load static from staticfiles %}
+
+<div class="header">
+    <div class="container">
+        <div class="header-section">
+            <img src="{% static 'core/img/logo_without_title.png' %}" class="logo" alt="Logo">
+            {% if user.is_authenticated %}
+            {% include 'core/header_item.html' with url_name="tmdb:v2_progresses" text="Progresses" %}
+            {% endif %}
+
+            {% include 'core/header_item.html' with url_name="tmdb:v2_popular_shows" text="Popular Shows" %}
+            {% include 'core/header_item.html' with url_name="tmdb:v2_search" text="Search" %}
+        </div>
+
+        <div class="header-section">
+            {% include 'core/header_item.html' with url_name="website:v2_contact" text="Contact" %}
+
+            {% if user.is_authenticated %}
+            {% include 'core/header_item.html' with url_name="accounts:v2_profile" text=user.email %}
+            {% else %}
+            {% include 'core/header_item.html' with url_name="accounts:v2_login" text="Login" %}
+            {% include 'core/header_item.html' with url_name="accounts:v2_signup" text="Signup" %}
+            {% endif %}
+        </div>
+    </div>
+</div>

@@ -9,6 +9,9 @@ from .views import (
     PasswordView,
     ProfileView,
     SignupView,
+    V2LoginView,
+    V2ProfileView,
+    V2SignupView,
 )
 
 app_name = AccountsConfig.label
@@ -22,4 +25,8 @@ urlpatterns = [
     path('password/reset/', PasswordResetTokenView.as_view(), name='password-reset-token'),
     path('password/reset/<uuid:pk>/', PasswordResetView.as_view(), name='password-reset'),
     path('profile/', ProfileView.as_view(), name='profile'),
+
+    path('v2/login/', V2LoginView.as_view(), name='v2_login'),
+    path('v2/profile/', V2ProfileView.as_view(), name='v2_profile'),
+    path('v2/signup/', V2SignupView.as_view(), name='v2_signup'),
 ]

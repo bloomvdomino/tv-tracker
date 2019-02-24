@@ -1,3 +1,5 @@
+from django.contrib.auth import views
+from django.views.generic import TemplateView
 from rest_framework import generics
 from rest_framework.permissions import AllowAny
 
@@ -50,3 +52,15 @@ class ProfileView(generics.RetrieveAPIView):
 
     def get_object(self):
         return self.request.user
+
+
+class V2SignupView(TemplateView):
+    template_name = 'accounts/signup.html'
+
+
+class V2LoginView(views.LoginView):
+    template_name = 'accounts/login.html'
+
+
+class V2ProfileView(TemplateView):
+    template_name = 'accounts/profile.html'

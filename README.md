@@ -1,4 +1,4 @@
-![TV Tracker](https://raw.githubusercontent.com/olivertso/tt-api/master/logo.png)
+![TV Tracker](https://raw.githubusercontent.com/olivertso/tt-api/master/project/core/static/core/img/logo.png)
 
 *Special thanks to [Tiago](https://github.com/tmazza) for designing our amazing logo* 🍺
 
