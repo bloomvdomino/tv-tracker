@@ -1,5 +1,15 @@
 {% extends "core/base.html" %}
 
+{% load static from staticfiles %}
+
+{% block custom_css %}
+{{ block.super }}
+<link href="{% static 'tmdb/css/paginator.css' %}" rel="stylesheet">
+<link href="{% static 'tmdb/css/poster_card_gallery.css' %}" rel="stylesheet">
+{% endblock %}
+
 {% block content %}
-popular shows page
+{% include 'tmdb/components/paginator.html' %}
+{% include 'tmdb/components/poster_card_gallery.html' %}
+{% include 'tmdb/components/paginator.html' %}
 {% endblock %}

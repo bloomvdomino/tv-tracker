@@ -1,0 +1,13 @@
+{% if previous_page_link or next_page_link %}
+<div class="paginator">
+    {% if previous_page_link %}
+    <a href="{{ previous_page_link }}"><<<</a>
+    {% endif %}
+
+    {{ current_page }}
+
+    {% if next_page_link %}
+    <a href="{{ next_page_link }}">>>></a>
+    {% endif %}
+</div>
+{% endif %}
