@@ -26,8 +26,14 @@ form .btn-section input { margin: 0; }
     max-width: 1200px;
 }
 
+.main-container { margin: 84px auto 198px; }
+
 .header {
-    margin-bottom: 30px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: white;
     border-bottom: 1px solid #c7c7c7;
     z-index: 9000;
 }

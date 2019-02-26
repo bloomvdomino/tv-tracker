@@ -1,0 +1,30 @@
+.poster-card-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.poster-card-gallery .poster-card {
+    margin-bottom: 16px;
+    width: 185px;
+    border: 1px solid #bbb;
+    border-radius: 3px;
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.poster-card-gallery .poster-card img {
+    /* Fix width and height because some posters come with slightly bigger height. */
+    width: 185px;
+    height: 278px;
+}
+
+.poster-card-gallery .poster-card .poster-card-title {
+    margin-bottom: 6px;
+    padding: 0 4px;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}

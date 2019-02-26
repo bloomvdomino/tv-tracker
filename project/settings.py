@@ -219,6 +219,11 @@ SUIT_CONFIG = {
 }
 
 
+# TMDB
+
+TMDB_API_KEY = config('TMDB_API_KEY')
+
+
 # Email
 
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')

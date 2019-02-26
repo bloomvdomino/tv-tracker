@@ -1,5 +1,33 @@
 {% extends "core/base.html" %}
 
+{% load static from staticfiles %}
+{% load tmdb %}
+
+{% block custom_css %}
+{{ block.super }}
+<link href="{% static 'tmdb/css/poster_card_gallery.css' %}" rel="stylesheet">
+{% endblock %}
+
 {% block content %}
-search page
+<form method="post" novalidate>
+    {% csrf_token %}
+
+    {{ form.name }}
+    {{ form.name.errors }}
+
+    <div class="btn-section">
+        <input class="button-primary" type="submit" value="Search"></input>
+    </div>
+</form>
+
+{% if form.results %}
+<div class="poster-card-gallery">
+    {% for show in form.results %}
+    <a class="poster-card" href="">
+        <img src="{% poster_url show.poster_path 3 %}" alt="Poster">
+        <div class="poster-card-title">{{ show.original_name }}</div>
+    </a>
+    {% endfor %}
+</div>
+{% endif %}
 {% endblock %}
