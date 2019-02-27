@@ -1,6 +1,6 @@
 from django import forms
 
-from .utils import search_by_name
+from .utils import search_show
 
 
 class SearchForm(forms.Form):
@@ -8,7 +8,7 @@ class SearchForm(forms.Form):
 
     def clean_name(self):
         name = self.cleaned_data['name']
-        self.results = search_by_name(name)
+        self.results = search_show(name)
         if not self.results:
             raise forms.ValidationError("No result found.")
         return name

@@ -8,7 +8,7 @@ from rest_framework import mixins, viewsets
 from .forms import SearchForm
 from .models import Progress
 from .serializers import ProgressSerializer
-from .utils import get_popular_shows
+from .utils import get_popular_shows, get_show
 
 
 class ProgressViewSet(mixins.CreateModelMixin,
@@ -60,3 +60,17 @@ class V2SearchView(FormView):
     def form_valid(self, form):
         context = self.get_context_data(form=form)
         return render(self.request, self.template_name, context=context)
+
+
+class V2ShowView(TemplateView):
+    template_name = 'tmdb/show.html'
+
+    def get_context_data(self, **kwargs):
+        kwargs = super().get_context_data(**kwargs)
+        id = self.kwargs['id']
+        kwargs.update(show=get_show(id))
+        user = self.request.user
+        if user.is_authenticated:
+            progress = Progress.objects.filter(user=user, show_id=id).first()
+            kwargs.update(progress=progress)
+        return kwargs
