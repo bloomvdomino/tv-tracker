@@ -1,8 +1,8 @@
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urlparse
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect, render
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse
 from django.views.generic import (
     CreateView,
     FormView,
@@ -37,7 +37,6 @@ class V2ProgressesView(LoginRequiredMixin, TemplateView):
 class V2ProgressCreateView(CreateView):
     template_name = 'tmdb/progress.html'
     form_class = ProgressForm
-    success_url = reverse_lazy('tmdb:v2_popular_shows')
 
     def post(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
@@ -46,12 +45,7 @@ class V2ProgressCreateView(CreateView):
 
     def get_context_data(self, **kwargs):
         kwargs = super().get_context_data(**kwargs)
-        show_id = self.kwargs['show_id']
-        kwargs.update(show=get_show(show_id))
-        user = self.request.user
-        if user.is_authenticated:
-            progress = Progress.objects.filter(user=user, show_id=show_id).first()
-            kwargs.update(progress=progress)
+        kwargs.update(show=get_show(self.kwargs['show_id']))
         return kwargs
 
     def get_initial(self):
@@ -74,6 +68,10 @@ class V2ProgressCreateView(CreateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
+
+    def get_success_url(self):
+        default_success_url = reverse('tmdb:v2_popular_shows')
+        return self.request.session.get('previous_path', default_success_url)
 
 
 class V2ProgressUpdateView(LoginRequiredMixin, UpdateView):
@@ -121,6 +119,8 @@ class V2SearchView(FormView):
 
 class V2ShowView(View):
     def get(self, request, *args, **kwargs):
+        self.set_previous_path()
+
         user = request.user
         show_id = self.kwargs['id']
         if user.is_authenticated and Progress.objects.filter(user=user, show_id=show_id).exists():
@@ -129,3 +129,14 @@ class V2ShowView(View):
             action = 'create'
         url = reverse('tmdb:v2_progress_{}'.format(action), kwargs={'show_id': show_id})
         return redirect(url, permanent=True)
+
+    def set_previous_path(self):
+        url = self.request.META.get('HTTP_REFERER')
+        if url:
+            components = urlparse(url)
+            path = components.path
+            if components.query:
+                path = '{}?{}'.format(path, components.query)
+            self.request.session['previous_path'] = path
+        else:
+            del self.request.session['previous_path']
