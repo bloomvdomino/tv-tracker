@@ -15,7 +15,7 @@ from rest_framework import mixins, viewsets
 from .forms import ProgressForm, SearchForm
 from .models import Progress
 from .serializers import ProgressSerializer
-from .utils import get_popular_shows, get_show
+from .utils import get_popular_shows, get_show, mark_saved_shows
 
 
 class ProgressViewSet(mixins.CreateModelMixin,
@@ -93,7 +93,9 @@ class V2PopularShowsView(TemplateView):
         page = int(self.request.GET.get('page', min_page))
         page = page if page >= min_page else min_page
         page = page if page <= max_page else max_page
-        kwargs.update(current_page=page, shows=get_popular_shows(page))
+        shows = get_popular_shows(page)
+        shows = mark_saved_shows(shows, self.request.user)
+        kwargs.update(current_page=page, shows=shows)
 
         if page - 1 >= min_page:
             kwargs.update(previous_page_link=self.make_page_link(page - 1))
@@ -112,6 +114,7 @@ class V2SearchView(FormView):
     form_class = SearchForm
 
     def form_valid(self, form):
+        form.results = mark_saved_shows(form.results, self.request.user)
         context = self.get_context_data(form=form)
         return render(self.request, self.template_name, context=context)
 

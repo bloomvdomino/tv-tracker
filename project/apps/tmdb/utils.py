@@ -2,6 +2,8 @@ import requests
 from django.conf import settings
 from django.urls import reverse
 
+from .models import Progress
+
 
 def make_poster_url(path, width):
     widths = [
@@ -20,6 +22,18 @@ def add_detail_links(shows):
     for show in shows:
         detail_link = reverse('tmdb:v2_show', kwargs={'id': show['id']})
         show.update(detail_link=detail_link)
+    return shows
+
+
+def mark_saved_shows(shows, user):
+    if user.is_authenticated:
+        show_ids = [show['id'] for show in shows]
+        saved_show_ids = Progress.objects.filter(
+            user=user,
+            show_id__in=show_ids,
+        ).values_list('show_id', flat=True)
+        for show in shows:
+            show.update(saved=show['id'] in saved_show_ids)
     return shows
 
 

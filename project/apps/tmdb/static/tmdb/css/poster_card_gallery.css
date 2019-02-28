@@ -15,6 +15,12 @@
     cursor: pointer;
 }
 
+.poster-card-gallery .poster-card.saved {
+    color: white;
+    background-color: #33C3F0;
+    border-color: #33C3F0;
+}
+
 .poster-card-gallery .poster-card img {
     /* Fix width and height because some posters come with slightly bigger height. */
     width: 185px;
