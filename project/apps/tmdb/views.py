@@ -1,7 +1,7 @@
 from urllib.parse import urlencode, urlparse
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.generic import (
     CreateView,
@@ -78,6 +78,14 @@ class V2ProgressUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'tmdb/progress.html'
     form_class = ProgressForm
 
+    def get_object(self, queryset=None):
+        return get_object_or_404(Progress, user=self.request.user, show_id=self.kwargs['show_id'])
+
+    def get_context_data(self, **kwargs):
+        kwargs = super().get_context_data(**kwargs)
+        kwargs.update(show=get_show(self.kwargs['show_id']))
+        return kwargs
+
 
 class V2PopularShowsView(TemplateView):
     template_name = 'tmdb/popular_shows.html'
@@ -128,7 +136,7 @@ class V2ShowView(View):
         else:
             action = 'create'
         url = reverse('tmdb:v2_progress_{}'.format(action), kwargs={'show_id': show_id})
-        return redirect(url, permanent=True)
+        return redirect(url)
 
     def set_previous_path(self):
         url = self.request.META.get('HTTP_REFERER')
