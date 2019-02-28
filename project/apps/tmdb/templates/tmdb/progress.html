@@ -1,0 +1,27 @@
+{% extends "core/base.html" %}
+
+{% load tmdb %}
+
+{% block content %}
+<img src="{% poster_url show.poster_path 4 %}" alt="Poster">
+
+<h5>{{ show.original_name }}</h5>
+<p>{{ show.overview }}</p>
+
+<form method="post" novalidate>
+    {% csrf_token %}
+
+    <!-- Hidden fields. -->
+    {{ form.show_id }}
+    {{ form.show_name }}
+    {{ form.show_poster_path }}
+    {{ form.show_status }}
+
+    <label for="{{ form.is_followed.id_for_label }}">Following:</label>
+    {{ form.is_followed }}
+
+    <div class="btn-section">
+        <input class="button-primary" type="submit" value="Save"></input>
+    </div>
+</form>
+{% endblock %}

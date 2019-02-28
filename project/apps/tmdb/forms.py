@@ -1,6 +1,24 @@
 from django import forms
 
+from .models import Progress
 from .utils import search_show
+
+
+class ProgressForm(forms.ModelForm):
+    show_id = forms.IntegerField(widget=forms.HiddenInput())
+    show_name = forms.CharField(widget=forms.HiddenInput())
+    show_poster_path = forms.CharField(widget=forms.HiddenInput())
+    show_status = forms.CharField(widget=forms.HiddenInput())
+
+    class Meta:
+        model = Progress
+        fields = [
+            'is_followed',
+            'show_id',
+            'show_name',
+            'show_poster_path',
+            'show_status',
+        ]
 
 
 class SearchForm(forms.Form):
