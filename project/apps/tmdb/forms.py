@@ -10,6 +10,8 @@ class ProgressForm(forms.ModelForm):
     show_poster_path = forms.CharField(widget=forms.HiddenInput())
     show_status = forms.CharField(widget=forms.HiddenInput())
 
+    delete = forms.BooleanField(required=False)
+
     class Meta:
         model = Progress
         fields = [
@@ -19,6 +21,12 @@ class ProgressForm(forms.ModelForm):
             'show_poster_path',
             'show_status',
         ]
+
+    def save(self, commit=True):
+        if self.cleaned_data.get('delete', False):
+            self.instance.delete()
+            return None
+        return super().save(commit=commit)
 
 
 class SearchForm(forms.Form):

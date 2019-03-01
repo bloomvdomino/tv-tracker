@@ -86,6 +86,10 @@ class V2ProgressUpdateView(LoginRequiredMixin, UpdateView):
         kwargs.update(show=get_show(self.kwargs['show_id']))
         return kwargs
 
+    def get_success_url(self):
+        default_success_url = reverse('tmdb:v2_popular_shows')
+        return self.request.session.get('previous_path', default_success_url)
+
 
 class V2PopularShowsView(TemplateView):
     template_name = 'tmdb/popular_shows.html'

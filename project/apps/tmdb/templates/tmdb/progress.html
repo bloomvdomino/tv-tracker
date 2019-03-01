@@ -22,6 +22,12 @@
 
     <div class="btn-section">
         <input class="button-primary" type="submit" value="Save"></input>
+        {% if object %}
+        <div>
+            <label for="{{ form.delete.id_for_label }}">Check to delete:</label>
+            {{ form.delete }}
+        </div>
+        {% endif %}
     </div>
 </form>
 {% endblock %}
