@@ -1,7 +1,7 @@
 from django import forms
 
 from .models import Progress
-from .utils import search_show
+from .utils import get_aired_episodes, search_show
 
 
 class ProgressForm(forms.ModelForm):
@@ -46,25 +46,14 @@ class ProgressForm(forms.ModelForm):
 
     def make_episode_choices(self):
         episode_choices = [('0-0', "Not started, yet.")]
-        for season, info in enumerate(self.show['seasons'], 1):
-            for episode in range(1, info['episode_count'] + 1):
-                if not self.episode_aired(season, episode):
-                    break
-                value = '{}-{}'.format(season, episode)
-                season_label = '0{}'.format(season)[-2:]
-                episode_label = '0{}'.format(episode)[-2:]
-                label = "S{}E{}".format(season_label, episode_label)
-                episode_choices.append((value, label))
+        for season, episode in get_aired_episodes(self.show):
+            value = '{}-{}'.format(season, episode)
+            label = "S{}E{}".format(
+                '0{}'.format(season)[-2:],
+                '0{}'.format(episode)[-2:],
+            )
+            episode_choices.append((value, label))
         return episode_choices
-
-    def episode_aired(self, season, episode):
-        last_aired = self.show.get('last_episode_to_air', {})
-        last_aired_season = last_aired.get('season_number', 0)
-        last_aired_episode = last_aired.get('episode_number', 0)
-        return not (
-            season > last_aired_season or
-            (season == last_aired_season and episode > last_aired_episode)
-        )
 
 
 class SearchForm(forms.Form):

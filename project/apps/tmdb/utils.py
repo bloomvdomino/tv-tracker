@@ -52,6 +52,27 @@ def filter_seasons(show):
     return show
 
 
+def episode_aired(season, episode, last_aired_season, last_aired_episode):
+    return not (
+        season > last_aired_season or
+        (season == last_aired_season and episode > last_aired_episode)
+    )
+
+
+def get_aired_episodes(show):
+    last_aired = show.get('last_episode_to_air', {})
+    last_aired_season = last_aired.get('season_number', 0)
+    last_aired_episode = last_aired.get('episode_number', 0)
+
+    aired_episodes = []
+    for season, info in enumerate(show['seasons'], 1):
+        for episode in range(1, info['episode_count'] + 1):
+            if not episode_aired(season, episode, last_aired_season, last_aired_episode):
+                break
+            aired_episodes.append((season, episode))
+    return aired_episodes
+
+
 def fetch(endpoint, params=None):
     url = 'https://api.themoviedb.org/3/{}'.format(endpoint)
     params = params or {}
