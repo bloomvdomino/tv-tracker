@@ -1,37 +1,66 @@
 {% extends "core/base.html" %}
 
+{% load static from staticfiles %}
 {% load tmdb %}
+
+{% block custom_css %}
+{{ block.super }}
+<link href="{% static 'tmdb/css/progress.css' %}" rel="stylesheet">
+{% endblock %}
 
 {% block content %}
 <img src="{% poster_url show.poster_path 4 %}" alt="Poster">
 
-<h5>{{ show.original_name }}</h5>
-<p>{{ show.overview }}</p>
-
-<form method="post" novalidate>
-    {% csrf_token %}
-
-    <!-- Hidden fields. -->
-    {{ form.show_id }}
-    {{ form.show_name }}
-    {{ form.show_poster_path }}
-    {{ form.show_status }}
-
-    <label for="{{ form.episodes.id_for_label }}">Last watched:</label>
-    {{ form.last_watched }}
-    {{ form.last_watched.errors }}
-
-    <label for="{{ form.is_followed.id_for_label }}">Following:</label>
-    {{ form.is_followed }}
-
-    <div class="btn-section">
-        <input class="button-primary" type="submit" value="Save"></input>
-        {% if object %}
-        <div>
-            <label for="{{ form.delete.id_for_label }}">Check to delete:</label>
-            {{ form.delete }}
-        </div>
-        {% endif %}
+<div class="right-section">
+    <div class="title">
+        <h4>{{ show.original_name }}</h4>
+        <span>{{ show.vote_average }}/10</span>
+        <span>{{ show.status }}</span>
     </div>
-</form>
+
+    <div class="details">
+        <div>
+            Genres:
+            {% for genre in show.genres %}
+            <span>{{ genre.name }}{% if not forloop.last %}, {% endif %}</span>
+            {% endfor %}
+        </div>
+        <div>
+            Languages:
+            {% for language in show.languages %}
+            <span>{{ language }}{% if not forloop.last %}, {% endif %}</span>
+            {% endfor %}
+        </div>
+    </div>
+
+    <p>{{ show.overview }}</p>
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+
+        <!-- Hidden fields. -->
+        {{ form.show_id }}
+        {{ form.show_name }}
+        {{ form.show_poster_path }}
+        {{ form.show_status }}
+
+        <label for="{{ form.episodes.id_for_label }}">Last watched:</label>
+        {{ form.last_watched }}
+        {{ form.last_watched.errors }}
+
+        <label for="{{ form.is_followed.id_for_label }}">Following:</label>
+        {{ form.is_followed }}
+
+        <div class="btn-section">
+            <input class="button-primary" type="submit" value="Save"></input>
+
+            {% if object %}
+            <div>
+                <label for="{{ form.delete.id_for_label }}">Delete:</label>
+                {{ form.delete }}
+            </div>
+            {% endif %}
+        </div>
+    </form>
+</div>
 {% endblock %}

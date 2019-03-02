@@ -1,0 +1,22 @@
+.container { display: flex; }
+
+.container img {
+    margin-right: 32px;
+    border-radius: 3px;
+}
+
+.container .right-section .title, .container .right-section .details { margin-bottom: 25px; }
+
+.container .right-section .title {
+    display: flex;
+    align-items: flex-end;
+}
+
+.container .right-section .title h4 { margin: 0; }
+
+.container .right-section .title span {
+    margin-left: 16px;
+    font-size: 18px;
+}
+
+.container .right-section form { margin-left: 0; }
