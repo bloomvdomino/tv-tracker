@@ -17,6 +17,10 @@
     {{ form.show_poster_path }}
     {{ form.show_status }}
 
+    <label for="{{ form.episodes.id_for_label }}">Last watched:</label>
+    {{ form.last_watched }}
+    {{ form.last_watched.errors }}
+
     <label for="{{ form.is_followed.id_for_label }}">Following:</label>
     {{ form.is_followed }}
 

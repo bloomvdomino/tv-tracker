@@ -34,61 +34,66 @@ class V2ProgressesView(LoginRequiredMixin, TemplateView):
     template_name = 'tmdb/progresses.html'
 
 
-class V2ProgressCreateView(CreateView):
+class ProgressMixin:
     template_name = 'tmdb/progress.html'
     form_class = ProgressForm
 
-    def post(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return redirect(reverse('accounts:v2_signup'))
-        return super().post(request, *args, **kwargs)
+    @property
+    def show(self):
+        if not hasattr(self, '_show'):
+            self._show = get_show(self.kwargs['show_id'])
+        return self._show
 
     def get_context_data(self, **kwargs):
         kwargs = super().get_context_data(**kwargs)
-        kwargs.update(show=get_show(self.kwargs['show_id']))
+        kwargs.update(show=self.show)
+        return kwargs
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update(show=self.show)
         return kwargs
 
     def get_initial(self):
-        show = get_show(self.kwargs['show_id'])
-
         for status, label in Progress.SHOW_STATUS_CHOICES:
-            if label == show['status']:
+            if label == self.show['status']:
                 show_status = status
                 break
 
         initial = super().get_initial()
         initial.update(
-            show_id=show['id'],
-            show_name=show['original_name'],
-            show_poster_path=show['poster_path'],
+            show_id=self.show['id'],
+            show_name=self.show['original_name'],
+            show_poster_path=self.show['poster_path'],
             show_status=show_status,
         )
         return initial
+
+    def get_success_url(self):
+        default_success_url = reverse('tmdb:v2_popular_shows')
+        return self.request.session.get('previous_path', default_success_url)
+
+
+class V2ProgressCreateView(ProgressMixin, CreateView):
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect(reverse('accounts:v2_signup'))
+        return super().post(request, *args, **kwargs)
 
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
-    def get_success_url(self):
-        default_success_url = reverse('tmdb:v2_popular_shows')
-        return self.request.session.get('previous_path', default_success_url)
 
-
-class V2ProgressUpdateView(LoginRequiredMixin, UpdateView):
-    template_name = 'tmdb/progress.html'
-    form_class = ProgressForm
-
+class V2ProgressUpdateView(ProgressMixin, LoginRequiredMixin, UpdateView):
     def get_object(self, queryset=None):
         return get_object_or_404(Progress, user=self.request.user, show_id=self.kwargs['show_id'])
 
-    def get_context_data(self, **kwargs):
-        kwargs = super().get_context_data(**kwargs)
-        kwargs.update(show=get_show(self.kwargs['show_id']))
-        return kwargs
-
-    def get_success_url(self):
-        default_success_url = reverse('tmdb:v2_popular_shows')
-        return self.request.session.get('previous_path', default_success_url)
+    def get_initial(self):
+        initial = super().get_initial()
+        last_watched = '{}-{}'.format(self.object.current_season, self.object.current_episode)
+        initial.update(last_watched=last_watched)
+        return initial
 
 
 class V2PopularShowsView(TemplateView):
