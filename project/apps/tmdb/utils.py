@@ -2,7 +2,9 @@ import requests
 from django.conf import settings
 from django.urls import reverse
 
-from .models import Progress
+
+def format_episode_label(season, episode):
+    return 'S{}E{}'.format('0{}'.format(season)[-2:], '0{}'.format(episode)[-2:])
 
 
 def make_poster_url(path, width):
@@ -18,14 +20,16 @@ def make_poster_url(path, width):
     return 'https://image.tmdb.org/t/p/{}{}'.format(widths[width], path)
 
 
-def add_detail_links(shows):
+def add_detail_urls(shows):
     for show in shows:
-        detail_link = reverse('tmdb:v2_show', kwargs={'id': show['id']})
-        show.update(detail_link=detail_link)
+        detail_url = reverse('tmdb:v2_show', kwargs={'id': show['id']})
+        show.update(detail_url=detail_url)
     return shows
 
 
 def mark_saved_shows(shows, user):
+    from .models import Progress  # imported here to avoid circular dependency
+
     if user.is_authenticated:
         show_ids = [show['id'] for show in shows]
         saved_show_ids = Progress.objects.filter(
@@ -98,7 +102,7 @@ def get_popular_shows(page):
     https://developers.themoviedb.org/3/tv/get-popular-tv-shows
     """
     shows = fetch('tv/popular', params={'page': page})['results']
-    return add_detail_links(shows)
+    return add_detail_urls(shows)
 
 
 def search_show(name):
@@ -108,4 +112,4 @@ def search_show(name):
     https://developers.themoviedb.org/3/search/search-tv-shows
     """
     shows = fetch('search/tv', params={'query': name})['results']
-    return add_detail_links(shows)
+    return add_detail_urls(shows)

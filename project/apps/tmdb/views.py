@@ -33,6 +33,11 @@ class ProgressViewSet(mixins.CreateModelMixin,
 class V2ProgressesView(LoginRequiredMixin, TemplateView):
     template_name = 'tmdb/progresses.html'
 
+    def get_context_data(self, **kwargs):
+        kwargs = super().get_context_data(**kwargs)
+        kwargs.update(progresses=Progress.objects.filter(user=self.request.user))
+        return kwargs
+
 
 class ProgressMixin:
     template_name = 'tmdb/progress.html'

@@ -1,0 +1,19 @@
+.progress-card {
+    display: flex;
+    margin-bottom: 20px;
+    color: inherit;
+    text-decoration: none;
+    border: 1px solid #bbb;
+    border-radius: 3px;
+    box-sizing: border-box;
+}
+
+.progress-card:hover { color: inherit; }
+
+.progress-card>div {
+    display: flex;
+    flex-direction: column;
+    padding: 8px 16px;
+}
+
+.progress-card>div>span { margin-bottom: 12px; }

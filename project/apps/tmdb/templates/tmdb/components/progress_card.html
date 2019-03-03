@@ -1,0 +1,24 @@
+{% load tmdb %}
+
+<a class="progress-card" href="{{ progress.detail_url }}">
+    <img src="{% poster_url progress.show_poster_path 2 %}" alt="Poster">
+
+    <div>
+        <h6>{{ progress.show_name }}</h6>
+
+        <span>{{ progress.get_show_status_display }}</span>
+
+        <span>Last watched:<br>{{ progress.last_watched_label }}</span>
+
+        {% if progress.is_available or progress.is_scheduled %}
+        <span>
+            {% if progress.is_available %}
+            Watch now:
+            {% else %}
+            Scheduled:
+            {% endif %}
+            <br>{{ progress.next_to_watch_label }} - {{ progress.next_air_date }}
+        </span>
+        {% endif %}
+    </div>
+</a>

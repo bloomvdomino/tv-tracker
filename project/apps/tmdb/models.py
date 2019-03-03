@@ -1,8 +1,11 @@
 from django.conf import settings
 from django.db import models
+from django.urls import reverse
 from django.utils import timezone
 
 from project.core.models import BaseModel
+
+from .utils import format_episode_label
 
 
 class Progress(BaseModel):
@@ -52,3 +55,17 @@ class Progress(BaseModel):
     @property
     def is_finished(self):
         return self.show_status in [self.ENDED, self.CANCELED] and not self.is_scheduled
+
+    @property
+    def detail_url(self):
+        return reverse('tmdb:v2_show', kwargs={'id': self.show_id})
+
+    @property
+    def last_watched_label(self):
+        return format_episode_label(self.current_season, self.current_episode)
+
+    @property
+    def next_to_watch_label(self):
+        if not (self.next_season and self.next_episode):
+            return None
+        return format_episode_label(self.next_season, self.next_episode)

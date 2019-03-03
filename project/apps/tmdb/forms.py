@@ -1,7 +1,7 @@
 from django import forms
 
 from .models import Progress
-from .utils import get_aired_episodes, search_show
+from .utils import format_episode_label, get_aired_episodes, search_show
 
 
 class ProgressForm(forms.ModelForm):
@@ -48,10 +48,7 @@ class ProgressForm(forms.ModelForm):
         episode_choices = [('0-0', "Not started, yet.")]
         for season, episode in get_aired_episodes(self.show):
             value = '{}-{}'.format(season, episode)
-            label = "S{}E{}".format(
-                '0{}'.format(season)[-2:],
-                '0{}'.format(episode)[-2:],
-            )
+            label = format_episode_label(season, episode)
             episode_choices.append((value, label))
         return episode_choices
 
