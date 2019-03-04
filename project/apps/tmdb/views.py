@@ -1,6 +1,7 @@
 from urllib.parse import urlencode, urlparse
 
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.generic import (
@@ -15,7 +16,15 @@ from rest_framework import mixins, viewsets
 from .forms import ProgressForm, SearchForm
 from .models import Progress
 from .serializers import ProgressSerializer
-from .utils import get_popular_shows, get_show, mark_saved_shows
+from .utils import (
+    get_air_dates,
+    get_next_episode,
+    get_popular_shows,
+    get_show,
+    get_shows,
+    get_status_value,
+    mark_saved_shows,
+)
 
 
 class ProgressViewSet(mixins.CreateModelMixin,
@@ -32,6 +41,78 @@ class ProgressViewSet(mixins.CreateModelMixin,
 
 class V2ProgressesView(LoginRequiredMixin, TemplateView):
     template_name = 'tmdb/progresses.html'
+
+    def get_context_data(self, **kwargs):
+        kwargs = super().get_context_data(**kwargs)
+        self.update_progresses()
+        progresses = Progress.objects.filter(user=self.request.user).all()
+        kwargs.update(
+            saved_count=self.request.user.added_progresses_count,
+            following_count=len([progress for progress in progresses if progress.status == Progress.FOLLOWING]),
+            max_following_count=self.request.user.max_followed_progresses,
+            available=[progress for progress in progresses if progress.list_in_available],
+            scheduled=[progress for progress in progresses if progress.list_in_scheduled],
+            unavailable=[progress for progress in progresses if progress.list_in_unavailable],
+            paused=[progress for progress in progresses if progress.list_in_paused],
+            finished=[progress for progress in progresses if progress.list_in_finished],
+            stopped=[progress for progress in progresses if progress.list_in_stopped],
+        )
+        return kwargs
+
+    def update_progresses(self):
+        params_list = self.get_params_list_to_update()
+        next_air_dates = self.get_next_air_dates(params_list)
+        for params in params_list:
+            for show_id, next_air_date in next_air_dates:
+                if params['show_id'] == show_id:
+                    params.update(next_air_date=next_air_date)
+                    break
+            Progress.objects.filter(user=self.request.user, show_id=params['show_id']).update(**params)
+
+    def get_show_ids_to_update(self):
+        return Progress.objects.filter(
+            ~Q(
+                next_season__isnull=False,
+                next_episode__isnull=False,
+                next_air_date__isnull=False,
+            ),
+            user=self.request.user,
+            status=Progress.FOLLOWING,
+        ).values_list('show_id', flat=True)
+
+    def get_params_list_to_update(self):
+        show_ids = self.get_show_ids_to_update()
+        shows = get_shows(show_ids)
+        params_list = []
+        for show in shows:
+            progress = Progress.objects.get(show_id=show['id'])
+            next_season, next_episode = get_next_episode(
+                show,
+                progress.current_season,
+                progress.current_episode,
+            )
+            params_list.append({
+                'show_id': show['id'],
+                'show_name': show['original_name'],
+                'show_poster_path': show['poster_path'],
+                'show_status': get_status_value(show['status']),
+                'next_season': next_season,
+                'next_episode': next_episode,
+            })
+        return params_list
+
+    def get_next_air_dates(self, progresses):
+        params_list = []
+        for progress in progresses:
+            if not (progress['next_season'] and progress['next_episode']):
+                continue
+            params_list.append({
+                'show_id': progress['show_id'],
+                'season': progress['next_season'],
+                'episode': progress['next_episode'],
+            })
+        results = get_air_dates(params_list)
+        return [(result['show_id'], result['air_date']) for result in results]
 
 
 class ProgressMixin:
@@ -51,21 +132,19 @@ class ProgressMixin:
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs.update(show=self.show)
+        kwargs.update(
+            user=self.request.user,
+            show=self.show,
+        )
         return kwargs
 
     def get_initial(self):
-        for status, label in Progress.SHOW_STATUS_CHOICES:
-            if label == self.show['status']:
-                show_status = status
-                break
-
         initial = super().get_initial()
         initial.update(
             show_id=self.show['id'],
             show_name=self.show['original_name'],
             show_poster_path=self.show['poster_path'],
-            show_status=show_status,
+            show_status=get_status_value(self.show['status']),
         )
         return initial
 

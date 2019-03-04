@@ -1,0 +1,9 @@
+<div class="progress-card-list">
+    <h4>{{ title }}</h4>
+
+    <div>
+        {% for progress in progresses %}
+        {% include 'tmdb/components/progress_card.html' with progress=progress only %}
+        {% endfor %}
+    </div>
+</div>

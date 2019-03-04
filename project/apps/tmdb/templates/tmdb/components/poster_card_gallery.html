@@ -2,7 +2,7 @@
 
 <div class="poster-card-gallery">
     {% for show in shows %}
-    <a class="poster-card {% if show.saved %}saved{% endif %}" href="{{ show.detail_link }}">
+    <a class="poster-card {% if show.saved %}saved{% endif %}" href="{{ show.detail_url }}">
         <img src="{% poster_url show.poster_path 3 %}" alt="Poster">
         <div class="poster-card-title">{{ show.original_name }}</div>
     </a>

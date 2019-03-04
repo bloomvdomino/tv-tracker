@@ -1,0 +1,9 @@
+.progress-card-list { margin-bottom: 48px; }
+
+.progress-card-list>div {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.progress-card-list>div>.progress-card { flex: 0 49%; }

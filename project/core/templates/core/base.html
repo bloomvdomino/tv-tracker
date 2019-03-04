@@ -36,11 +36,14 @@
 
     {% block custom_css %}
     <link href="{% static 'core/css/base.css' %}" rel="stylesheet">
+    <link href="{% static 'core/css/components/header.css' %}" rel="stylesheet">
+    <link href="{% static 'core/css/components/header_item.css' %}" rel="stylesheet">
     {% endblock %}
 </head>
 
 <body>
     {% include 'core/components/header.html' %}
+
     <div class="container main-container">
         {% block content %}{% endblock %}
     </div>
