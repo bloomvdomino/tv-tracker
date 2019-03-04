@@ -45,8 +45,11 @@ class V2ProgressesView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         kwargs = super().get_context_data(**kwargs)
         self.update_progresses()
-        progresses = Progress.objects.filter(user=self.request.user)
+        progresses = Progress.objects.filter(user=self.request.user).all()
         kwargs.update(
+            saved_count=self.request.user.added_progresses_count,
+            following_count=len([progress for progress in progresses if progress.status == Progress.FOLLOWING]),
+            max_following_count=self.request.user.max_followed_progresses,
             available=[progress for progress in progresses if progress.list_in_available],
             scheduled=[progress for progress in progresses if progress.list_in_scheduled],
             unavailable=[progress for progress in progresses if progress.list_in_unavailable],

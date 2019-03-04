@@ -4,6 +4,8 @@
 }
 
 .container .summary-card {
+    display: flex;
+    flex-direction: column;
     position: sticky;
     top: 84px;
     margin-right: 24px;
@@ -13,5 +15,7 @@
     border-radius: 3px;
     box-sizing: border-box;
 }
+
+.container .summary-card span { margin: 4px 0; }
 
 .container .progress-card-lists { flex: 1; }
