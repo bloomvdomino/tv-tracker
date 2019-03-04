@@ -8,11 +8,18 @@
 
         <span>{{ progress.get_show_status_display }}</span>
 
-        <span>Last watched:<br>{{ progress.last_watched_label }}</span>
-
-        {% if progress.is_available or progress.is_scheduled %}
         <span>
-            {% if progress.is_available %}
+            Last watched:<br>
+            {% if progress.not_started %}
+            Not started, yet.
+            {% else %}
+            {{ progress.last_watched_label }}
+            {% endif %}
+        </span>
+
+        {% if progress.list_in_available or progress.list_in_scheduled %}
+        <span>
+            {% if progress.list_in_available %}
             Watch now:
             {% else %}
             Scheduled:

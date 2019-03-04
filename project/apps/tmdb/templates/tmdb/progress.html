@@ -44,11 +44,12 @@
         {{ form.show_poster_path }}
         {{ form.show_status }}
 
+        <label for="{{ form.status.id_for_label }}">Status:</label>
+        {{ form.status }}
+        {{ form.status.errors }}
+
         <label for="{{ form.episodes.id_for_label }}">Last watched:</label>
         {{ form.last_watched }}
-
-        <label for="{{ form.is_followed.id_for_label }}">Following:</label>
-        {{ form.is_followed }}
 
         <div class="btn-section">
             <input class="button-primary" type="submit" value="Save"></input>

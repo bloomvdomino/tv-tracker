@@ -9,6 +9,15 @@ from .utils import format_episode_label
 
 
 class Progress(BaseModel):
+    FOLLOWING = 'following'
+    PAUSED = 'paused'
+    STOPPED = 'stopped'
+    STATUS_CHOICES = (
+        (FOLLOWING, "Following"),
+        (PAUSED, "Paused"),
+        (STOPPED, "Stopped"),
+    )
+
     RETURNING = 'returning'
     PLANNED = 'planned'
     IN_PRODUCTION = 'in_production'
@@ -26,6 +35,7 @@ class Progress(BaseModel):
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, models.CASCADE, verbose_name="user")
     is_followed = models.BooleanField(default=False, verbose_name="followed")
+    status = models.CharField(max_length=16, choices=STATUS_CHOICES, default=FOLLOWING, verbose_name="status")
 
     show_id = models.PositiveIntegerField(verbose_name="show ID")
     show_name = models.CharField(max_length=64, verbose_name="show name")
@@ -45,6 +55,10 @@ class Progress(BaseModel):
         verbose_name_plural = "progresses"
 
     @property
+    def not_started(self):
+        return self.current_season == 0 and self.current_episode == 0
+
+    @property
     def is_scheduled(self):
         return self.next_air_date is not None
 
@@ -55,6 +69,34 @@ class Progress(BaseModel):
     @property
     def is_finished(self):
         return self.show_status in [self.ENDED, self.CANCELED] and not self.is_scheduled
+
+    @property
+    def list_in_available(self):
+        return self.status == self.FOLLOWING and self.is_available
+
+    @property
+    def list_in_scheduled(self):
+        return self.status == self.FOLLOWING and not self.is_available and self.is_scheduled
+
+    @property
+    def list_in_unavailable(self):
+        return (
+            not self.is_finished and
+            self.status == self.FOLLOWING and
+            not (self.list_in_available or self.list_in_scheduled)
+        )
+
+    @property
+    def list_in_paused(self):
+        return not self.is_finished and self.status == self.PAUSED
+
+    @property
+    def list_in_stopped(self):
+        return not self.is_finished and self.status == self.STOPPED
+
+    @property
+    def list_in_finished(self):
+        return self.is_finished
 
     @property
     def detail_url(self):

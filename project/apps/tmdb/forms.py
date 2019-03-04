@@ -1,7 +1,13 @@
 from django import forms
 
 from .models import Progress
-from .utils import format_episode_label, get_aired_episodes, search_show
+from .utils import (
+    format_episode_label,
+    get_air_date,
+    get_aired_episodes,
+    get_next_episode,
+    search_show,
+)
 
 
 class ProgressForm(forms.ModelForm):
@@ -17,7 +23,7 @@ class ProgressForm(forms.ModelForm):
     class Meta:
         model = Progress
         fields = [
-            'is_followed',
+            'status',
             'show_id',
             'show_name',
             'show_poster_path',
@@ -25,6 +31,7 @@ class ProgressForm(forms.ModelForm):
         ]
 
     def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user')
         self.show = kwargs.pop('show')
         super().__init__(*args, **kwargs)
         self.fields['last_watched'].choices = self.make_episode_choices()
@@ -35,13 +42,26 @@ class ProgressForm(forms.ModelForm):
         self.cleaned_data.update(current_season=season, current_episode=episode)
         return last_watched
 
+    def clean_status(self):
+        status = self.cleaned_data['status']
+        if status and status == Progress.FOLLOWING:
+            following = Progress.objects.filter(user=self.user, status=Progress.FOLLOWING).count()
+            limit = self.user.max_followed_progresses
+            if following >= limit:
+                message = "You cannot follow more than {} shows.".format(limit)
+                raise forms.ValidationError(message)
+        return status
+
     def save(self, commit=True):
         if self.cleaned_data.get('delete', False):
             self.instance.delete()
             return None
 
-        self.instance.current_season = self.cleaned_data['current_season']
-        self.instance.current_episode = self.cleaned_data['current_episode']
+        self.update_episodes()
+
+        if self.instance.is_finished and self.instance.status != Progress.STOPPED:
+            self.instance.status = Progress.STOPPED
+
         return super().save(commit=commit)
 
     def make_episode_choices(self):
@@ -51,6 +71,31 @@ class ProgressForm(forms.ModelForm):
             label = format_episode_label(season, episode)
             episode_choices.append((value, label))
         return episode_choices
+
+    def update_episodes(self):
+        current_season = self.cleaned_data['current_season']
+        current_episode = self.cleaned_data['current_episode']
+
+        if self.instance.current_season == current_season and self.instance.current_episode == current_episode:
+            return
+
+        self.instance.current_season = current_season
+        self.instance.current_episode = current_episode
+        self.instance.next_season, self.instance.next_episode = get_next_episode(
+            self.show,
+            current_season,
+            current_episode,
+        )
+
+        if not (self.instance.next_season and self.instance.next_episode):
+            self.instance.next_air_date = None
+            return
+
+        self.instance.next_air_date = get_air_date(
+            self.instance.show_id,
+            self.instance.next_season,
+            self.instance.next_episode,
+        )
 
 
 class SearchForm(forms.Form):

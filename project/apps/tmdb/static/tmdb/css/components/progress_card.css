@@ -16,4 +16,11 @@
     padding: 8px 16px;
 }
 
+.progress-card>div>h6 {
+    width: 200px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
 .progress-card>div>span { margin-bottom: 12px; }

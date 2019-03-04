@@ -14,7 +14,11 @@
 </div>
 
 <div class="progress-card-lists">
-    {% include 'tmdb/components/progress_card_list.html' with title="Available" progresses=progresses only %}
-    {% include 'tmdb/components/progress_card_list.html' with title="Scheduled" progresses=progresses only %}
+    {% include 'tmdb/components/progress_card_list.html' with title="Available" progresses=available only %}
+    {% include 'tmdb/components/progress_card_list.html' with title="Scheduled" progresses=scheduled only %}
+    {% include 'tmdb/components/progress_card_list.html' with title="Unavailable" progresses=unavailable only %}
+    {% include 'tmdb/components/progress_card_list.html' with title="Paused" progresses=paused only %}
+    {% include 'tmdb/components/progress_card_list.html' with title="Finished" progresses=finished only %}
+    {% include 'tmdb/components/progress_card_list.html' with title="Stopped" progresses=stopped only %}
 </div>
 {% endblock %}

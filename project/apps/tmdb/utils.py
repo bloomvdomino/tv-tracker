@@ -1,10 +1,22 @@
+import asyncio
+
+import aiohttp
 import requests
+from asgiref.sync import async_to_sync
 from django.conf import settings
 from django.urls import reverse
 
 
 def format_episode_label(season, episode):
     return 'S{}E{}'.format('0{}'.format(season)[-2:], '0{}'.format(episode)[-2:])
+
+
+def get_status_value(text):
+    from .models import Progress  # imported here to avoid circular dependency
+
+    for value, display in Progress.SHOW_STATUS_CHOICES:
+        if display == text:
+            return value
 
 
 def make_poster_url(path, width):
@@ -77,6 +89,20 @@ def get_aired_episodes(show):
     return aired_episodes
 
 
+def get_next_episode(show, season, episode):
+    if season == 0 or episode == 0:
+        return 1, 1
+
+    seasons = filter_seasons(show)['seasons']
+    if episode < seasons[season - 1]['episode_count']:
+        # Not the last episode in the season.
+        return season, episode + 1
+    if season < len(seasons):
+        # Not the last seasons.
+        return season + 1, 1
+    return None, None
+
+
 def fetch(endpoint, params=None):
     url = 'https://api.themoviedb.org/3/{}'.format(endpoint)
     params = params or {}
@@ -93,6 +119,11 @@ def get_show(id):
     https://developers.themoviedb.org/3/tv/get-tv-details
     """
     return filter_seasons(fetch('tv/{}'.format(id)))
+
+
+def get_air_date(show_id, season, episode):
+    endpoint = 'tv/{}/season/{}/episode/{}'.format(show_id, season, episode)
+    return fetch(endpoint)['air_date']
 
 
 def get_popular_shows(page):
@@ -113,3 +144,31 @@ def search_show(name):
     """
     shows = fetch('search/tv', params={'query': name})['results']
     return add_detail_urls(shows)
+
+
+async def async_fetch(session, endpoint, params=None, **extras):
+    url = 'https://api.themoviedb.org/3/{}'.format(endpoint)
+    params = params or {}
+    params.update(api_key=settings.TMDB_API_KEY)
+    async with session.get(url, params=params) as resp:
+        data = await resp.json()
+    for key, value in extras.items():
+        data[key] = value
+    return data
+
+
+@async_to_sync
+async def get_shows(ids):
+    async with aiohttp.ClientSession() as session:
+        coros = [async_fetch(session, 'tv/{}'.format(id)) for id in ids]
+        return await asyncio.gather(*coros)
+
+
+@async_to_sync
+async def get_air_dates(params_list):
+    async with aiohttp.ClientSession() as session:
+        coros = []
+        for params in params_list:
+            endpoint = 'tv/{show_id}/season/{season}/episode/{episode}'.format(**params)
+            coros.append(async_fetch(session, endpoint, show_id=params['show_id']))
+        return await asyncio.gather(*coros)
