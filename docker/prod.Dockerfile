@@ -2,7 +2,6 @@ FROM python:3.7.2-alpine
 
 WORKDIR /app
 
-COPY /docker/prod-cmd.sh /prod-cmd.sh
 COPY /requirements /app/requirements
 COPY /manage.py /app/manage.py
 COPY /project /app/project
@@ -21,4 +20,4 @@ RUN apk update \
     && apk del .build-deps \
     && rm -vrf /var/cache/apk/*
 
-CMD sh /prod-cmd.sh
+CMD python manage.py collectstatic --noinput --clear && gunicorn project.wsgi
