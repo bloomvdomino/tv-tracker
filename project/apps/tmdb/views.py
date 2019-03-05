@@ -85,7 +85,7 @@ class V2ProgressesView(LoginRequiredMixin, TemplateView):
         shows = get_shows(show_ids)
         params_list = []
         for show in shows:
-            progress = Progress.objects.get(show_id=show['id'])
+            progress = Progress.objects.get(user=self.request.user, show_id=show['id'])
             next_season, next_episode = get_next_episode(
                 show,
                 progress.current_season,
