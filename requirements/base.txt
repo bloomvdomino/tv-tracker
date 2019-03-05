@@ -1,7 +1,6 @@
 aiohttp==3.5.4
 asgiref==2.3.2
 dj-database-url==0.5.0
-dj-static==0.0.6
 django-cors-headers==2.4.0
 django-suit==0.2.26
 django==2.1.7
@@ -12,3 +11,4 @@ python-decouple==3.1
 pytz==2018.9
 requests==2.21.0
 sendgrid==5.6.0
+whitenoise==4.1.2
