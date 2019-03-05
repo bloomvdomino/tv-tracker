@@ -12,3 +12,5 @@ docker build -f docker/prod.Dockerfile -t $tag .
 docker push $tag
 heroku container:release $process_type
 docker rmi $(docker images $tag -q)
+
+heroku run python manage.py migrate
