@@ -4,6 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
+from django.utils.functional import cached_property
 from django.views.generic import (
     CreateView,
     FormView,
@@ -119,11 +120,9 @@ class ProgressMixin:
     template_name = 'tmdb/progress.html'
     form_class = ProgressForm
 
-    @property
+    @cached_property
     def show(self):
-        if not hasattr(self, '_show'):
-            self._show = get_show(self.kwargs['show_id'])
-        return self._show
+        return get_show(self.kwargs['show_id'])
 
     def get_context_data(self, **kwargs):
         kwargs = super().get_context_data(**kwargs)
