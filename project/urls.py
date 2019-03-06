@@ -13,3 +13,10 @@ urlpatterns = [
 
     path(settings.ADMIN_PATH, admin.site.urls),
 ]
+
+if settings.DEBUG:
+    import debug_toolbar
+
+    urlpatterns += [
+        path('debug/', include(debug_toolbar.urls)),
+    ]

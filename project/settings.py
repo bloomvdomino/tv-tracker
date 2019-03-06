@@ -249,3 +249,19 @@ if ENV == 'test':
     SENDGRID_SANDBOX_MODE = True
 else:
     SENDGRID_SANDBOX_MODE = config('SENDGRID_SANDBOX_MODE', cast=bool)
+
+
+# Django Debug Toolbar
+
+if DEBUG:
+    INSTALLED_APPS += [
+        'debug_toolbar',
+    ]
+
+    MIDDLEWARE += [
+        'debug_toolbar.middleware.DebugToolbarMiddleware',
+    ]
+
+    INTERNAL_IPS = [
+        '172.24.0.1',
+    ]
