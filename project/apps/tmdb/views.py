@@ -183,22 +183,21 @@ class V2ShowView(ShowMixin, ProgressFormMixin, FormView):
         return Progress.objects.filter(user=user, show_id=self.show_id).first()
 
     def get(self, request, *args, **kwargs):
-        self.set_previous_url()
+        self.set_progress_edit_success_url()
         return super().get(request, *args, **kwargs)
 
-    def set_previous_url(self):
+    def set_progress_edit_success_url(self):
         http_referer = self.request.META.get('HTTP_REFERER')
-        if not http_referer:
-            self.request.session.pop('previous_url', None)
-        else:
+        if http_referer:
             components = urlparse(http_referer)
             url = components.path
-            if resolve(url).namespaces == ['tmdb']:
+            if resolve(url).namespace == 'tmdb':
                 if components.query:
                     url = '{}?{}'.format(url, components.query)
-                self.request.session['previous_url'] = url
-            else:
-                self.request.session.pop('previous_url', None)
+                self.request.session['progress_edit_success_url'] = url
+                return
+        url = reverse('tmdb:v2_popular_shows')
+        self.request.session['progress_edit_success_url'] = url
 
     def get_context_data(self, **kwargs):
         kwargs = super().get_context_data(**kwargs)
@@ -237,8 +236,7 @@ class ProgressEditMixin:
         return redirect(reverse('tmdb:v2_show', kwargs={'id': self.show_id}))
 
     def get_success_url(self):
-        default_success_url = reverse('tmdb:v2_popular_shows')
-        return self.request.session.get('previous_url', default_success_url)
+        return self.request.session['progress_edit_success_url']
 
 
 class V2ProgressCreateView(
