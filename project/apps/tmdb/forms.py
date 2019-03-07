@@ -58,10 +58,9 @@ class ProgressForm(forms.ModelForm):
             return None
 
         self.update_episodes()
-
         if self.instance.is_finished and self.instance.status != Progress.STOPPED:
             self.instance.status = Progress.STOPPED
-
+        self.instance.user = self.user
         return super().save(commit=commit)
 
     def make_episode_choices(self):

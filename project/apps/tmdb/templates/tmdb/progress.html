@@ -35,7 +35,7 @@
 
     <p>{{ show.overview }}</p>
 
-    <form method="post" novalidate>
+    <form action="{{ post_url }}" method="post" novalidate>
         {% csrf_token %}
 
         <!-- Hidden fields. -->
@@ -52,7 +52,10 @@
         {{ form.last_watched }}
 
         <div class="btn-section">
-            <input class="button-primary" type="submit" value="Save"></input>
+            <input class="button-primary"
+                type="submit"
+                value="{% if progress %}Update{% else %}Save{% endif %}">
+            </input>
 
             {% if progress %}
             <div>
