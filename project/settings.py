@@ -262,6 +262,6 @@ if DEBUG:
         'debug_toolbar.middleware.DebugToolbarMiddleware',
     ]
 
-    INTERNAL_IPS = [
-        '172.24.0.1',
-    ]
+    DEBUG_TOOLBAR_CONFIG = {
+        'SHOW_TOOLBAR_CALLBACK': lambda request: True,
+    }
