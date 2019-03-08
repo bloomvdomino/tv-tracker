@@ -1,6 +1,7 @@
 from django.contrib import messages
-from django.urls import reverse_lazy
-from django.views.generic import CreateView
+from django.shortcuts import redirect
+from django.urls import reverse, reverse_lazy
+from django.views.generic import CreateView, View
 from rest_framework import generics
 from rest_framework.permissions import AllowAny
 
@@ -11,6 +12,12 @@ from .serializers import ContactSerializer
 class ContactView(generics.CreateAPIView):
     permission_classes = (AllowAny,)
     serializer_class = ContactSerializer
+
+
+class IndexView(View):
+    def get(self, request, *args, **kwargs):
+        url_name = 'v2_progresses' if request.user.is_authenticated else 'v2_popular_shows'
+        return redirect(reverse('tmdb:{}'.format(url_name)))
 
 
 class V2ContactView(CreateView):
