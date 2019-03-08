@@ -37,24 +37,29 @@ class ProgressViewSet(mixins.CreateModelMixin,
 class V2ProgressesView(LoginRequiredMixin, TemplateView):
     template_name = 'tmdb/progresses.html'
 
+    @cached_property
+    def progresses(self):
+        return Progress.objects.filter(user=self.request.user)
+
     def get_context_data(self, **kwargs):
+        self.update_progresses_info()
+        self.update_progresses_status()
+
         kwargs = super().get_context_data(**kwargs)
-        self.update_progresses()
-        progresses = Progress.objects.filter(user=self.request.user).all()
         kwargs.update(
             saved_count=self.request.user.added_progresses_count,
-            following_count=len([progress for progress in progresses if progress.status == Progress.FOLLOWING]),
+            following_count=len([progress for progress in self.progresses if progress.status == Progress.FOLLOWING]),
             max_following_count=self.request.user.max_followed_progresses,
-            available=[progress for progress in progresses if progress.list_in_available],
-            scheduled=[progress for progress in progresses if progress.list_in_scheduled],
-            unavailable=[progress for progress in progresses if progress.list_in_unavailable],
-            paused=[progress for progress in progresses if progress.list_in_paused],
-            finished=[progress for progress in progresses if progress.list_in_finished],
-            stopped=[progress for progress in progresses if progress.list_in_stopped],
+            available=[progress for progress in self.progresses if progress.list_in_available],
+            scheduled=[progress for progress in self.progresses if progress.list_in_scheduled],
+            unavailable=[progress for progress in self.progresses if progress.list_in_unavailable],
+            paused=[progress for progress in self.progresses if progress.list_in_paused],
+            finished=[progress for progress in self.progresses if progress.list_in_finished],
+            stopped=[progress for progress in self.progresses if progress.list_in_stopped],
         )
         return kwargs
 
-    def update_progresses(self):
+    def update_progresses_info(self):
         params_list = self.get_params_list_to_update()
         next_air_dates = self.get_next_air_dates(params_list)
         for params in params_list:
@@ -62,16 +67,15 @@ class V2ProgressesView(LoginRequiredMixin, TemplateView):
                 if params['show_id'] == show_id:
                     params.update(next_air_date=next_air_date)
                     break
-            Progress.objects.filter(user=self.request.user, show_id=params['show_id']).update(**params)
+            self.progresses.filter(show_id=params['show_id']).update(**params)
 
     def get_show_ids_to_update(self):
-        return Progress.objects.filter(
+        return self.progresses.filter(
             ~Q(
                 next_season__isnull=False,
                 next_episode__isnull=False,
                 next_air_date__isnull=False,
             ),
-            user=self.request.user,
             status=Progress.FOLLOWING,
         ).values_list('show_id', flat=True)
 
@@ -108,6 +112,17 @@ class V2ProgressesView(LoginRequiredMixin, TemplateView):
             })
         results = get_air_dates(params_list)
         return [(result['show_id'], result['air_date']) for result in results]
+
+    def update_progresses_status(self):
+        """
+        Update progress status to stopped if the show is finished and the user
+        also watched all episodes.
+        """
+        self.progresses.filter(
+            ~Q(status=Progress.STOPPED),
+            show_status__in=[Progress.ENDED, Progress.CANCELED],
+            next_air_date__isnull=True,
+        ).update(status=Progress.STOPPED)
 
 
 class V2PopularShowsView(TemplateView):
