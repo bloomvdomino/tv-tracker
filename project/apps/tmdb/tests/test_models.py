@@ -23,7 +23,7 @@ class ProgressModelTests(TestCase):
 
     def test_ordering(self):
         self.assertEqual(
-            self.model._meta.ordering, ['-is_followed', 'next_air_date', 'show_name', 'show_id'])
+            self.model._meta.ordering, ['next_air_date', 'show_name', 'show_id'])
 
     def test_show_status_choices(self):
         self.assertEqual(self.model.RETURNING, 'returning')
@@ -48,11 +48,6 @@ class ProgressModelTests(TestCase):
         self.assertEqual(field.remote_field.on_delete, models.CASCADE)
         self.assertFalse(field.blank)
         self.assertFalse(field.null)
-
-    def test_is_followed(self):
-        field = self.model._meta.get_field('is_followed')
-        self.assertEqual(type(field), models.BooleanField)
-        self.assertFalse(field.default)
 
     def test_show_id(self):
         field = self.model._meta.get_field('show_id')
@@ -114,41 +109,41 @@ class ProgressModelTests(TestCase):
         self.assertTrue(field.blank)
         self.assertTrue(field.null)
 
-    def test_is_scheduled_true(self):
+    def test_scheduled_true(self):
         progress = self.model(next_air_date=date(2018, 9, 1))
-        self.assertTrue(progress.is_scheduled)
+        self.assertTrue(progress.scheduled)
 
-    def test_is_scheduled_false(self):
+    def test_scheduled_false(self):
         progress = self.model()
-        self.assertFalse(progress.is_scheduled)
+        self.assertFalse(progress.scheduled)
 
     @patch('django.utils.timezone.now', return_value=datetime(2018, 9, 5, tzinfo=timezone.utc))
-    def test_is_available_true(self, now):
+    def test_available_true(self, now):
         progress = self.model(next_air_date=date(2018, 9, 5))
-        self.assertTrue(progress.is_available)
+        self.assertTrue(progress.available)
 
     @patch('django.utils.timezone.now', return_value=datetime(2018, 9, 5, tzinfo=timezone.utc))
-    def test_is_available_false_1(self, now):
+    def test_available_false_1(self, now):
         progress = self.model(next_air_date=date(2018, 9, 6))
-        self.assertFalse(progress.is_available)
+        self.assertFalse(progress.available)
 
     @patch('django.utils.timezone.now', return_value=datetime(2018, 9, 5, tzinfo=timezone.utc))
-    def test_is_available_false_2(self, now):
+    def test_available_false_2(self, now):
         progress = self.model()
-        self.assertFalse(progress.is_available)
+        self.assertFalse(progress.available)
 
-    def test_is_finished_true_1(self):
+    def test_finished_true_1(self):
         progress = self.model(show_status=self.model.ENDED)
-        self.assertTrue(progress.is_finished)
+        self.assertTrue(progress.finished)
 
-    def test_is_finished_true_2(self):
+    def test_finished_true_2(self):
         progress = self.model(show_status=self.model.CANCELED)
-        self.assertTrue(progress.is_finished)
+        self.assertTrue(progress.finished)
 
-    def test_is_finished_false_1(self):
+    def test_finished_false_1(self):
         progress = self.model(show_status=self.model.ENDED, next_air_date=date(2018, 9, 1))
-        self.assertFalse(progress.is_finished)
+        self.assertFalse(progress.finished)
 
-    def test_is_finished_false_2(self):
+    def test_finished_false_2(self):
         progress = self.model(show_status=self.model.CANCELED, next_air_date=date(2018, 9, 1))
-        self.assertFalse(progress.is_finished)
+        self.assertFalse(progress.finished)

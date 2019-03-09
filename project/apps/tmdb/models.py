@@ -9,6 +9,7 @@ from .utils import format_episode_label
 
 
 class Progress(BaseModel):
+    # Progress status.
     FOLLOWING = 'following'
     PAUSED = 'paused'
     STOPPED = 'stopped'
@@ -18,6 +19,7 @@ class Progress(BaseModel):
         (STOPPED, "Stopped"),
     )
 
+    # Show status.
     RETURNING = 'returning'
     PLANNED = 'planned'
     IN_PRODUCTION = 'in_production'
@@ -34,7 +36,6 @@ class Progress(BaseModel):
     )
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, models.CASCADE, verbose_name="user")
-    is_followed = models.BooleanField(default=False, verbose_name="followed")
     status = models.CharField(max_length=16, choices=STATUS_CHOICES, default=FOLLOWING, verbose_name="status")
 
     show_id = models.PositiveIntegerField(verbose_name="show ID")
@@ -50,7 +51,7 @@ class Progress(BaseModel):
 
     class Meta:
         unique_together = (('user', 'show_id'),)
-        ordering = ['-is_followed', 'next_air_date', 'show_name', 'show_id']
+        ordering = ['next_air_date', 'show_name', 'show_id']
         verbose_name = "progress"
         verbose_name_plural = "progresses"
 
@@ -59,44 +60,44 @@ class Progress(BaseModel):
         return self.current_season == 0 and self.current_episode == 0
 
     @property
-    def is_scheduled(self):
+    def scheduled(self):
         return self.next_air_date is not None
 
     @property
-    def is_available(self):
-        return self.is_scheduled and self.next_air_date <= timezone.now().date()
+    def available(self):
+        return self.scheduled and self.next_air_date <= timezone.now().date()
 
     @property
-    def is_finished(self):
-        return self.show_status in [self.ENDED, self.CANCELED] and not self.is_scheduled
+    def finished(self):
+        return self.show_status in [self.ENDED, self.CANCELED] and not self.scheduled
 
     @property
     def list_in_available(self):
-        return self.status == self.FOLLOWING and self.is_available
+        return self.status == self.FOLLOWING and self.available
 
     @property
     def list_in_scheduled(self):
-        return self.status == self.FOLLOWING and not self.is_available and self.is_scheduled
+        return self.status == self.FOLLOWING and not self.available and self.scheduled
 
     @property
     def list_in_unavailable(self):
         return (
-            not self.is_finished and
+            not self.finished and
             self.status == self.FOLLOWING and
             not (self.list_in_available or self.list_in_scheduled)
         )
 
     @property
     def list_in_paused(self):
-        return not self.is_finished and self.status == self.PAUSED
+        return not self.finished and self.status == self.PAUSED
 
     @property
     def list_in_stopped(self):
-        return not self.is_finished and self.status == self.STOPPED
+        return not self.finished and self.status == self.STOPPED
 
     @property
     def list_in_finished(self):
-        return self.is_finished
+        return self.finished
 
     @property
     def detail_url(self):

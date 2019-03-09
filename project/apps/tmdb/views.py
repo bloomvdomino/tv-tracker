@@ -23,7 +23,7 @@ from .utils import (
 class ProgressesView(LoginRequiredMixin, TemplateView):
     template_name = 'tmdb/progresses.html'
 
-    @cached_property
+    @property
     def progresses(self):
         return Progress.objects.filter(user=self.request.user)
 
@@ -33,9 +33,8 @@ class ProgressesView(LoginRequiredMixin, TemplateView):
 
         context = super().get_context_data(**kwargs)
         context.update(
-            saved_count=self.request.user.added_progresses_count,
-            following_count=len([progress for progress in self.progresses if progress.status == Progress.FOLLOWING]),
-            max_following_count=self.request.user.max_followed_progresses,
+            saved_count=self.request.user.progress_set.count(),
+            following_count=self.request.user.progress_set.filter(status=Progress.FOLLOWING).count(),
             available=[progress for progress in self.progresses if progress.list_in_available],
             scheduled=[progress for progress in self.progresses if progress.list_in_scheduled],
             unavailable=[progress for progress in self.progresses if progress.list_in_unavailable],

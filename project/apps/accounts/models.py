@@ -13,7 +13,7 @@ class User(AbstractBaseUser, PermissionsMixin, BaseUUIDModel):
     is_staff = models.BooleanField(default=False, verbose_name="staff")
     is_superuser = models.BooleanField(default=False, verbose_name="superuser")
 
-    max_followed_progresses = models.PositiveSmallIntegerField(default=8, verbose_name="max followed progresses")
+    max_following_shows = models.PositiveSmallIntegerField(default=8, verbose_name="max following shows")
 
     objects = UserManager()
 
@@ -23,11 +23,3 @@ class User(AbstractBaseUser, PermissionsMixin, BaseUUIDModel):
         ordering = ['-created']
         verbose_name = "user"
         verbose_name_plural = "users"
-
-    @property
-    def added_progresses_count(self):
-        return self.progress_set.count()
-
-    @property
-    def followed_progresses_count(self):
-        return self.progress_set.filter(is_followed=True).count()

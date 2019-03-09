@@ -12,7 +12,7 @@
 {% block content %}
 <div class="summary-card">
     <span>Saved: {{ saved_count }}</span>
-    <span>Following: {{ following_count }} / {{ max_following_count }}</span>
+    <span>Following: {{ following_count }} / {{ user.max_following_shows }}</span>
     <hr>
     <span>Available: {{ available|length }}</span>
     <span>Scheduled: {{ scheduled|length }}</span>

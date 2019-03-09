@@ -2,7 +2,6 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db import models
 from django.test import TestCase
 
-from project.apps.tmdb.models import Progress
 from project.core.models import BaseUUIDModel
 
 from ..managers import UserManager
@@ -34,8 +33,8 @@ class UserModelTests(TestCase):
         self.assertFalse(field.blank)
         self.assertFalse(field.null)
 
-    def test_max_followed_progresses(self):
-        field = self.model._meta.get_field('max_followed_progresses')
+    def test_max_following_shows(self):
+        field = self.model._meta.get_field('max_following_shows')
         self.assertEqual(type(field), models.PositiveSmallIntegerField)
         self.assertEqual(field.default, 8)
         self.assertFalse(field.blank)
@@ -55,27 +54,3 @@ class UserModelTests(TestCase):
         field = self.model._meta.get_field('is_superuser')
         self.assertEqual(type(field), models.BooleanField)
         self.assertFalse(field.default)
-
-
-class UserModelProgressesTests(TestCase):
-    def setUp(self):
-        self.u1 = User.objects.create_user('u1@test.com', 'foo123')
-        self.u2 = User.objects.create_user('u2@test.com', 'foo123')
-
-        Progress.objects.create(user=self.u1, show_id=1, show_name='Shooter', is_followed=True)
-        Progress.objects.create(user=self.u1, show_id=2, show_name='Impastor', is_followed=True)
-
-        Progress.objects.create(user=self.u2, show_id=1, show_name='Shooter', is_followed=True)
-        Progress.objects.create(user=self.u2, show_id=2, show_name='Impastor', is_followed=False)
-
-    def test_added_progresses_count_1(self):
-        self.assertEqual(self.u1.added_progresses_count, 2)
-
-    def test_added_progresses_count_2(self):
-        self.assertEqual(self.u2.added_progresses_count, 2)
-
-    def test_followed_progresses_count_1(self):
-        self.assertEqual(self.u1.followed_progresses_count, 2)
-
-    def test_followed_progresses_count_2(self):
-        self.assertEqual(self.u2.followed_progresses_count, 1)
