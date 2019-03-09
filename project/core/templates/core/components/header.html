@@ -6,21 +6,21 @@
             <img src="{% static 'core/img/logo_without_title.png' %}" class="logo" alt="Logo">
 
             {% if user.is_authenticated %}
-            {% include 'core/components/header_item.html' with url_name="tmdb:v2_progresses" text="Progresses" %}
+            {% include 'core/components/header_item.html' with url_name="tmdb:progresses" text="Progresses" %}
             {% endif %}
 
-            {% include 'core/components/header_item.html' with url_name="tmdb:v2_popular_shows" text="Popular Shows" %}
-            {% include 'core/components/header_item.html' with url_name="tmdb:v2_search" text="Search" %}
+            {% include 'core/components/header_item.html' with url_name="tmdb:popular_shows" text="Popular Shows" %}
+            {% include 'core/components/header_item.html' with url_name="tmdb:search" text="Search" %}
         </div>
 
         <div class="header-section">
-            {% include 'core/components/header_item.html' with url_name="website:v2_contact" text="Contact" %}
+            {% include 'core/components/header_item.html' with url_name="website:contact" text="Contact" %}
 
             {% if user.is_authenticated %}
-            {% include 'core/components/header_item.html' with url_name="accounts:v2_profile" text=user.email %}
+            {% include 'core/components/header_item.html' with url_name="accounts:profile" text=user.email %}
             {% else %}
-            {% include 'core/components/header_item.html' with url_name="accounts:v2_login" text="Login" %}
-            {% include 'core/components/header_item.html' with url_name="accounts:v2_signup" text="Signup" %}
+            {% include 'core/components/header_item.html' with url_name="accounts:login" text="Login" %}
+            {% include 'core/components/header_item.html' with url_name="accounts:signup" text="Signup" %}
             {% endif %}
         </div>
     </div>

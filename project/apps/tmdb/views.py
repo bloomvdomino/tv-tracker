@@ -20,7 +20,7 @@ from .utils import (
 )
 
 
-class V2ProgressesView(LoginRequiredMixin, TemplateView):
+class ProgressesView(LoginRequiredMixin, TemplateView):
     template_name = 'tmdb/progresses.html'
 
     @cached_property
@@ -111,7 +111,7 @@ class V2ProgressesView(LoginRequiredMixin, TemplateView):
         ).update(status=Progress.STOPPED)
 
 
-class V2PopularShowsView(TemplateView):
+class PopularShowsView(TemplateView):
     template_name = 'tmdb/popular_shows.html'
 
     def get_context_data(self, **kwargs):
@@ -139,7 +139,7 @@ class V2PopularShowsView(TemplateView):
         return '{}?{}'.format(self.request.path, urlencode({'page': page}))
 
 
-class V2SearchView(FormView):
+class SearchView(FormView):
     template_name = 'tmdb/search.html'
     form_class = SearchForm
 
@@ -173,7 +173,7 @@ class ProgressFormMixin:
         return kwargs
 
 
-class V2ShowView(ShowMixin, ProgressFormMixin, FormView):
+class ShowView(ShowMixin, ProgressFormMixin, FormView):
     template_name = 'tmdb/progress.html'
 
     @cached_property
@@ -197,7 +197,7 @@ class V2ShowView(ShowMixin, ProgressFormMixin, FormView):
                     url = '{}?{}'.format(url, components.query)
                 self.request.session['progress_edit_success_url'] = url
                 return
-        url = reverse('tmdb:v2_popular_shows')
+        url = reverse('tmdb:popular_shows')
         self.request.session['progress_edit_success_url'] = url
 
     def get_context_data(self, **kwargs):
@@ -211,7 +211,7 @@ class V2ShowView(ShowMixin, ProgressFormMixin, FormView):
 
     def get_post_url(self):
         action = 'update' if self.progress else 'create'
-        name = 'tmdb:v2_progress_{}'.format(action)
+        name = 'tmdb:progress_{}'.format(action)
         kwargs = {'show_id': self.show_id}
         return reverse(name, kwargs=kwargs)
 
@@ -234,13 +234,13 @@ class V2ShowView(ShowMixin, ProgressFormMixin, FormView):
 
 class ProgressEditMixin:
     def get(self, request, *args, **kwargs):
-        return redirect(reverse('tmdb:v2_show', kwargs={'id': self.show_id}))
+        return redirect(reverse('tmdb:show', kwargs={'id': self.show_id}))
 
     def get_success_url(self):
         return self.request.session['progress_edit_success_url']
 
 
-class V2ProgressCreateView(
+class ProgressCreateView(
     ShowMixin,
     ProgressFormMixin,
     ProgressEditMixin,
@@ -250,7 +250,7 @@ class V2ProgressCreateView(
     show_id_url_kwarg = 'show_id'
 
 
-class V2ProgressUpdateView(
+class ProgressUpdateView(
     ShowMixin,
     ProgressFormMixin,
     ProgressEditMixin,

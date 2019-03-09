@@ -8,10 +8,10 @@ from django.views.generic import CreateView, UpdateView
 from .forms import PasswordForm, SignupForm
 
 
-class V2SignupView(CreateView):
+class SignupView(CreateView):
     template_name = 'accounts/signup.html'
     form_class = SignupForm
-    success_url = reverse_lazy('tmdb:v2_progresses')
+    success_url = reverse_lazy('tmdb:progresses')
 
     def form_valid(self, form):
         self.object = form.save()
@@ -19,14 +19,14 @@ class V2SignupView(CreateView):
         return HttpResponseRedirect(self.get_success_url())
 
 
-class V2LoginView(views.LoginView):
+class LoginView(views.LoginView):
     template_name = 'accounts/login.html'
 
 
-class V2ProfileView(LoginRequiredMixin, UpdateView):
+class ProfileView(LoginRequiredMixin, UpdateView):
     template_name = 'accounts/profile.html'
     fields = ['email']
-    success_url = reverse_lazy('accounts:v2_profile')
+    success_url = reverse_lazy('accounts:profile')
 
     def get_object(self, queryset=None):
         return self.request.user
@@ -36,30 +36,30 @@ class V2ProfileView(LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-class V2PasswordView(LoginRequiredMixin, UpdateView):
+class PasswordView(LoginRequiredMixin, UpdateView):
     template_name = 'accounts/password.html'
     form_class = PasswordForm
-    success_url = reverse_lazy('accounts:v2_login')
+    success_url = reverse_lazy('accounts:login')
 
     def get_object(self, queryset=None):
         return self.request.user
 
 
-class V2PasswordResetView(views.PasswordResetView):
+class PasswordResetView(views.PasswordResetView):
     template_name = 'accounts/password_reset.html'
     email_template_name = 'accounts/emails/password_reset.html'
     subject_template_name = 'accounts/emails/password_reset_subject.txt'
-    success_url = reverse_lazy('accounts:v2_password_reset_done')
+    success_url = reverse_lazy('accounts:password_reset_done')
 
 
-class V2PasswordResetDoneView(views.PasswordResetDoneView):
+class PasswordResetDoneView(views.PasswordResetDoneView):
     template_name = 'accounts/password_reset_done.html'
 
 
-class V2PasswordResetConfirmView(views.PasswordResetConfirmView):
+class PasswordResetConfirmView(views.PasswordResetConfirmView):
     template_name = 'accounts/password_reset_confirm.html'
-    success_url = reverse_lazy('accounts:v2_password_reset_complete')
+    success_url = reverse_lazy('accounts:password_reset_complete')
 
 
-class V2PasswordResetCompleteView(views.PasswordResetCompleteView):
+class PasswordResetCompleteView(views.PasswordResetCompleteView):
     template_name = 'accounts/password_reset_complete.html'

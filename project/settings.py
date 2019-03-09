@@ -135,11 +135,11 @@ DATETIME_FORMAT = 'Y/m/d H:i:s'
 
 # Login/Logout URLs
 
-LOGIN_REDIRECT_URL = 'tmdb:v2_progresses'
+LOGIN_REDIRECT_URL = 'tmdb:progresses'
 
-LOGIN_URL = 'accounts:v2_login'
+LOGIN_URL = 'accounts:login'
 
-LOGOUT_REDIRECT_URL = 'tmdb:v2_popular_shows'
+LOGOUT_REDIRECT_URL = 'tmdb:popular_shows'
 
 
 # Static files (CSS, JavaScript, Images)

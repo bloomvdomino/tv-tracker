@@ -100,7 +100,7 @@ class Progress(BaseModel):
 
     @property
     def detail_url(self):
-        return reverse('tmdb:v2_show', kwargs={'id': self.show_id})
+        return reverse('tmdb:show', kwargs={'id': self.show_id})
 
     @property
     def last_watched_label(self):

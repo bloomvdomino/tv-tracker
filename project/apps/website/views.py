@@ -8,14 +8,14 @@ from .forms import ContactForm
 
 class IndexView(View):
     def get(self, request, *args, **kwargs):
-        url_name = 'v2_progresses' if request.user.is_authenticated else 'v2_popular_shows'
+        url_name = 'progresses' if request.user.is_authenticated else 'popular_shows'
         return redirect(reverse('tmdb:{}'.format(url_name)))
 
 
-class V2ContactView(CreateView):
+class ContactView(CreateView):
     template_name = 'website/contact.html'
     form_class = ContactForm
-    success_url = reverse_lazy('website:v2_contact')
+    success_url = reverse_lazy('website:contact')
 
     def get_initial(self):
         initial = super().get_initial()

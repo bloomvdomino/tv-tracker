@@ -34,7 +34,7 @@ def make_poster_url(path, width):
 
 def add_detail_urls(shows):
     for show in shows:
-        detail_url = reverse('tmdb:v2_show', kwargs={'id': show['id']})
+        detail_url = reverse('tmdb:show', kwargs={'id': show['id']})
         show.update(detail_url=detail_url)
     return shows
 
