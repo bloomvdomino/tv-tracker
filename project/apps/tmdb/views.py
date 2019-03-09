@@ -45,8 +45,8 @@ class V2ProgressesView(LoginRequiredMixin, TemplateView):
         self.update_progresses_info()
         self.update_progresses_status()
 
-        kwargs = super().get_context_data(**kwargs)
-        kwargs.update(
+        context = super().get_context_data(**kwargs)
+        context.update(
             saved_count=self.request.user.added_progresses_count,
             following_count=len([progress for progress in self.progresses if progress.status == Progress.FOLLOWING]),
             max_following_count=self.request.user.max_followed_progresses,
@@ -57,7 +57,7 @@ class V2ProgressesView(LoginRequiredMixin, TemplateView):
             finished=[progress for progress in self.progresses if progress.list_in_finished],
             stopped=[progress for progress in self.progresses if progress.list_in_stopped],
         )
-        return kwargs
+        return context
 
     def update_progresses_info(self):
         params_list = self.get_params_list_to_update()
@@ -129,7 +129,7 @@ class V2PopularShowsView(TemplateView):
     template_name = 'tmdb/popular_shows.html'
 
     def get_context_data(self, **kwargs):
-        kwargs = super().get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
 
         min_page = 1
         max_page = 1000
@@ -139,15 +139,15 @@ class V2PopularShowsView(TemplateView):
         page = page if page <= max_page else max_page
         shows = get_popular_shows(page)
         shows = mark_saved_shows(shows, self.request.user)
-        kwargs.update(current_page=page, shows=shows)
+        context.update(current_page=page, shows=shows)
 
         if page - 1 >= min_page:
-            kwargs.update(previous_page_link=self.make_page_link(page - 1))
+            context.update(previous_page_link=self.make_page_link(page - 1))
 
         if page + 1 <= max_page:
-            kwargs.update(next_page_link=self.make_page_link(page + 1))
+            context.update(next_page_link=self.make_page_link(page + 1))
 
-        return kwargs
+        return context
 
     def make_page_link(self, page):
         return '{}?{}'.format(self.request.path, urlencode({'page': page}))
@@ -215,13 +215,13 @@ class V2ShowView(ShowMixin, ProgressFormMixin, FormView):
         self.request.session['progress_edit_success_url'] = url
 
     def get_context_data(self, **kwargs):
-        kwargs = super().get_context_data(**kwargs)
-        kwargs.update(
+        context = super().get_context_data(**kwargs)
+        context.update(
             show=self.show,
             progress=self.progress,
             post_url=self.get_post_url(),
         )
-        return kwargs
+        return context
 
     def get_post_url(self):
         action = 'update' if self.progress else 'create'
