@@ -44,8 +44,8 @@ class ProgressForm(forms.ModelForm):
 
     def clean_status(self):
         status = self.cleaned_data['status']
-        if status and status == Progress.FOLLOWING:
-            following = Progress.objects.filter(user=self.user, status=Progress.FOLLOWING).count()
+        if status == Progress.FOLLOWING:
+            following = self.user.progress_set.filter(status=status).exclude(show_id=self.show['id']).count()
             limit = self.user.max_following_shows
             if following >= limit:
                 message = "You cannot follow more than {} shows.".format(limit)
