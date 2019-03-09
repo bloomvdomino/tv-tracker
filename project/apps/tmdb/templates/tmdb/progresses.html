@@ -13,8 +13,11 @@
 <div class="summary-card">
     <span>Saved: {{ saved_count }}</span>
     <span>Following: {{ following_count }} / {{ max_following_count }}</span>
+    <hr>
     <span>Available: {{ available|length }}</span>
     <span>Scheduled: {{ scheduled|length }}</span>
+    <span>Unavailable: {{ unavailable|length }}</span>
+    <hr>
     <span>Paused: {{ paused|length }}</span>
     <span>Finished: {{ finished|length }}</span>
     <span>Stopped: {{ stopped|length }}</span>
