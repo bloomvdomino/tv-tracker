@@ -7,7 +7,6 @@ from .views import (
     ProgressesView,
     ProgressUpdateView,
     SearchView,
-    ShowView,
 )
 
 app_name = TMDbConfig.label
@@ -16,7 +15,6 @@ urlpatterns = [
     path('popular_shows/', PopularShowsView.as_view(), name='popular_shows'),
     path('progresses/', ProgressesView.as_view(), name='progresses'),
     path('search/', SearchView.as_view(), name='search'),
-    path('show/<int:id>/', ShowView.as_view(), name='show'),
     path('show/<int:show_id>/progress/create/', ProgressCreateView.as_view(), name='progress_create'),
     path('show/<int:show_id>/progress/update/', ProgressUpdateView.as_view(), name='progress_update'),
 ]

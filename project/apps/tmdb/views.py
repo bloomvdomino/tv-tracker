@@ -2,7 +2,7 @@ from urllib.parse import urlencode, urlparse
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import redirect, render
 from django.urls import resolve, reverse
 from django.utils.functional import cached_property
 from django.views.generic import CreateView, FormView, TemplateView, UpdateView
@@ -10,13 +10,13 @@ from django.views.generic import CreateView, FormView, TemplateView, UpdateView
 from .forms import ProgressForm, SearchForm
 from .models import Progress
 from .utils import (
+    add_progress_info,
     get_air_dates,
     get_next_episode,
     get_popular_shows,
     get_show,
     get_shows,
     get_status_value,
-    mark_saved_shows,
 )
 
 
@@ -123,7 +123,7 @@ class PopularShowsView(TemplateView):
         page = page if page >= min_page else min_page
         page = page if page <= max_page else max_page
         shows = get_popular_shows(page)
-        shows = mark_saved_shows(shows, self.request.user)
+        shows = add_progress_info(shows, self.request.user)
         context.update(current_page=page, shows=shows)
 
         if page - 1 >= min_page:
@@ -143,55 +143,49 @@ class SearchView(FormView):
     form_class = SearchForm
 
     def form_valid(self, form):
-        form.results = mark_saved_shows(form.results, self.request.user)
+        form.results = add_progress_info(form.results, self.request.user)
         context = self.get_context_data(form=form)
         return render(self.request, self.template_name, context=context)
 
 
-class ShowMixin:
-    show_id_url_kwarg = 'id'
+class ProgressEditMixin:
+    template_name = 'tmdb/progress.html'
+    form_class = ProgressForm
 
     @property
     def show_id(self):
-        return self.kwargs[self.show_id_url_kwarg]
+        return self.kwargs['show_id']
 
     @cached_property
     def show(self):
         return get_show(self.show_id)
 
-
-class ProgressFormMixin:
-    form_class = ProgressForm
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs.update(
-            user=self.request.user,
-            show=self.show,
-        )
-        return kwargs
-
-
-class ShowView(ShowMixin, ProgressFormMixin, FormView):
-    template_name = 'tmdb/progress.html'
-
-    @cached_property
-    def progress(self):
-        user = self.request.user
-        if not user.is_authenticated:
-            return None
-        return Progress.objects.filter(user=user, show_id=self.show_id).first()
-
     def get(self, request, *args, **kwargs):
+        redirect = self.redirect_to_create_or_update()
+        if redirect:
+            return redirect
+
         self.set_progress_edit_success_url()
         return super().get(request, *args, **kwargs)
+
+    def redirect_to_create_or_update(self):
+        action = None
+        current_url = resolve(self.request.path_info).url_name
+        progress = self.get_object()
+        if current_url == 'progress_create' and progress:
+            action = 'update'
+        elif current_url == 'progress_update' and not progress:
+            action = 'create'
+        if action:
+            to = 'tmdb:progress_{}'.format(action)
+            return redirect(reverse(to, kwargs={'show_id': self.show_id}))
 
     def set_progress_edit_success_url(self):
         http_referer = self.request.META.get('HTTP_REFERER')
         if http_referer:
             components = urlparse(http_referer)
             url = components.path
-            if resolve(url).namespace == 'tmdb':
+            if resolve(url).url_name in ['progresses', 'popular_shows', 'search']:
                 if components.query:
                     url = '{}?{}'.format(url, components.query)
                 self.request.session['progress_edit_success_url'] = url
@@ -199,20 +193,21 @@ class ShowView(ShowMixin, ProgressFormMixin, FormView):
         url = reverse('tmdb:popular_shows')
         self.request.session['progress_edit_success_url'] = url
 
+    def get_object(self, queryset=None):
+        user = self.request.user
+        if not user.is_authenticated:
+            return None
+        return user.progress_set.filter(show_id=self.show_id).first()
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context.update(
-            show=self.show,
-            progress=self.progress,
-            post_url=self.get_post_url(),
-        )
+        context.update(show=self.show)
         return context
 
-    def get_post_url(self):
-        action = 'update' if self.progress else 'create'
-        name = 'tmdb:progress_{}'.format(action)
-        kwargs = {'show_id': self.show_id}
-        return reverse(name, kwargs=kwargs)
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update(user=self.request.user, show=self.show)
+        return kwargs
 
     def get_initial(self):
         initial = super().get_initial()
@@ -222,41 +217,23 @@ class ShowView(ShowMixin, ProgressFormMixin, FormView):
             show_poster_path=self.show['poster_path'],
             show_status=get_status_value(self.show['status']),
         )
-        if self.progress:
-            last_watched = '{}-{}'.format(self.progress.current_season, self.progress.current_episode)
-            initial.update(
-                status=self.progress.status,
-                last_watched=last_watched,
-            )
         return initial
-
-
-class ProgressEditMixin:
-    def get(self, request, *args, **kwargs):
-        return redirect(reverse('tmdb:show', kwargs={'id': self.show_id}))
 
     def get_success_url(self):
         return self.request.session['progress_edit_success_url']
 
 
-class ProgressCreateView(
-    ShowMixin,
-    ProgressFormMixin,
-    ProgressEditMixin,
-    LoginRequiredMixin,
-    CreateView,
-):
-    show_id_url_kwarg = 'show_id'
+class ProgressCreateView(ProgressEditMixin, CreateView):
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            to = reverse('accounts:login')
+            return redirect('{}?{}'.format(to, urlencode({'next': request.path})))
+        return super().post(request, *args, **kwargs)
 
 
-class ProgressUpdateView(
-    ShowMixin,
-    ProgressFormMixin,
-    ProgressEditMixin,
-    LoginRequiredMixin,
-    UpdateView,
-):
-    show_id_url_kwarg = 'show_id'
-
-    def get_object(self, queryset=None):
-        return get_object_or_404(Progress, user=self.request.user, show_id=self.show_id)
+class ProgressUpdateView(ProgressEditMixin, LoginRequiredMixin, UpdateView):
+    def get_initial(self):
+        initial = super().get_initial()
+        last_watched = '{}-{}'.format(self.object.current_season, self.object.current_episode)
+        initial.update(status=self.object.status, last_watched=last_watched)
+        return initial

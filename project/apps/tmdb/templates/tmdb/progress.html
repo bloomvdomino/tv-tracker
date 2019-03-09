@@ -35,7 +35,7 @@
 
     <p>{{ show.overview }}</p>
 
-    <form action="{{ post_url }}" method="post" novalidate>
+    <form method="post" novalidate>
         {% csrf_token %}
 
         <!-- Hidden fields. -->

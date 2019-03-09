@@ -32,24 +32,18 @@ def make_poster_url(path, width):
     return 'https://image.tmdb.org/t/p/{}{}'.format(widths[width], path)
 
 
-def add_detail_urls(shows):
-    for show in shows:
-        detail_url = reverse('tmdb:show', kwargs={'id': show['id']})
-        show.update(detail_url=detail_url)
-    return shows
-
-
-def mark_saved_shows(shows, user):
-    from .models import Progress  # imported here to avoid circular dependency
-
-    if user.is_authenticated:
-        show_ids = [show['id'] for show in shows]
-        saved_show_ids = Progress.objects.filter(
-            user=user,
-            show_id__in=show_ids,
-        ).values_list('show_id', flat=True)
+def add_progress_info(shows, user):
+    if not user.is_authenticated:
         for show in shows:
-            show.update(saved=show['id'] in saved_show_ids)
+            show.update(edit_url=reverse('tmdb:progress_create', kwargs={'show_id': show['id']}))
+    else:
+        show_ids = [show['id'] for show in shows]
+        saved_show_ids = user.progress_set.filter(show_id__in=show_ids).values_list('show_id', flat=True)
+        for show in shows:
+            saved = show['id'] in saved_show_ids
+            action = 'update' if saved else 'create'
+            edit_url = reverse('tmdb:progress_{}'.format(action), kwargs={'show_id': show['id']})
+            show.update(saved=saved, edit_url=edit_url)
     return shows
 
 
@@ -132,8 +126,7 @@ def get_popular_shows(page):
 
     https://developers.themoviedb.org/3/tv/get-popular-tv-shows
     """
-    shows = fetch('tv/popular', params={'page': page})['results']
-    return add_detail_urls(shows)
+    return fetch('tv/popular', params={'page': page})['results']
 
 
 def search_show(name):
@@ -142,8 +135,7 @@ def search_show(name):
 
     https://developers.themoviedb.org/3/search/search-tv-shows
     """
-    shows = fetch('search/tv', params={'query': name})['results']
-    return add_detail_urls(shows)
+    return fetch('search/tv', params={'query': name})['results']
 
 
 async def async_fetch(session, endpoint, params=None, **extras):
