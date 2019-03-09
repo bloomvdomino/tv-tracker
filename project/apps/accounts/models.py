@@ -1,9 +1,5 @@
-from datetime import timedelta
-
-from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db import models
-from django.utils import timezone
 
 from project.core.models import BaseUUIDModel
 
@@ -35,22 +31,3 @@ class User(AbstractBaseUser, PermissionsMixin, BaseUUIDModel):
     @property
     def followed_progresses_count(self):
         return self.progress_set.filter(is_followed=True).count()
-
-
-class PasswordResetToken(BaseUUIDModel):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, models.CASCADE, verbose_name="user")
-    used = models.BooleanField(default=False, verbose_name="used")
-
-    class Meta:
-        ordering = ['-created']
-        verbose_name = "password reset token"
-        verbose_name_plural = "password reset tokens"
-
-    @property
-    def valid(self):
-        return not (self.used or self.expired)
-
-    @property
-    def expired(self):
-        expiration = self.created + timedelta(days=settings.PASSWORD_RESET_TIMEOUT_DAYS)
-        return expiration <= timezone.now()

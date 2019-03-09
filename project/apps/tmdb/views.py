@@ -6,11 +6,9 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import resolve, reverse
 from django.utils.functional import cached_property
 from django.views.generic import CreateView, FormView, TemplateView, UpdateView
-from rest_framework import mixins, viewsets
 
 from .forms import ProgressForm, SearchForm
 from .models import Progress
-from .serializers import ProgressSerializer
 from .utils import (
     get_air_dates,
     get_next_episode,
@@ -20,18 +18,6 @@ from .utils import (
     get_status_value,
     mark_saved_shows,
 )
-
-
-class ProgressViewSet(mixins.CreateModelMixin,
-                      mixins.UpdateModelMixin,
-                      mixins.DestroyModelMixin,
-                      mixins.ListModelMixin,
-                      viewsets.GenericViewSet):
-    serializer_class = ProgressSerializer
-    lookup_field = 'show_id'
-
-    def get_queryset(self):
-        return Progress.objects.filter(user=self.request.user)
 
 
 class V2ProgressesView(LoginRequiredMixin, TemplateView):

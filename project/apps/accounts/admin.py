@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import PasswordResetToken, User
+from .models import User
 
 
 class AddedProgressesFilter(admin.SimpleListFilter):
@@ -52,25 +52,6 @@ class UserAdmin(admin.ModelAdmin):
         }),
     )
     readonly_fields = ('id', 'is_superuser', 'added_progresses_count', 'followed_progresses_count', 'created')
-
-    def has_add_permission(self, request):
-        return False
-
-
-@admin.register(PasswordResetToken)
-class PasswordResetTokenAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'valid', 'used', 'expired', 'created')
-    search_fields = ('user__email',)
-    fields = ('id', 'user', 'valid', 'used', 'expired', 'created')
-    readonly_fields = ('id', 'user', 'valid', 'used', 'expired', 'created')
-
-    def valid(self, obj):
-        return obj.valid
-    valid.boolean = True
-
-    def expired(self, obj):
-        return obj.expired
-    expired.boolean = True
 
     def has_add_permission(self, request):
         return False

@@ -2,16 +2,8 @@ from django.contrib import messages
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, View
-from rest_framework import generics
-from rest_framework.permissions import AllowAny
 
 from .forms import ContactForm
-from .serializers import ContactSerializer
-
-
-class ContactView(generics.CreateAPIView):
-    permission_classes = (AllowAny,)
-    serializer_class = ContactSerializer
 
 
 class IndexView(View):

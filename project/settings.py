@@ -1,5 +1,4 @@
 import os
-from datetime import timedelta
 
 import dj_database_url
 from decouple import Csv, config
@@ -22,8 +21,6 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
 # Application definition
 
 INSTALLED_APPS = [
-    'corsheaders',
-    'rest_framework',
     'suit',
 
     'django.contrib.admin',
@@ -44,7 +41,6 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -160,34 +156,6 @@ STATICFILES_DIRS = [
 ]
 
 
-# Django REST Framework
-
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-    ),
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    ),
-}
-
-
-# Django CORS Headers
-
-CORS_ORIGIN_WHITELIST = config('CORS_ORIGIN_WHITELIST', cast=Csv())
-
-
-# Django REST Framework JWT
-
-JWT_AUTH = {
-    'JWT_ALLOW_REFRESH': True,
-    'JWT_EXPIRATION_DELTA': timedelta(days=7),
-    'JWT_PAYLOAD_HANDLER': 'project.core.jwt.payload_handler',
-    'JWT_PAYLOAD_GET_USERNAME_HANDLER': 'project.core.jwt.payload_username_handler',
-    'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=30),
-}
-
-
 # Django Admin
 
 ADMIN_PATH = config('ADMIN_PATH')
@@ -201,7 +169,7 @@ SUIT_CONFIG = {
         '-',
         {
             'app': 'apps_accounts',
-            'models': ('user', 'passwordresettoken'),
+            'models': ('user',),
         },
         {
             'app': 'apps_emails',
