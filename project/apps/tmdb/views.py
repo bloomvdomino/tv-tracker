@@ -43,14 +43,14 @@ class PopularShowsView(TemplateView):
         context.update(current_page=page, shows=shows)
 
         if page - 1 >= min_page:
-            context.update(previous_page_link=self.make_page_link(page - 1))
+            context.update(previous_page_link=self._make_page_link(page - 1))
 
         if page + 1 <= max_page:
-            context.update(next_page_link=self.make_page_link(page + 1))
+            context.update(next_page_link=self._make_page_link(page + 1))
 
         return context
 
-    def make_page_link(self, page):
+    def _make_page_link(self, page):
         return '{}?{}'.format(self.request.path, urlencode({'page': page}))
 
 
@@ -77,14 +77,14 @@ class ProgressEditMixin:
         return get_show(self.show_id)
 
     def get(self, request, *args, **kwargs):
-        redirect = self.redirect_to_create_or_update()
+        redirect = self._redirect_to_create_or_update()
         if redirect:
             return redirect
 
-        self.set_progress_edit_success_url()
+        self._set_progress_edit_success_url()
         return super().get(request, *args, **kwargs)
 
-    def redirect_to_create_or_update(self):
+    def _redirect_to_create_or_update(self):
         action = None
         current_url = resolve(self.request.path_info).url_name
         progress = self.get_object()
@@ -96,7 +96,7 @@ class ProgressEditMixin:
             to = 'tmdb:progress_{}'.format(action)
             return redirect(reverse(to, kwargs={'show_id': self.show_id}))
 
-    def set_progress_edit_success_url(self):
+    def _set_progress_edit_success_url(self):
         http_referer = self.request.META.get('HTTP_REFERER')
         if http_referer:
             components = urlparse(http_referer)

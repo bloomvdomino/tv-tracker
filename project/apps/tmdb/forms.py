@@ -34,7 +34,7 @@ class ProgressForm(forms.ModelForm):
         self.user = kwargs.pop('user')
         self.show = kwargs.pop('show')
         super().__init__(*args, **kwargs)
-        self.fields['last_watched'].choices = self.make_episode_choices()
+        self.fields['last_watched'].choices = self._make_episode_choices()
 
     def clean_last_watched(self):
         last_watched = self.cleaned_data['last_watched']
@@ -57,11 +57,11 @@ class ProgressForm(forms.ModelForm):
             self.instance.delete()
             return None
 
-        self.update_episodes()
+        self._update_episodes()
         self.instance.user = self.user
         return super().save(commit=commit)
 
-    def make_episode_choices(self):
+    def _make_episode_choices(self):
         episode_choices = [('0-0', "Not started, yet.")]
         for season, episode in get_aired_episodes(self.show):
             value = '{}-{}'.format(season, episode)
@@ -69,7 +69,7 @@ class ProgressForm(forms.ModelForm):
             episode_choices.append((value, label))
         return episode_choices
 
-    def update_episodes(self):
+    def _update_episodes(self):
         current_season = self.cleaned_data['current_season']
         current_episode = self.cleaned_data['current_episode']
 
