@@ -1,6 +1,10 @@
+from datetime import timedelta
+
+from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db import models
 from django.db.models import Q
+from django.utils import timezone
 
 from project.apps.tmdb.models import Progress
 from project.apps.tmdb.utils import (
@@ -106,14 +110,20 @@ class User(AbstractBaseUser, PermissionsMixin, BaseUUIDModel):
         """
         Return a list of show IDs of the progresses which need to be updated.
         """
-        return self.progress_set.filter(
+        now = timezone.now()
+        last_check_wait = now - timedelta(seconds=settings.TMDB_CHECK_WAIT_SECONDS)
+        progresses = self.progress_set.filter(
+            Q(last_check__isnull=True) | Q(last_check__lte=last_check_wait),
             ~Q(
                 next_season__isnull=False,
                 next_episode__isnull=False,
                 next_air_date__isnull=False,
             ),
             status=Progress.FOLLOWING,
-        ).values_list('show_id', flat=True)
+        )
+        show_ids = list(progresses.values_list('show_id', flat=True))
+        progresses.update(last_check=now)
+        return show_ids
 
     def _get_next_air_dates(self, progresses):
         """

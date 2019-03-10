@@ -37,6 +37,7 @@ class Progress(BaseModel):
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, models.CASCADE, verbose_name="user")
     status = models.CharField(max_length=16, choices=STATUS_CHOICES, default=FOLLOWING, verbose_name="status")
+    last_check = models.DateTimeField(blank=True, null=True, verbose_name="last check")
 
     show_id = models.PositiveIntegerField(verbose_name="show ID")
     show_name = models.CharField(max_length=64, verbose_name="show name")
