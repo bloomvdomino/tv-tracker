@@ -16,7 +16,16 @@
     box-sizing: border-box;
 }
 
-.container .summary-card span { margin: 4px 0; }
+.container .summary-card a, .container .summary-card span { margin: 4px 0; }
+
+.container .summary-card a {
+    border-radius: 3px;
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.container .summary-card a:hover { background-color: #eeeeee; }
 
 .container .summary-card hr {
     margin: 6px 0;

@@ -14,13 +14,13 @@
     <span>Saved: {{ saved_count }}</span>
     <span>Following: {{ following_count }} / {{ user.max_following_shows }}</span>
     <hr>
-    <span>Available: {{ available|length }}</span>
-    <span>Scheduled: {{ scheduled|length }}</span>
-    <span>Unavailable: {{ unavailable|length }}</span>
+    <a href="#available">Available: {{ available|length }}</a>
+    <a href="#scheduled">Scheduled: {{ scheduled|length }}</a>
+    <a href="#unavailable">Unavailable: {{ unavailable|length }}</a>
     <hr>
-    <span>Paused: {{ paused|length }}</span>
-    <span>Finished: {{ finished|length }}</span>
-    <span>Stopped: {{ stopped|length }}</span>
+    <a href="#paused">Paused: {{ paused|length }}</a>
+    <a href="#finished">Finished: {{ finished|length }}</a>
+    <a href="#stopped">Stopped: {{ stopped|length }}</a>
 </div>
 
 <div class="progress-card-lists">
