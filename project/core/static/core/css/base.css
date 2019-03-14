@@ -1,4 +1,7 @@
-body { margin: 0; }
+body {
+    margin: 0;
+    font-family: 'Work Sans', sans-serif;
+}
 
 form, .link-section {
     display: flex;

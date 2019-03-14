@@ -18,6 +18,8 @@
 
 .progress-card>div>h6 {
     width: 200px;
+    font-size: 18px;
+    font-weight: 400;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
