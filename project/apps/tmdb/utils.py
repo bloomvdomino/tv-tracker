@@ -8,7 +8,9 @@ from django.urls import reverse
 
 
 def format_episode_label(season, episode):
-    return 'S{}E{}'.format('0{}'.format(season)[-2:], '0{}'.format(episode)[-2:])
+    season = '0{}'.format(season)[-2:] if season < 100 else season
+    episode = '0{}'.format(episode)[-2:] if episode < 100 else episode
+    return 'S{}E{}'.format(season, episode)
 
 
 def get_status_value(text):
