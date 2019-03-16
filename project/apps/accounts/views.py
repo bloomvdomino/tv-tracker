@@ -25,7 +25,7 @@ class LoginView(views.LoginView):
 
 class ProfileView(LoginRequiredMixin, UpdateView):
     template_name = 'accounts/profile.html'
-    fields = ['email']
+    fields = ['email', 'time_zone']
     success_url = reverse_lazy('accounts:profile')
 
     def get_object(self, queryset=None):

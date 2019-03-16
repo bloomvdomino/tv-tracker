@@ -28,7 +28,7 @@ class SignupForm(PasswordConfirmMixin, forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ['email', 'password']
+        fields = ['email', 'password', 'time_zone']
 
     def save(self, commit=True):
         email = self.cleaned_data['email']

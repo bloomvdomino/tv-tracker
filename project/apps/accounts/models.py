@@ -19,7 +19,19 @@ from .managers import UserManager
 
 
 class User(AbstractBaseUser, PermissionsMixin, BaseUUIDModel):
+    TZ_UTC = 'UTC'
+    TZ_AMERICA_NEW_YORK = 'America/New_York'
+    TZ_AMERICA_SAO_PAULO = 'America/Sao_Paulo'
+    TZ_ASIA_SHANGHAI = 'Asia/Shanghai'
+    TZ_CHOICES = (
+        (TZ_UTC, "UTC"),
+        (TZ_AMERICA_NEW_YORK, "New York"),
+        (TZ_AMERICA_SAO_PAULO, "São Paulo"),
+        (TZ_ASIA_SHANGHAI, "Shanghai"),
+    )
+
     email = models.EmailField(unique=True, verbose_name="email")
+    time_zone = models.CharField(max_length=32, choices=TZ_CHOICES, default=TZ_UTC, verbose_name="time zone")
 
     is_active = models.BooleanField(default=True, verbose_name="active")
     is_staff = models.BooleanField(default=False, verbose_name="staff")
