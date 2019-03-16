@@ -18,6 +18,10 @@
     {{ form.password_confirm }}
     {{ form.password_confirm.errors }}
 
+    <label for="{{ form.time_zone.id_for_label }}">Time Zone:</label>
+    {{ form.time_zone }}
+    {{ form.time_zone.errors }}
+
     <div class="btn-section">
         <input class="button-primary" type="submit" value="Signup"></input>
     </div>

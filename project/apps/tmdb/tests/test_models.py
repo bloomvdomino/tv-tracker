@@ -3,6 +3,8 @@ from datetime import date
 import pytest
 from freezegun import freeze_time
 
+from project.apps.accounts.models import User
+
 from ..models import Progress
 from .factories import ProgressFactory
 
@@ -30,13 +32,16 @@ class TestProgressModel:
 
     @freeze_time('2018-09-05')
     @pytest.mark.django_db
-    @pytest.mark.parametrize('next_air_date,available', [
-        (None, False),
-        (date(2018, 9, 6), False),
-        (date(2018, 9, 5), True),
+    @pytest.mark.parametrize('tz, next_air_date,available', [
+        (User.TZ_UTC, None, False),
+        (User.TZ_UTC, date(2018, 9, 6), False),
+        (User.TZ_UTC, date(2018, 9, 5), True),
+        (User.TZ_AMERICA_SAO_PAULO, None, False),
+        (User.TZ_AMERICA_SAO_PAULO, date(2018, 9, 6), False),
+        (User.TZ_AMERICA_SAO_PAULO, date(2018, 9, 5), False),
     ])
-    def test_available(self, next_air_date, available):
-        progress = ProgressFactory.build(next_air_date=next_air_date)
+    def test_available(self, tz, next_air_date, available):
+        progress = ProgressFactory.build(user__time_zone=tz, next_air_date=next_air_date)
         assert progress.available is available
 
     @pytest.mark.django_db
