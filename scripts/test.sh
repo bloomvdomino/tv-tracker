@@ -4,4 +4,4 @@ set -e
 
 find . -name "*.pyc" -delete
 sh scripts/wait.sh
-docker-compose run -e ENV=test web pytest "$@"
+docker-compose run --rm -e ENV=test web pytest "$@"

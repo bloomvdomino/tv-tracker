@@ -1,149 +1,59 @@
-from datetime import date, datetime
-from unittest.mock import patch
+from datetime import date
 
-from django.db import models
-from django.test import TestCase
-from django.utils import timezone
-
-from project.apps.accounts.models import User
-from project.core.models import BaseModel
+import pytest
+from freezegun import freeze_time
 
 from ..models import Progress
+from .factories import ProgressFactory
 
 
-class ProgressModelTests(TestCase):
-    def setUp(self):
-        self.model = Progress
+class TestProgressModel:
+    @pytest.mark.django_db
+    @pytest.mark.parametrize('season,episode,not_started', [
+        (1, 0, False),
+        (0, 1, False),
+        (1, 1, False),
+        (0, 0, True),
+    ])
+    def test_not_started(self, season, episode, not_started):
+        progress = ProgressFactory.build(current_season=season, current_episode=episode)
+        assert progress.not_started is not_started
 
-    def test_subclass(self):
-        self.assertTrue(issubclass(self.model, BaseModel))
+    @pytest.mark.django_db
+    @pytest.mark.parametrize('next_air_date,scheduled', [
+        (None, False),
+        (date(2019, 3, 16), True),
+    ])
+    def test_scheduled(self, next_air_date, scheduled):
+        progress = ProgressFactory.build(next_air_date=next_air_date)
+        assert progress.scheduled is scheduled
 
-    def test_unique_together(self):
-        self.assertEqual(self.model._meta.unique_together, (('user', 'show_id'),))
+    @freeze_time('2018-09-05')
+    @pytest.mark.django_db
+    @pytest.mark.parametrize('next_air_date,available', [
+        (None, False),
+        (date(2018, 9, 6), False),
+        (date(2018, 9, 5), True),
+    ])
+    def test_available(self, next_air_date, available):
+        progress = ProgressFactory.build(next_air_date=next_air_date)
+        assert progress.available is available
 
-    def test_ordering(self):
-        self.assertEqual(
-            self.model._meta.ordering, ['next_air_date', 'show_name', 'show_id'])
-
-    def test_show_status_choices(self):
-        self.assertEqual(self.model.RETURNING, 'returning')
-        self.assertEqual(self.model.PLANNED, 'planned')
-        self.assertEqual(self.model.IN_PRODUCTION, 'in_production')
-        self.assertEqual(self.model.ENDED, 'ended')
-        self.assertEqual(self.model.CANCELED, 'canceled')
-        self.assertEqual(self.model.PILOT, 'pilot')
-        self.assertEqual(self.model.SHOW_STATUS_CHOICES, (
-            ('returning', 'Returning Series'),
-            ('planned', 'Planned'),
-            ('in_production', 'In Production'),
-            ('ended', 'Ended'),
-            ('canceled', 'Canceled'),
-            ('pilot', 'Pilot'),
-        ))
-
-    def test_user(self):
-        field = self.model._meta.get_field('user')
-        self.assertEqual(type(field), models.ForeignKey)
-        self.assertEqual(field.remote_field.model, User)
-        self.assertEqual(field.remote_field.on_delete, models.CASCADE)
-        self.assertFalse(field.blank)
-        self.assertFalse(field.null)
-
-    def test_show_id(self):
-        field = self.model._meta.get_field('show_id')
-        self.assertEqual(type(field), models.PositiveIntegerField)
-        self.assertFalse(field.blank)
-        self.assertFalse(field.null)
-
-    def test_show_name(self):
-        field = self.model._meta.get_field('show_name')
-        self.assertEqual(type(field), models.CharField)
-        self.assertEqual(field.max_length, 64)
-        self.assertFalse(field.blank)
-
-    def test_show_poster_path(self):
-        field = self.model._meta.get_field('show_poster_path')
-        self.assertEqual(type(field), models.CharField)
-        self.assertEqual(field.max_length, 64)
-        self.assertTrue(field.blank)
-        self.assertEqual(field.default, '')
-
-    def test_show_status(self):
-        field = self.model._meta.get_field('show_status')
-        self.assertEqual(type(field), models.CharField)
-        self.assertEqual(field.max_length, 16)
-        self.assertFalse(field.blank)
-        self.assertEqual(field.choices, self.model.SHOW_STATUS_CHOICES)
-
-    def test_current_season(self):
-        field = self.model._meta.get_field('current_season')
-        self.assertEqual(type(field), models.PositiveSmallIntegerField)
-        self.assertFalse(field.blank)
-        self.assertFalse(field.null)
-        self.assertEqual(field.default, 0)
-
-    def test_current_episode(self):
-        field = self.model._meta.get_field('current_episode')
-        self.assertEqual(type(field), models.PositiveSmallIntegerField)
-        self.assertFalse(field.blank)
-        self.assertFalse(field.null)
-        self.assertEqual(field.default, 0)
-
-    def test_next_season(self):
-        field = self.model._meta.get_field('next_season')
-        self.assertEqual(type(field), models.PositiveSmallIntegerField)
-        self.assertTrue(field.blank)
-        self.assertTrue(field.null)
-        self.assertEqual(field.default, 1)
-
-    def test_next_episode(self):
-        field = self.model._meta.get_field('next_episode')
-        self.assertEqual(type(field), models.PositiveSmallIntegerField)
-        self.assertTrue(field.blank)
-        self.assertTrue(field.null)
-        self.assertEqual(field.default, 1)
-
-    def test_next_air_date(self):
-        field = self.model._meta.get_field('next_air_date')
-        self.assertEqual(type(field), models.DateField)
-        self.assertTrue(field.blank)
-        self.assertTrue(field.null)
-
-    def test_scheduled_true(self):
-        progress = self.model(next_air_date=date(2018, 9, 1))
-        self.assertTrue(progress.scheduled)
-
-    def test_scheduled_false(self):
-        progress = self.model()
-        self.assertFalse(progress.scheduled)
-
-    @patch('django.utils.timezone.now', return_value=datetime(2018, 9, 5, tzinfo=timezone.utc))
-    def test_available_true(self, now):
-        progress = self.model(next_air_date=date(2018, 9, 5))
-        self.assertTrue(progress.available)
-
-    @patch('django.utils.timezone.now', return_value=datetime(2018, 9, 5, tzinfo=timezone.utc))
-    def test_available_false_1(self, now):
-        progress = self.model(next_air_date=date(2018, 9, 6))
-        self.assertFalse(progress.available)
-
-    @patch('django.utils.timezone.now', return_value=datetime(2018, 9, 5, tzinfo=timezone.utc))
-    def test_available_false_2(self, now):
-        progress = self.model()
-        self.assertFalse(progress.available)
-
-    def test_finished_true_1(self):
-        progress = self.model(show_status=self.model.ENDED)
-        self.assertTrue(progress.finished)
-
-    def test_finished_true_2(self):
-        progress = self.model(show_status=self.model.CANCELED)
-        self.assertTrue(progress.finished)
-
-    def test_finished_false_1(self):
-        progress = self.model(show_status=self.model.ENDED, next_air_date=date(2018, 9, 1))
-        self.assertFalse(progress.finished)
-
-    def test_finished_false_2(self):
-        progress = self.model(show_status=self.model.CANCELED, next_air_date=date(2018, 9, 1))
-        self.assertFalse(progress.finished)
+    @pytest.mark.django_db
+    @pytest.mark.parametrize('show_status,next_air_date,finished', [
+        (Progress.RETURNING, date(2019, 1, 1), False),
+        (Progress.PLANNED, date(2019, 1, 1), False),
+        (Progress.IN_PRODUCTION, date(2019, 1, 1), False),
+        (Progress.ENDED, date(2019, 1, 1), False),
+        (Progress.CANCELED, date(2019, 1, 1), False),
+        (Progress.PILOT, date(2019, 1, 1), False),
+        (Progress.RETURNING, None, False),
+        (Progress.PLANNED, None, False),
+        (Progress.IN_PRODUCTION, None, False),
+        (Progress.ENDED, None, True),
+        (Progress.CANCELED, None, True),
+        (Progress.PILOT, None, False),
+    ])
+    def test_finished(self, show_status, next_air_date, finished):
+        progress = ProgressFactory.build(show_status=show_status, next_air_date=next_air_date)
+        assert progress.finished is finished

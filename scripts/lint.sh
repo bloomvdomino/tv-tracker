@@ -3,7 +3,7 @@
 set -e
 
 echo "Running isort"
-docker-compose run --no-deps web isort -rc project
+docker-compose run --no-deps --rm web isort -rc project
 
 echo "Running flake8"
-docker-compose run --no-deps web flake8 project
+docker-compose run --no-deps --rm web flake8 project
