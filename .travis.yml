@@ -1,3 +1,8 @@
+language: python
+
+python:
+  - 3.6
+
 services:
   - docker
 
@@ -11,6 +16,12 @@ install:
 script:
   - sh scripts/lint.sh
   - sh scripts/test.sh
+
+after_success:
+  - sudo mkdir /app
+  - sudo cp -r project /app/project
+  - pip install coveralls
+  - coveralls
 
 after_script:
   - docker-compose down -v
