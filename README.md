@@ -6,6 +6,10 @@
 [![Build Status](https://travis-ci.org/olivertso/tv-tracker.svg?branch=master)](https://travis-ci.org/olivertso/tv-tracker)
 [![Coverage Status](https://coveralls.io/repos/github/olivertso/tv-tracker/badge.svg?branch=master)](https://coveralls.io/github/olivertso/tv-tracker?branch=master)
 
+[TV-Tracker][tv-tracker] is a simple app that helps you track your favorite TV shows.
+
+The app communicates frequently with [TMDb API][tmdb-api] to fetch TV show data.
+
 ## Developing
 
 ### Requirements
@@ -47,3 +51,5 @@ sh scripts/test.sh
 
 [docker]: https://www.docker.com/
 [docker-compose]: https://docs.docker.com/compose/
+[tmdb-api]: https://developers.themoviedb.org/3
+[tv-tracker]: https://my-tv-tracker.herokuapp.com/
