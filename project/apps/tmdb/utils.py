@@ -5,6 +5,88 @@ import requests
 from asgiref.sync import async_to_sync
 from django.conf import settings
 from django.urls import reverse
+from django.utils.functional import cached_property
+
+
+class Show:
+    def __init__(self, data):
+        self._data = data
+
+    @property
+    def id(self):
+        return self._data['id']
+
+    @cached_property
+    def status_value(self):
+        from .models import Progress  # imported here to avoid circular dependency
+
+        for value, display in Progress.SHOW_STATUS_CHOICES:
+            if display == self.status_display:
+                return value
+
+    @cached_property
+    def status_display(self):
+        return self._data['status']
+
+    @cached_property
+    def aired_episodes(self):
+        aired_episodes = []
+        for season, season_data in enumerate(self._seasons, 1):
+            for episode in range(1, season_data['episode_count'] + 1):
+                if not self._episode_aired(season, episode):
+                    break
+                aired_episodes.append((season, episode))
+        return aired_episodes
+
+    def _episode_aired(self, season, episode):
+        if not self._last_aired_episode:
+            return False
+
+        last_aired_season, last_aired_episode = self._last_aired_episode
+        return not (
+            season > last_aired_season or
+            (season == last_aired_season and episode > last_aired_episode)
+        )
+
+    @cached_property
+    def _last_aired_episode(self):
+        last_aired = self._data['last_episode_to_air']
+        if not last_aired:
+            return None
+        return last_aired['season_number'], last_aired['episode_number']
+
+    def get_next_episode(self, season, episode):
+        if not (season and episode):
+            return 1, 1
+        if episode < self._seasons[season - 1]['episode_count']:
+            # Not the last episode in the season.
+            return season, episode + 1
+        if season < len(self._seasons):
+            # Not the last seasons.
+            return season + 1, 1
+        return None
+
+    @cached_property
+    def _seasons(self):
+        """
+        Return only non-special and non-empty seasons of the show.
+
+        TMDb API may return some especial seasons as the first element in the
+        list. And the last season may be empty.
+        """
+        seasons = self._data['seasons']
+        if seasons[0]['season_number'] == 0:
+            del seasons[0]
+        if not seasons[-1]:
+            del seasons[-1]
+        return seasons
+
+    def set_user_related(self, user):
+        self.saved = False
+        if user.is_authenticated:
+            self.saved = user.progress_set.filter(show_id=self.id).exists()
+        action = 'update' if self.saved else 'create'
+        self.edit_url = reverse('tmdb:progress_{}'.format(action), kwargs={'show_id': self.id})
 
 
 def format_episode_label(season, episode):
