@@ -5,6 +5,9 @@ __pycache__
 .coverage
 .DS_Store
 
+cov_report/*
+!cov_report/.gitkeep
+
 staticfiles/*
 !staticfiles/.gitkeep
 
