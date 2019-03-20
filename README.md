@@ -8,7 +8,7 @@
 
 [TV-Tracker][tv-tracker] is a simple app that helps you track your favorite TV shows.
 
-The app communicates frequently with [TMDb API][tmdb-api] to fetch TV show data.
+The app communicates with [TMDb API][tmdb-api] to fetch TV show data.
 
 ## Developing
 
