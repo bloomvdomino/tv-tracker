@@ -7,12 +7,7 @@ from django.utils.functional import cached_property
 from django.views.generic import CreateView, FormView, TemplateView, UpdateView
 
 from .forms import ProgressForm, SearchForm
-from .utils import (
-    add_progress_info,
-    get_popular_shows,
-    get_show,
-    get_status_value,
-)
+from .utils import get_popular_shows, get_show
 
 
 class ProgressesView(LoginRequiredMixin, TemplateView):
@@ -38,8 +33,7 @@ class PopularShowsView(TemplateView):
         page = int(self.request.GET.get('page', min_page))
         page = page if page >= min_page else min_page
         page = page if page <= max_page else max_page
-        shows = get_popular_shows(page)
-        shows = add_progress_info(shows, self.request.user)
+        shows = get_popular_shows(page, user=self.request.user)
         context.update(current_page=page, shows=shows)
 
         if page - 1 >= min_page:
@@ -58,8 +52,12 @@ class SearchView(FormView):
     template_name = 'tmdb/search.html'
     form_class = SearchForm
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update(user=self.request.user)
+        return kwargs
+
     def form_valid(self, form):
-        form.results = add_progress_info(form.results, self.request.user)
         context = self.get_context_data(form=form)
         return render(self.request, self.template_name, context=context)
 
@@ -68,13 +66,9 @@ class ProgressEditMixin:
     template_name = 'tmdb/progress.html'
     form_class = ProgressForm
 
-    @property
-    def show_id(self):
-        return self.kwargs['show_id']
-
     @cached_property
     def show(self):
-        return get_show(self.show_id)
+        return get_show(self.kwargs['show_id'], user=self.request.user)
 
     def get(self, request, *args, **kwargs):
         redirect = self._redirect_to_create_or_update()
@@ -94,7 +88,7 @@ class ProgressEditMixin:
             action = 'create'
         if action:
             to = 'tmdb:progress_{}'.format(action)
-            return redirect(reverse(to, kwargs={'show_id': self.show_id}))
+            return redirect(reverse(to, kwargs={'show_id': self.show.id}))
 
     def _set_progress_edit_success_url(self):
         http_referer = self.request.META.get('HTTP_REFERER')
@@ -113,7 +107,7 @@ class ProgressEditMixin:
         user = self.request.user
         if not user.is_authenticated:
             return None
-        return user.progress_set.filter(show_id=self.show_id).first()
+        return user.progress_set.filter(show_id=self.show.id).first()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -128,10 +122,10 @@ class ProgressEditMixin:
     def get_initial(self):
         initial = super().get_initial()
         initial.update(
-            show_id=self.show_id,
-            show_name=self.show['original_name'],
-            show_poster_path=self.show['poster_path'],
-            show_status=get_status_value(self.show['status']),
+            show_id=self.show.id,
+            show_name=self.show.name,
+            show_poster_path=self.show.poster_path,
+            show_status=self.show.status_value,
         )
         return initial
 

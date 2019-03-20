@@ -8,13 +8,38 @@ from django.urls import reverse
 from django.utils.functional import cached_property
 
 
-class Show:
-    def __init__(self, data):
+class _Show:
+    def __init__(self, data, user=None):
         self._data = data
+        self._set_progress_related(user)
 
     @property
     def id(self):
         return self._data['id']
+
+    @property
+    def name(self):
+        return self._data['original_name']
+
+    @property
+    def poster_path(self):
+        return self._data['poster_path']
+
+    @property
+    def vote_average(self):
+        return self._data['vote_average']
+
+    @property
+    def genres(self):
+        return self._data['genres']
+
+    @property
+    def languages(self):
+        return self._data['languages']
+
+    @property
+    def overview(self):
+        return self._data['overview']
 
     @cached_property
     def status_value(self):
@@ -39,10 +64,9 @@ class Show:
         return aired_episodes
 
     def _episode_aired(self, season, episode):
-        if not self._last_aired_episode:
-            return False
-
         last_aired_season, last_aired_episode = self._last_aired_episode
+        if not (last_aired_season and last_aired_episode):
+            return False
         return not (
             season > last_aired_season or
             (season == last_aired_season and episode > last_aired_episode)
@@ -52,7 +76,7 @@ class Show:
     def _last_aired_episode(self):
         last_aired = self._data['last_episode_to_air']
         if not last_aired:
-            return None
+            return None, None
         return last_aired['season_number'], last_aired['episode_number']
 
     def get_next_episode(self, season, episode):
@@ -64,7 +88,7 @@ class Show:
         if season < len(self._seasons):
             # Not the last seasons.
             return season + 1, 1
-        return None
+        return None, None
 
     @cached_property
     def _seasons(self):
@@ -81,9 +105,9 @@ class Show:
             del seasons[-1]
         return seasons
 
-    def set_user_related(self, user):
+    def _set_progress_related(self, user):
         self.saved = False
-        if user.is_authenticated:
+        if user and user.is_authenticated:
             self.saved = user.progress_set.filter(show_id=self.id).exists()
         action = 'update' if self.saved else 'create'
         self.edit_url = reverse('tmdb:progress_{}'.format(action), kwargs={'show_id': self.id})
@@ -95,92 +119,6 @@ def format_episode_label(season, episode):
     return 'S{}E{}'.format(season, episode)
 
 
-def get_status_value(text):
-    from .models import Progress  # imported here to avoid circular dependency
-
-    for value, display in Progress.SHOW_STATUS_CHOICES:
-        if display == text:
-            return value
-
-
-def make_poster_url(path, width):
-    widths = [
-        'original',
-        'w92',
-        'w154',
-        'w185',
-        'w342',
-        'w500',
-        'w780',
-    ]
-    return 'https://image.tmdb.org/t/p/{}{}'.format(widths[width], path)
-
-
-def add_progress_info(shows, user):
-    if not user.is_authenticated:
-        for show in shows:
-            show.update(edit_url=reverse('tmdb:progress_create', kwargs={'show_id': show['id']}))
-    else:
-        show_ids = [show['id'] for show in shows]
-        saved_show_ids = user.progress_set.filter(show_id__in=show_ids).values_list('show_id', flat=True)
-        for show in shows:
-            saved = show['id'] in saved_show_ids
-            action = 'update' if saved else 'create'
-            edit_url = reverse('tmdb:progress_{}'.format(action), kwargs={'show_id': show['id']})
-            show.update(saved=saved, edit_url=edit_url)
-    return shows
-
-
-def filter_seasons(show):
-    """
-    Return only non-special and non-empty seasons of the show.
-
-    TMDB API may also return some especial seasons as the first element in the
-    list. And the last season may be empty.
-    """
-    n = len(show['seasons']) - show['number_of_seasons']
-    seasons = show['seasons'][n:]
-    if not seasons[-1]:
-        del seasons[-1]
-    show.update(seasons=seasons)
-    return show
-
-
-def episode_aired(season, episode, last_aired_season, last_aired_episode):
-    return not (
-        season > last_aired_season or
-        (season == last_aired_season and episode > last_aired_episode)
-    )
-
-
-def get_aired_episodes(show):
-    last_aired = show.get('last_episode_to_air', {})
-    last_aired_season = last_aired.get('season_number', 0)
-    last_aired_episode = last_aired.get('episode_number', 0)
-
-    aired_episodes = []
-    for season, info in enumerate(show['seasons'], 1):
-        for episode in range(1, info['episode_count'] + 1):
-            if not episode_aired(season, episode, last_aired_season, last_aired_episode):
-                break
-            aired_episodes.append((season, episode))
-    return aired_episodes
-
-
-def get_next_episode(show, season, episode):
-    if season == 0 or episode == 0:
-        return 1, 1
-
-    seasons = filter_seasons(show)['seasons']
-    if episode < seasons[season - 1]['episode_count']:
-        # Not the last episode in the season.
-        return season, episode + 1
-    if season < len(seasons):
-        # Not the last seasons.
-        return season + 1, 1
-    return None, None
-
-
 def fetch(endpoint, params=None):
     url = 'https://api.themoviedb.org/3/{}'.format(endpoint)
     params = params or {}
@@ -190,13 +128,14 @@ def fetch(endpoint, params=None):
     return res.json()
 
 
-def get_show(id):
+def get_show(id, user=None):
     """
     Get a TV show detail by ID.
 
     https://developers.themoviedb.org/3/tv/get-tv-details
     """
-    return filter_seasons(fetch('tv/{}'.format(id)))
+    data = fetch('tv/{}'.format(id))
+    return _Show(data, user=user)
 
 
 def get_air_date(show_id, season, episode):
@@ -204,22 +143,24 @@ def get_air_date(show_id, season, episode):
     return fetch(endpoint)['air_date']
 
 
-def get_popular_shows(page):
+def get_popular_shows(page, user=None):
     """
     Get popular TV shows by page.
 
     https://developers.themoviedb.org/3/tv/get-popular-tv-shows
     """
-    return fetch('tv/popular', params={'page': page})['results']
+    results = fetch('tv/popular', params={'page': page})['results']
+    return [_Show(data, user=user) for data in results]
 
 
-def search_show(name):
+def search_show(name, user=None):
     """
     Search for TV shows by name.
 
     https://developers.themoviedb.org/3/search/search-tv-shows
     """
-    return fetch('search/tv', params={'query': name})['results']
+    results = fetch('search/tv', params={'query': name})['results']
+    return [_Show(data, user=user) for data in results]
 
 
 async def async_fetch(session, endpoint, params=None, **extras):
@@ -234,10 +175,11 @@ async def async_fetch(session, endpoint, params=None, **extras):
 
 
 @async_to_sync
-async def get_shows(ids):
+async def get_shows(ids, user=None):
     async with aiohttp.ClientSession() as session:
         coros = [async_fetch(session, 'tv/{}'.format(id)) for id in ids]
-        return await asyncio.gather(*coros)
+        results = await asyncio.gather(*coros)
+        return [_Show(data, user=user) for data in results]
 
 
 @async_to_sync
