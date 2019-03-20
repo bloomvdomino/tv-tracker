@@ -50,17 +50,17 @@ class TestShow:
         show = _Show({'overview': 'Foo bar.'})
         assert show.overview == 'Foo bar.'
 
-    @pytest.mark.parametrize('value,display', Progress.SHOW_STATUS_CHOICES)
-    def test_status_value(self, mock_set_progress_related, value, display):
-        data = {'status': display}
-        show = _Show(data)
-        assert show.status_value == value
-
     @pytest.mark.parametrize('display', [display for _, display in Progress.SHOW_STATUS_CHOICES])
     def test_status_display(self, mock_set_progress_related, display):
         data = {'status': display}
         show = _Show(data)
         assert show.status_display == display
+
+    @pytest.mark.parametrize('value,display', Progress.SHOW_STATUS_CHOICES)
+    def test_status_value(self, mock_set_progress_related, value, display):
+        data = {'status': display}
+        show = _Show(data)
+        assert show.status_value == value
 
     def test_aired_episodes(self, mocker, mock_set_progress_related):
         mocker.patch(

@@ -24,7 +24,7 @@ Install images:
 docker-compose build
 ```
 
-Start services:
+Start services (Django server at http://localhost:8000):
 ```
 docker-compose up
 ```

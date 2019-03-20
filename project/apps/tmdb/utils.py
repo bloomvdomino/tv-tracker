@@ -41,17 +41,17 @@ class _Show:
     def overview(self):
         return self._data['overview']
 
+    @property
+    def status_display(self):
+        return self._data['status']
+
     @cached_property
     def status_value(self):
         from .models import Progress  # imported here to avoid circular dependency
 
-        for value, display in Progress.SHOW_STATUS_CHOICES:
-            if display == self.status_display:
-                return value
-
-    @cached_property
-    def status_display(self):
-        return self._data['status']
+        value_display_map = dict(Progress.SHOW_STATUS_CHOICES)
+        display_value_map = {display: value for value, display in value_display_map.items()}
+        return display_value_map[self.status_display]
 
     @cached_property
     def aired_episodes(self):
