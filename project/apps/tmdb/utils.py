@@ -189,4 +189,5 @@ async def get_air_dates(params_list):
         for params in params_list:
             endpoint = 'tv/{show_id}/season/{season}/episode/{episode}'.format(**params)
             coros.append(async_fetch(session, endpoint, show_id=params['show_id']))
-        return await asyncio.gather(*coros)
+        results = await asyncio.gather(*coros)
+        return [result for result in results if result.get('air_date')]
