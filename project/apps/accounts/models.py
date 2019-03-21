@@ -7,12 +7,7 @@ from django.db.models import Q
 from django.utils import timezone
 
 from project.apps.tmdb.models import Progress
-from project.apps.tmdb.utils import (
-    get_air_dates,
-    get_next_episode,
-    get_shows,
-    get_status_value,
-)
+from project.apps.tmdb.utils import get_air_dates, get_shows
 from project.core.models import BaseUUIDModel
 
 from .managers import UserManager
@@ -102,17 +97,16 @@ class User(AbstractBaseUser, PermissionsMixin, BaseUUIDModel):
         shows = get_shows(show_ids)
         data = []
         for show in shows:
-            progress = Progress.objects.get(user=self, show_id=show['id'])
-            next_season, next_episode = get_next_episode(
-                show,
+            progress = Progress.objects.get(user=self, show_id=show.id)
+            next_season, next_episode = show.get_next_episode(
                 progress.current_season,
                 progress.current_episode,
             )
             data.append({
-                'show_id': show['id'],
-                'show_name': show['original_name'],
-                'show_poster_path': show['poster_path'],
-                'show_status': get_status_value(show['status']),
+                'show_id': show.id,
+                'show_name': show.name,
+                'show_poster_path': show.poster_path,
+                'show_status': show.status_value,
                 'next_season': next_season,
                 'next_episode': next_episode,
             })

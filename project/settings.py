@@ -188,7 +188,7 @@ SUIT_CONFIG = {
 }
 
 
-# TMDB
+# TMDb
 
 TMDB_API_KEY = config('TMDB_API_KEY')
 TMDB_CHECK_WAIT_SECONDS = config('TMDB_CHECK_WAIT_SECONDS', cast=int)

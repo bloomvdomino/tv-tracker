@@ -1,13 +1,7 @@
 from django import forms
 
 from .models import Progress
-from .utils import (
-    format_episode_label,
-    get_air_date,
-    get_aired_episodes,
-    get_next_episode,
-    search_show,
-)
+from .utils import format_episode_label, get_air_date, search_show
 
 
 class ProgressForm(forms.ModelForm):
@@ -45,7 +39,7 @@ class ProgressForm(forms.ModelForm):
     def clean_status(self):
         status = self.cleaned_data['status']
         if status == Progress.FOLLOWING:
-            following = self.user.progress_set.filter(status=status).exclude(show_id=self.show['id']).count()
+            following = self.user.progress_set.filter(status=status).exclude(show_id=self.show.id).count()
             limit = self.user.max_following_shows
             if following >= limit:
                 message = "You cannot follow more than {} shows.".format(limit)
@@ -63,7 +57,7 @@ class ProgressForm(forms.ModelForm):
 
     def _make_episode_choices(self):
         episode_choices = [('0-0', "Not started, yet.")]
-        for season, episode in get_aired_episodes(self.show):
+        for season, episode in self.show.aired_episodes:
             value = '{}-{}'.format(season, episode)
             label = format_episode_label(season, episode)
             episode_choices.append((value, label))
@@ -78,8 +72,7 @@ class ProgressForm(forms.ModelForm):
 
         self.instance.current_season = current_season
         self.instance.current_episode = current_episode
-        self.instance.next_season, self.instance.next_episode = get_next_episode(
-            self.show,
+        self.instance.next_season, self.instance.next_episode = self.show.get_next_episode(
             current_season,
             current_episode,
         )
@@ -98,9 +91,13 @@ class ProgressForm(forms.ModelForm):
 class SearchForm(forms.Form):
     name = forms.CharField(widget=forms.TextInput(attrs={'autofocus': 'autofocus'}))
 
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user')
+        super().__init__(*args, **kwargs)
+
     def clean_name(self):
         name = self.cleaned_data['name']
-        self.results = search_show(name)
+        self.results = search_show(name, user=self.user)
         if not self.results:
             raise forms.ValidationError("No result found.")
         return name
