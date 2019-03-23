@@ -25,3 +25,7 @@ data "aws_ssm_parameter" "sendgrid_password" {
 data "aws_ssm_parameter" "sendgrid_api_key" {
   name = "${local.parameter_store_path}/sendgrid_api_key"
 }
+
+data "aws_ssm_parameter" "db_password" {
+  name = "${local.parameter_store_path}/db_password"
+}
