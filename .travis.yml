@@ -11,7 +11,7 @@ before_install:
   - cp .env.example .env
 
 install:
-  - docker-compose build
+  - sh scripts/docker-compose.sh build
 
 script:
   - sh scripts/lint.sh
@@ -24,4 +24,4 @@ after_success:
   - coveralls
 
 after_script:
-  - docker-compose down -v
+  - sh scripts/docker-compose.sh down -v
