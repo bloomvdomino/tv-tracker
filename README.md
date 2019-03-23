@@ -6,7 +6,7 @@
 [![Build Status](https://travis-ci.org/olivertso/tv-tracker.svg?branch=master)](https://travis-ci.org/olivertso/tv-tracker)
 [![Coverage Status](https://coveralls.io/repos/github/olivertso/tv-tracker/badge.svg?branch=master)](https://coveralls.io/github/olivertso/tv-tracker?branch=master)
 
-[TV-Tracker][tv-tracker] is a simple app that helps you track your favorite TV shows.
+TV-Tracker is a simple app that helps you track your favorite TV shows.
 
 The app communicates with [TMDb API][tmdb-api] to fetch TV show data.
 
@@ -21,17 +21,17 @@ The app communicates with [TMDb API][tmdb-api] to fetch TV show data.
 
 Install images:
 ```
-docker-compose build
+sh scripts/docker-compose.sh build
 ```
 
 Start services (Django server at http://localhost:8000):
 ```
-docker-compose up
+sh scripts/docker-compose.sh up
 ```
 
 Stop services and clean up containers:
 ```
-docker-compose down
+sh scripts/docker-compose.sh down
 ```
 
 Run `manage.py` commands:
@@ -49,7 +49,16 @@ Run tests:
 sh scripts/test.sh
 ```
 
+## Deploying
+
+### Requirements
+
+- [AWS][aws]
+- [Docker][docker]
+- [Terraform][terraform]
+
+[aws]: https://aws.amazon.com/
 [docker]: https://www.docker.com/
 [docker-compose]: https://docs.docker.com/compose/
+[terraform]: https://www.terraform.io/
 [tmdb-api]: https://developers.themoviedb.org/3
-[tv-tracker]: https://my-tv-tracker.herokuapp.com/

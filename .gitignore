@@ -11,4 +11,10 @@ cov_report/*
 staticfiles/*
 !staticfiles/.gitkeep
 
+# Terraform
+.terraform
+*.tfstate
+*.tfstate.backup
+*.tfstate.lock.info
+
 .vscode

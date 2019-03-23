@@ -16,8 +16,11 @@ RUN apk update \
         openssl-dev \
         postgresql-dev \
     && pip install --no-cache-dir --upgrade pip setuptools \
-    && pip install --no-cache-dir -r requirements/prod.txt \
+    && pip install --no-cache-dir -r requirements/production.txt \
     && apk del .build-deps \
     && rm -vrf /var/cache/apk/*
 
-CMD python manage.py collectstatic --noinput --clear && gunicorn project.wsgi
+ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.5.0/wait /wait
+RUN chmod +x /wait
+
+CMD /wait && gunicorn project.wsgi -b :8000

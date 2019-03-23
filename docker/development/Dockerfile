@@ -17,11 +17,11 @@ RUN apk update \
         openssl-dev \
         postgresql-dev \
     && pip install --no-cache-dir --upgrade pip setuptools \
-    && pip install --no-cache-dir -r requirements/dev.txt \
+    && pip install --no-cache-dir -r requirements/development.txt \
     && apk del .build-deps \
     && rm -vrf /var/cache/apk/*
 
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.5.0/wait /wait
 RUN chmod +x /wait
 
-CMD /wait && python manage.py runserver 0:80
+CMD /wait && python manage.py runserver 0:8000
