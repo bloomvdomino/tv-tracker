@@ -33,7 +33,8 @@ class SignupForm(PasswordConfirmMixin, forms.ModelForm):
     def save(self, commit=True):
         email = self.cleaned_data['email']
         password = self.cleaned_data['password']
-        self.instance = User.objects.create_user(email, password)
+        time_zone = self.cleaned_data['time_zone']
+        self.instance = User.objects.create_user(email, password, time_zone=time_zone)
         return self.instance
 
 
