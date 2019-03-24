@@ -1,9 +1,7 @@
 module "main" {
   source = "../modules/main"
 
-  env     = "production"
-  project = "tv-tracker"
-
+  env           = "production"
   instance_type = "t2.micro"
 
   # Non-secret environment variables.
