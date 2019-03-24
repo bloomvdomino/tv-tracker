@@ -14,6 +14,6 @@ sudo curl \
 sudo chmod +x /usr/local/bin/docker-compose
 
 # Pull Docker images and start services.
-sudo docker-compose -f ${base_dc_path} -f ${production_dc_path} -p ${project} up -d
+sudo docker-compose -f ${docker_compose_base} -f ${docker_compose_production} -p ${project} up -d
 sudo docker exec ${project}_web_1 python manage.py collectstatic --noinput --clear
 sudo docker exec ${project}_web_1 python manage.py migrate

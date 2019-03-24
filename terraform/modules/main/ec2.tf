@@ -1,7 +1,7 @@
 locals {
-  remote_pwd         = "/home/ubuntu"
-  base_dc_path       = "docker/docker-compose.yml"
-  production_dc_path = "docker/production/docker-compose.yml"
+  remote_pwd                = "/home/ubuntu"
+  docker_compose_base       = "docker/docker-compose.yml"
+  docker_compose_production = "docker/production/docker-compose.yml"
 }
 
 resource "aws_instance" "web" {
@@ -10,10 +10,27 @@ resource "aws_instance" "web" {
   vpc_security_group_ids = ["${aws_security_group.instance.id}"]
   key_name               = "${var.project}"
 
+  tags = {
+    Name      = "${var.project}"
+    Env       = "${var.env}"
+    Terraform = true
+  }
+}
+
+resource "null_resource" "provisioners" {
+  triggers {
+    docker_compose_base       = "${file("../../${local.docker_compose_base}")}"
+    docker_compose_production = "${file("../../${local.docker_compose_production}")}"
+    env_file_web              = "${data.template_file.env_file_web.rendered}"
+    env_file_db               = "${data.template_file.env_file_db.rendered}"
+    ec2_init                  = "${data.template_file.ec2_init.rendered}"
+  }
+
   connection {
     type        = "ssh"
     user        = "ubuntu"
     private_key = "${file("~/.ssh/aws/${var.project}.pem")}"
+    host        = "${aws_instance.web.public_ip}"
   }
 
   provisioner "remote-exec" {
@@ -23,34 +40,28 @@ resource "aws_instance" "web" {
   }
 
   provisioner "file" {
-    source      = "../../${local.base_dc_path}"
-    destination = "${local.remote_pwd}/${local.base_dc_path}"
+    source      = "../../${local.docker_compose_base}"
+    destination = "${local.remote_pwd}/${local.docker_compose_base}"
   }
 
   provisioner "file" {
-    source      = "../../${local.production_dc_path}"
-    destination = "${local.remote_pwd}/${local.production_dc_path}"
+    source      = "../../${local.docker_compose_production}"
+    destination = "${local.remote_pwd}/${local.docker_compose_production}"
   }
 
   provisioner "file" {
     content     = "${data.template_file.env_file_web.rendered}"
-    destination = "${local.remote_pwd}/${local.web_env_file_name}"
+    destination = "${local.remote_pwd}/${local.env_file_web}"
   }
 
   provisioner "file" {
     content     = "${data.template_file.env_file_db.rendered}"
-    destination = "${local.remote_pwd}/${local.db_env_file_name}"
+    destination = "${local.remote_pwd}/${local.env_file_db}"
   }
 
   provisioner "remote-exec" {
     inline = <<EOF
 ${data.template_file.ec2_init.rendered}
 EOF
-  }
-
-  tags = {
-    Name      = "${var.project}"
-    Env       = "${var.env}"
-    Terraform = true
   }
 }

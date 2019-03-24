@@ -1,23 +1,23 @@
 locals {
-  web_env_file_name = "env_file.web"
-  db_env_file_name  = "env_file.db"
-  db_name           = "tt"
-  db_user           = "tt"
-  db_password       = "${data.aws_ssm_parameter.db_password.value}"
+  env_file_web = "env_file.web"
+  env_file_db  = "env_file.db"
+  db_name      = "tt"
+  db_user      = "tt"
+  db_password  = "${data.aws_ssm_parameter.db_password.value}"
 }
 
 data "template_file" "ec2_init" {
   template = "${file("${path.module}/templates/ec2_init.sh")}"
 
   vars {
-    project            = "${var.project}"
-    base_dc_path       = "${local.base_dc_path}"
-    production_dc_path = "${local.production_dc_path}"
+    project                   = "${var.project}"
+    docker_compose_base       = "${local.docker_compose_base}"
+    docker_compose_production = "${local.docker_compose_production}"
   }
 }
 
 data "template_file" "env_file_web" {
-  template = "${file("${path.module}/templates/${local.web_env_file_name}")}"
+  template = "${file("${path.module}/templates/${local.env_file_web}")}"
 
   vars {
     secret_key        = "${data.aws_ssm_parameter.secret_key.value}"
@@ -37,7 +37,7 @@ data "template_file" "env_file_web" {
 }
 
 data "template_file" "env_file_db" {
-  template = "${file("${path.module}/templates/${local.db_env_file_name}")}"
+  template = "${file("${path.module}/templates/${local.env_file_db}")}"
 
   vars {
     postgres_db       = "${local.db_name}"
