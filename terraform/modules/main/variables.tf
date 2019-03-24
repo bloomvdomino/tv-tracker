@@ -1,6 +1,8 @@
 variable "env" {}
 
-variable "project" {}
+variable "project" {
+  default = "tv-tracker"
+}
 
 variable "instance_type" {}
 
@@ -11,7 +13,3 @@ variable "tmdb_check_wait_seconds" {}
 variable "default_from_email" {}
 
 variable "sendgrid_sandbox_mode" {}
-
-variable "db_name" {}
-
-variable "db_user" {}

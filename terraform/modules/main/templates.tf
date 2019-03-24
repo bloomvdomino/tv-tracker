@@ -1,6 +1,8 @@
 locals {
   web_env_file_name = "env_file.web"
   db_env_file_name  = "env_file.db"
+  db_name           = "tt"
+  db_user           = "tt"
   db_password       = "${data.aws_ssm_parameter.db_password.value}"
 }
 
@@ -27,7 +29,7 @@ data "template_file" "env_file_web" {
 
     env                     = "${var.env}"
     allowed_hosts           = "${var.allowed_hosts}"
-    database_url            = "postgres://${var.db_user}:${local.db_password}@db:5432/${var.db_name}"
+    database_url            = "postgres://${local.db_user}:${local.db_password}@db:5432/${local.db_name}"
     tmdb_check_wait_seconds = "${var.tmdb_check_wait_seconds}"
     default_from_email      = "${var.default_from_email}"
     sendgrid_sandbox_mode   = "${var.sendgrid_sandbox_mode}"
@@ -38,8 +40,8 @@ data "template_file" "env_file_db" {
   template = "${file("${path.module}/templates/${local.db_env_file_name}")}"
 
   vars {
-    postgres_db       = "${var.db_name}"
-    postgres_user     = "${var.db_user}"
+    postgres_db       = "${local.db_name}"
+    postgres_user     = "${local.db_user}"
     postgres_password = "${local.db_password}"
   }
 }

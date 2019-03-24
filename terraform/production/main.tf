@@ -6,15 +6,11 @@ module "main" {
 
   instance_type = "t2.micro"
 
-  # Environment variables.
+  # Non-secret environment variables.
   allowed_hosts           = "*"
   tmdb_check_wait_seconds = 1800
   default_from_email      = "do-not-respond@tv-tracker.com"
   sendgrid_sandbox_mode   = "False"
-
-  # Database.
-  db_name = "tt"
-  db_user = "tt"
 }
 
 output "public_dns" {
