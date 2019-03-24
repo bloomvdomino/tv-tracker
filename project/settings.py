@@ -7,7 +7,7 @@ from decouple import Csv, config
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-ENV = config('ENV')  # production, development or test
+ENV = config('ENV')  # development, test, qa or production
 
 SECRET_KEY = config('SECRET_KEY')
 
@@ -198,7 +198,7 @@ TMDB_CHECK_WAIT_SECONDS = config('TMDB_CHECK_WAIT_SECONDS', cast=int)
 
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
 
-if ENV == 'production':
+if ENV in ['qa', 'production']:
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
     EMAIL_HOST = 'smtp.sendgrid.net'
     EMAIL_PORT = 587

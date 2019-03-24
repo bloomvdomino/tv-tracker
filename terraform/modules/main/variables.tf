@@ -8,7 +8,9 @@ variable "instance_type" {}
 
 variable "allowed_hosts" {}
 
-variable "tmdb_check_wait_seconds" {}
+variable "tmdb_check_wait_seconds" {
+  default = 1800
+}
 
 variable "default_from_email" {}
 

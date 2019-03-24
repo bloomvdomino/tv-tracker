@@ -1,11 +1,11 @@
 module "main" {
   source = "../modules/main"
 
-  env           = "production"
+  env           = "qa"
   instance_type = "t2.micro"
 
   allowed_hosts         = "*"
-  default_from_email    = "do-not-respond@tv-tracker.com"
+  default_from_email    = "do-not-respond.qa@tv-tracker.com"
   sendgrid_sandbox_mode = "False"
 }
 

@@ -23,4 +23,4 @@ RUN apk update \
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.5.0/wait /wait
 RUN chmod +x /wait
 
-CMD /wait && gunicorn project.wsgi -b :8000
+CMD python manage.py collectstatic --noinput --clear && /wait && gunicorn project.wsgi -b :8000
