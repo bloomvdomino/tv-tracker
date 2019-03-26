@@ -64,28 +64,22 @@ class ProgressForm(forms.ModelForm):
         return episode_choices
 
     def _update_episodes(self):
-        current_season = self.cleaned_data['current_season']
-        current_episode = self.cleaned_data['current_episode']
+        self.instance.current_season = self.cleaned_data['current_season']
+        self.instance.current_episode = self.cleaned_data['current_episode']
 
-        if self.instance.current_season == current_season and self.instance.current_episode == current_episode:
-            return
-
-        self.instance.current_season = current_season
-        self.instance.current_episode = current_episode
         self.instance.next_season, self.instance.next_episode = self.show.get_next_episode(
-            current_season,
-            current_episode,
+            self.instance.current_season,
+            self.instance.current_episode,
         )
 
-        if not (self.instance.next_season and self.instance.next_episode):
+        if self.instance.next_season and self.instance.next_episode:
+            self.instance.next_air_date = get_air_date(
+                self.instance.show_id,
+                self.instance.next_season,
+                self.instance.next_episode,
+            )
+        else:
             self.instance.next_air_date = None
-            return
-
-        self.instance.next_air_date = get_air_date(
-            self.instance.show_id,
-            self.instance.next_season,
-            self.instance.next_episode,
-        )
 
 
 class SearchForm(forms.Form):
