@@ -7,7 +7,7 @@ COPY /manage.py /app/manage.py
 COPY /project /app/project
 
 RUN apk update \
-    && apk add --no-cache libpq \
+    && apk add --no-cache libpq postgresql-client \
     && apk add --no-cache --virtual .build-deps \
         gcc \
         libffi-dev \

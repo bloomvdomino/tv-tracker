@@ -21,6 +21,7 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
 # Application definition
 
 INSTALLED_APPS = [
+    'dbbackup',
     'suit',
 
     'django.contrib.admin',
@@ -77,6 +78,19 @@ WSGI_APPLICATION = 'project.wsgi.application'
 DATABASES = {
     'default': dj_database_url.parse(config('DATABASE_URL')),
 }
+
+
+# Database Backup
+
+DBBACKUP_STORAGE = 'django.core.files.storage.FileSystemStorage'
+
+DBBACKUP_STORAGE_OPTIONS = {
+    'location': os.path.join(BASE_DIR, 'db_backups/'),
+}
+
+DBBACKUP_CLEANUP_KEEP = 3
+
+DBBACKUP_CLEANUP_KEEP_MEDIA = 3
 
 
 # Authentication
