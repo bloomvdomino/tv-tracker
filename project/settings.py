@@ -82,15 +82,21 @@ DATABASES = {
 
 # Database Backup
 
-DBBACKUP_STORAGE = 'django.core.files.storage.FileSystemStorage'
+if ENV in ['qa', 'production']:
+    DBBACKUP_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    DBBACKUP_STORAGE_OPTIONS = {
+        'bucket_name': config('BUCKET_NAME'),
+        'default_acl': None,
+    }
+else:
+    DBBACKUP_STORAGE = 'django.core.files.storage.FileSystemStorage'
+    DBBACKUP_STORAGE_OPTIONS = {
+        'location': os.path.join(BASE_DIR, 'db_backups/'),
+    }
 
-DBBACKUP_STORAGE_OPTIONS = {
-    'location': os.path.join(BASE_DIR, 'db_backups/'),
-}
+DBBACKUP_CLEANUP_KEEP = 2
 
-DBBACKUP_CLEANUP_KEEP = 3
-
-DBBACKUP_CLEANUP_KEEP_MEDIA = 3
+DBBACKUP_CLEANUP_KEEP_MEDIA = 2
 
 
 # Authentication
@@ -202,6 +208,27 @@ SUIT_CONFIG = {
 }
 
 
+# Django Debug Toolbar
+
+if DEBUG:
+    INSTALLED_APPS += [
+        'debug_toolbar',
+    ]
+
+    MIDDLEWARE += [
+        'debug_toolbar.middleware.DebugToolbarMiddleware',
+    ]
+
+    DEBUG_TOOLBAR_CONFIG = {
+        'SHOW_TOOLBAR_CALLBACK': lambda request: True,
+    }
+
+
+# AWS
+
+AWS_DEFAULT_ACL = None
+
+
 # TMDb
 
 TMDB_API_KEY = config('TMDB_API_KEY')
@@ -232,19 +259,3 @@ if ENV == 'test':
     SENDGRID_SANDBOX_MODE = True
 else:
     SENDGRID_SANDBOX_MODE = config('SENDGRID_SANDBOX_MODE', cast=bool)
-
-
-# Django Debug Toolbar
-
-if DEBUG:
-    INSTALLED_APPS += [
-        'debug_toolbar',
-    ]
-
-    MIDDLEWARE += [
-        'debug_toolbar.middleware.DebugToolbarMiddleware',
-    ]
-
-    DEBUG_TOOLBAR_CONFIG = {
-        'SHOW_TOOLBAR_CALLBACK': lambda request: True,
-    }

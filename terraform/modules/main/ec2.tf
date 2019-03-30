@@ -4,10 +4,11 @@ locals {
   docker_compose_production = "docker/production/docker-compose.yml"
 }
 
-resource "aws_instance" "web" {
+resource "aws_instance" "main" {
   instance_type          = "${var.instance_type}"
   ami                    = "ami-0ac019f4fcb7cb7e6"
   vpc_security_group_ids = ["${aws_security_group.instance.id}"]
+  iam_instance_profile   = "${aws_iam_instance_profile.main.name}"
   key_name               = "${var.project}"
 
   tags = {
@@ -30,7 +31,7 @@ resource "null_resource" "provisioners" {
     type        = "ssh"
     user        = "ubuntu"
     private_key = "${file("~/.ssh/aws/${var.project}.pem")}"
-    host        = "${aws_instance.web.public_ip}"
+    host        = "${aws_instance.main.public_ip}"
   }
 
   provisioner "remote-exec" {

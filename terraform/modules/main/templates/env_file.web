@@ -2,6 +2,7 @@ ENV=${env}
 SECRET_KEY=${secret_key}
 ALLOWED_HOSTS=${allowed_hosts}
 DATABASE_URL=${database_url}
+BUCKET_NAME=${bucket_name}
 ADMIN_PATH=${admin_path}
 TMDB_API_KEY=${tmdb_api_key}
 TMDB_CHECK_WAIT_SECONDS=${tmdb_check_wait_seconds}
