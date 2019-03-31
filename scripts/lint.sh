@@ -25,13 +25,13 @@ then
 else
     for arg in $@
     do
-        if [ $arg == "isort" ]; then
+        if [ $arg = "isort" ]; then
             isort
         fi
-        if [ $arg == "flake8" ]; then
+        if [ $arg = "flake8" ]; then
             flake8
         fi
-        if [ $arg == "terraform" ]; then
+        if [ $arg = "terraform" ]; then
             terraform_fmt
         fi
     done
