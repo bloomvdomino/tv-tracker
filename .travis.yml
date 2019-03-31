@@ -14,7 +14,7 @@ install:
   - sh scripts/docker-compose.sh build
 
 script:
-  - sh scripts/lint.sh
+  - sh scripts/lint.sh flake8
   - sh scripts/test.sh
 
 after_success:

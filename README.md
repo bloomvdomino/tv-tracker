@@ -41,7 +41,7 @@ sh scripts/manage-py.sh <command>
 
 Run linters:
 ```
-sh scripts/lint.sh
+sh scripts/lint.sh isort flake8
 ```
 
 Run tests:
