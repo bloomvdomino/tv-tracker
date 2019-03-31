@@ -17,7 +17,7 @@ terraform_fmt () {
     terraform fmt terraform/
 }
 
-if [ $# == 0 ]
+if [ $# = 0 ]
 then
     isort
     flake8
