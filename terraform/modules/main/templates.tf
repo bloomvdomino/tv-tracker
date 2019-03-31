@@ -5,8 +5,8 @@ locals {
   db_user      = "tt"
 }
 
-data "template_file" "ec2_init" {
-  template = "${file("${path.module}/templates/ec2_init.sh")}"
+data "template_file" "instance_init" {
+  template = "${file("${path.module}/templates/instance_init.sh")}"
 
   vars {
     project                   = "${var.project}"

@@ -24,7 +24,7 @@ resource "null_resource" "provisioners" {
     docker_compose_production = "${file("../../${local.docker_compose_production}")}"
     env_file_web              = "${data.template_file.env_file_web.rendered}"
     env_file_db               = "${data.template_file.env_file_db.rendered}"
-    ec2_init                  = "${data.template_file.ec2_init.rendered}"
+    instance_init             = "${data.template_file.instance_init.rendered}"
   }
 
   connection {
@@ -62,7 +62,7 @@ resource "null_resource" "provisioners" {
 
   provisioner "remote-exec" {
     inline = <<EOF
-${data.template_file.ec2_init.rendered}
+${data.template_file.instance_init.rendered}
 EOF
   }
 }
