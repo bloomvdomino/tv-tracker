@@ -27,11 +27,11 @@ data "template_file" "env_file_web" {
     sendgrid_api_key  = "${data.aws_ssm_parameter.sendgrid_api_key.value}"
 
     env                     = "${var.env}"
-    allowed_hosts           = "${var.allowed_hosts}"
+    allowed_hosts           = "${local.public_domain}"
     database_url            = "postgres://${local.db_user}:@db:5432/${local.db_name}"
     bucket_name             = "${aws_s3_bucket.main.id}"
     tmdb_check_wait_seconds = "${var.tmdb_check_wait_seconds}"
-    default_from_email      = "${var.default_from_email}"
+    default_from_email      = "do-not-respond${local.domain_env}@${var.project}.com"
     sendgrid_sandbox_mode   = "${var.sendgrid_sandbox_mode}"
   }
 }
