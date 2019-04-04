@@ -11,5 +11,5 @@ variable "tmdb_check_wait_seconds" {
 }
 
 variable "sendgrid_sandbox_mode" {
-  default = "True"
+  default = "1"
 }

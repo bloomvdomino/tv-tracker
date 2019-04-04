@@ -3,7 +3,7 @@ module "main" {
 
   env                   = "qa"
   instance_type         = "t2.nano"
-  sendgrid_sandbox_mode = "False"
+  sendgrid_sandbox_mode = "0"
 }
 
 output "public_ip" {
