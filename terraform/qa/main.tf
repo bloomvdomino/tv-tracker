@@ -2,7 +2,7 @@ module "main" {
   source = "../modules/main"
 
   env                   = "qa"
-  instance_type         = "t2.micro"
+  instance_type         = "t2.nano"
   sendgrid_sandbox_mode = "False"
 }
 
