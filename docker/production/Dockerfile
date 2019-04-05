@@ -3,6 +3,7 @@ FROM python:3.7.2-alpine
 WORKDIR /app
 
 COPY /requirements /app/requirements
+COPY /gunicorn.py /app/gunicorn.py
 COPY /manage.py /app/manage.py
 COPY /project /app/project
 
@@ -23,4 +24,4 @@ RUN apk update \
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.5.0/wait /wait
 RUN chmod +x /wait
 
-CMD python manage.py collectstatic --noinput --clear && /wait && gunicorn project.wsgi -b :8000
+CMD python manage.py collectstatic --noinput --clear && /wait && gunicorn project.wsgi -c gunicorn.py
