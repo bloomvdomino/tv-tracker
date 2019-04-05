@@ -1,5 +1,5 @@
 resource "aws_security_group" "instance" {
-  name = "${var.project}-instance"
+  name = "${var.project}-instance-${var.env}"
 
   ingress {
     from_port   = 22
