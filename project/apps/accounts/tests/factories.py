@@ -7,4 +7,4 @@ class UserFactory(factory.DjangoModelFactory):
     class Meta:
         model = User
 
-    email = 'u1@tt.com'
+    email = "u1@tt.com"

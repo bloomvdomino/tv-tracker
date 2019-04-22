@@ -10,22 +10,18 @@ from .utils import format_episode_label
 
 class Progress(BaseModel):
     # Progress status.
-    FOLLOWING = 'following'
-    PAUSED = 'paused'
-    STOPPED = 'stopped'
-    STATUS_CHOICES = (
-        (FOLLOWING, "Following"),
-        (PAUSED, "Paused"),
-        (STOPPED, "Stopped"),
-    )
+    FOLLOWING = "following"
+    PAUSED = "paused"
+    STOPPED = "stopped"
+    STATUS_CHOICES = ((FOLLOWING, "Following"), (PAUSED, "Paused"), (STOPPED, "Stopped"))
 
     # Show status.
-    RETURNING = 'returning'
-    PLANNED = 'planned'
-    IN_PRODUCTION = 'in_production'
-    ENDED = 'ended'
-    CANCELED = 'canceled'
-    PILOT = 'pilot'
+    RETURNING = "returning"
+    PLANNED = "planned"
+    IN_PRODUCTION = "in_production"
+    ENDED = "ended"
+    CANCELED = "canceled"
+    PILOT = "pilot"
     SHOW_STATUS_CHOICES = (
         (RETURNING, "Returning Series"),
         (PLANNED, "Planned"),
@@ -36,23 +32,33 @@ class Progress(BaseModel):
     )
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, models.CASCADE, verbose_name="user")
-    status = models.CharField(max_length=16, choices=STATUS_CHOICES, default=FOLLOWING, verbose_name="status")
+    status = models.CharField(
+        max_length=16, choices=STATUS_CHOICES, default=FOLLOWING, verbose_name="status"
+    )
     last_check = models.DateTimeField(blank=True, null=True, verbose_name="last check")
 
     show_id = models.PositiveIntegerField(verbose_name="show ID")
     show_name = models.CharField(max_length=64, verbose_name="show name")
-    show_poster_path = models.CharField(max_length=64, blank=True, default='', verbose_name="show poster path")
-    show_status = models.CharField(max_length=16, choices=SHOW_STATUS_CHOICES, verbose_name="show status")
+    show_poster_path = models.CharField(
+        max_length=64, blank=True, default="", verbose_name="show poster path"
+    )
+    show_status = models.CharField(
+        max_length=16, choices=SHOW_STATUS_CHOICES, verbose_name="show status"
+    )
 
     current_season = models.PositiveSmallIntegerField(default=0, verbose_name="current season")
     current_episode = models.PositiveSmallIntegerField(default=0, verbose_name="current episode")
-    next_season = models.PositiveSmallIntegerField(blank=True, null=True, default=1, verbose_name="next season")
-    next_episode = models.PositiveSmallIntegerField(blank=True, null=True, default=1, verbose_name="next episode")
+    next_season = models.PositiveSmallIntegerField(
+        blank=True, null=True, default=1, verbose_name="next season"
+    )
+    next_episode = models.PositiveSmallIntegerField(
+        blank=True, null=True, default=1, verbose_name="next episode"
+    )
     next_air_date = models.DateField(blank=True, null=True, verbose_name="next air date")
 
     class Meta:
-        unique_together = (('user', 'show_id'),)
-        ordering = ['next_air_date', 'show_name', 'show_id']
+        unique_together = (("user", "show_id"),)
+        ordering = ["next_air_date", "show_name", "show_id"]
         verbose_name = "progress"
         verbose_name_plural = "progresses"
 
@@ -88,9 +94,9 @@ class Progress(BaseModel):
     @property
     def list_in_unavailable(self):
         return (
-            not self.finished and
-            self.status == self.FOLLOWING and
-            not (self.list_in_available or self.list_in_scheduled)
+            not self.finished
+            and self.status == self.FOLLOWING
+            and not (self.list_in_available or self.list_in_scheduled)
         )
 
     @property
@@ -107,7 +113,7 @@ class Progress(BaseModel):
 
     @property
     def update_url(self):
-        return reverse('tmdb:progress_update', kwargs={'show_id': self.show_id})
+        return reverse("tmdb:progress_update", kwargs={"show_id": self.show_id})
 
     @property
     def last_watched_label(self):

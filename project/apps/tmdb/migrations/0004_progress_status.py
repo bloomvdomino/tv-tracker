@@ -4,21 +4,24 @@ from django.db import migrations, models
 
 
 def update_status(apps, schema_editor):
-    Progress = apps.get_model('apps_tmdb', 'Progress')
-    Progress.objects.filter(is_followed=False).update(status='paused')
+    Progress = apps.get_model("apps_tmdb", "Progress")
+    Progress.objects.filter(is_followed=False).update(status="paused")
 
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('apps_tmdb', '0003_auto_20180914_1949'),
-    ]
+    dependencies = [("apps_tmdb", "0003_auto_20180914_1949")]
 
     operations = [
         migrations.AddField(
-            model_name='progress',
-            name='status',
-            field=models.CharField(choices=[('following', 'Following'), ('paused', 'Paused'), ('stopped', 'Stopped')], default='following', max_length=16, verbose_name='status'),
+            model_name="progress",
+            name="status",
+            field=models.CharField(
+                choices=[("following", "Following"), ("paused", "Paused"), ("stopped", "Stopped")],
+                default="following",
+                max_length=16,
+                verbose_name="status",
+            ),
         ),
         migrations.RunPython(update_status, reverse_code=migrations.RunPython.noop),
     ]

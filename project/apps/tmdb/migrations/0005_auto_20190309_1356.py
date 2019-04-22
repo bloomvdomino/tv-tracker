@@ -4,24 +4,23 @@ from django.db import migrations
 
 
 def update_status(apps, schema_editor):
-    Progress = apps.get_model('apps_tmdb', 'Progress')
-    Progress.objects.filter(is_followed=False).update(status='stopped')
+    Progress = apps.get_model("apps_tmdb", "Progress")
+    Progress.objects.filter(is_followed=False).update(status="stopped")
 
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('apps_tmdb', '0004_progress_status'),
-    ]
+    dependencies = [("apps_tmdb", "0004_progress_status")]
 
     operations = [
         migrations.RunPython(update_status, reverse_code=migrations.RunPython.noop),
         migrations.AlterModelOptions(
-            name='progress',
-            options={'ordering': ['next_air_date', 'show_name', 'show_id'], 'verbose_name': 'progress', 'verbose_name_plural': 'progresses'},
+            name="progress",
+            options={
+                "ordering": ["next_air_date", "show_name", "show_id"],
+                "verbose_name": "progress",
+                "verbose_name_plural": "progresses",
+            },
         ),
-        migrations.RemoveField(
-            model_name='progress',
-            name='is_followed',
-        ),
+        migrations.RemoveField(model_name="progress", name="is_followed"),
     ]

@@ -5,16 +5,9 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('apps_accounts', '0003_passwordresettoken'),
-    ]
+    dependencies = [("apps_accounts", "0003_passwordresettoken")]
 
     operations = [
-        migrations.RemoveField(
-            model_name='passwordresettoken',
-            name='user',
-        ),
-        migrations.DeleteModel(
-            name='PasswordResetToken',
-        ),
+        migrations.RemoveField(model_name="passwordresettoken", name="user"),
+        migrations.DeleteModel(name="PasswordResetToken"),
     ]

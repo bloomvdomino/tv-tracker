@@ -1,13 +1,7 @@
 import sendgrid
 from django.conf import settings
 from django.db import models
-from sendgrid.helpers.mail import (
-    Category,
-    Email,
-    Mail,
-    MailSettings,
-    SandBoxMode,
-)
+from sendgrid.helpers.mail import Category, Email, Mail, MailSettings, SandBoxMode
 
 from project.core.models import BaseModel
 
@@ -15,10 +9,10 @@ from project.core.models import BaseModel
 class SendGridEmail(BaseModel):
     title = models.CharField(max_length=32, unique=True, verbose_name="title")
     template_id = models.CharField(max_length=64, verbose_name="template ID")
-    categories = models.CharField(max_length=64, blank=True, default='', verbose_name="categories")
+    categories = models.CharField(max_length=64, blank=True, default="", verbose_name="categories")
 
     class Meta:
-        ordering = ['title']
+        ordering = ["title"]
         verbose_name = "SendGrid email"
         verbose_name_plural = "SendGrid emails"
 
@@ -33,7 +27,7 @@ class SendGridEmail(BaseModel):
         request_body = mail.get()
 
         # https://github.com/sendgrid/sendgrid-python/issues/591
-        request_body['personalizations'][0]['dynamic_template_data'] = data
+        request_body["personalizations"][0]["dynamic_template_data"] = data
 
         try:
             response = sg.client.mail.send.post(request_body=request_body)
@@ -50,6 +44,6 @@ class SendGridEmail(BaseModel):
         return mail_settings
 
     def _add_categories(self, mail):
-        categories = [Category(c.strip()) for c in self.categories.split(',') if c]
+        categories = [Category(c.strip()) for c in self.categories.split(",") if c]
         for category in categories:
             mail.add_category(category)

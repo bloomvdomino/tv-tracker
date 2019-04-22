@@ -5,15 +5,13 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('apps_accounts', '0004_auto_20190309_1216'),
-    ]
+    dependencies = [("apps_accounts", "0004_auto_20190309_1216")]
 
     operations = [
-        migrations.RenameField('user', 'max_followed_progresses', 'max_following_shows'),
+        migrations.RenameField("user", "max_followed_progresses", "max_following_shows"),
         migrations.AlterField(
-            model_name='user',
-            name='max_following_shows',
-            field=models.PositiveSmallIntegerField(default=8, verbose_name='max following shows'),
+            model_name="user",
+            name="max_following_shows",
+            field=models.PositiveSmallIntegerField(default=8, verbose_name="max following shows"),
         ),
     ]

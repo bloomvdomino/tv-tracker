@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('apps_tmdb', '0005_auto_20190309_1356'),
-    ]
+    dependencies = [("apps_tmdb", "0005_auto_20190309_1356")]
 
     operations = [
         migrations.AddField(
-            model_name='progress',
-            name='last_check',
-            field=models.DateTimeField(blank=True, null=True, verbose_name='last check'),
-        ),
+            model_name="progress",
+            name="last_check",
+            field=models.DateTimeField(blank=True, null=True, verbose_name="last check"),
+        )
     ]

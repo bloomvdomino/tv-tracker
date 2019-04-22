@@ -7,92 +7,81 @@ from decouple import Csv, config
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-ENV = config('ENV')  # development, test, qa or production
+ENV = config("ENV")  # development, test, qa or production
 
-SECRET_KEY = config('SECRET_KEY')
+SECRET_KEY = config("SECRET_KEY")
 
-DEBUG = ENV == 'development'
+DEBUG = ENV == "development"
 
 TEMPLATE_DEBUG = DEBUG
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
+ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=Csv())
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    'dbbackup',
-    'suit',
-
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-
-    'project.apps.accounts.apps.AccountsConfig',
-    'project.apps.emails.apps.EmailsConfig',
-    'project.apps.tmdb.apps.TMDbConfig',
-    'project.apps.website.apps.WebsiteConfig',
-    'project.core.apps.CoreConfig',
+    "dbbackup",
+    "suit",
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "project.apps.accounts.apps.AccountsConfig",
+    "project.apps.emails.apps.EmailsConfig",
+    "project.apps.tmdb.apps.TMDbConfig",
+    "project.apps.website.apps.WebsiteConfig",
+    "project.core.apps.CoreConfig",
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = 'project.urls'
+ROOT_URLCONF = "project.urls"
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-            os.path.join(BASE_DIR, 'project/templates/'),
-        ],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [os.path.join(BASE_DIR, "project/templates/")],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+            ]
         },
-    },
+    }
 ]
 
-WSGI_APPLICATION = 'project.wsgi.application'
+WSGI_APPLICATION = "project.wsgi.application"
 
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
-DATABASES = {
-    'default': dj_database_url.parse(config('DATABASE_URL')),
-}
+DATABASES = {"default": dj_database_url.parse(config("DATABASE_URL"))}
 
 
 # Database Backup
 
-if ENV in ['qa', 'production']:
-    DBBACKUP_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-    DBBACKUP_STORAGE_OPTIONS = {
-        'bucket_name': config('BUCKET_NAME'),
-        'default_acl': None,
-    }
+if ENV in ["qa", "production"]:
+    DBBACKUP_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+    DBBACKUP_STORAGE_OPTIONS = {"bucket_name": config("BUCKET_NAME"), "default_acl": None}
 else:
-    DBBACKUP_STORAGE = 'django.core.files.storage.FileSystemStorage'
-    DBBACKUP_STORAGE_OPTIONS = {
-        'location': os.path.join(BASE_DIR, 'db_backups/'),
-    }
+    DBBACKUP_STORAGE = "django.core.files.storage.FileSystemStorage"
+    DBBACKUP_STORAGE_OPTIONS = {"location": os.path.join(BASE_DIR, "db_backups/")}
 
 DBBACKUP_CLEANUP_KEEP = 2
 
@@ -101,43 +90,35 @@ DBBACKUP_CLEANUP_KEEP_MEDIA = 2
 
 # Authentication
 
-AUTH_USER_MODEL = 'apps_accounts.User'
+AUTH_USER_MODEL = "apps_accounts.User"
 
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
+    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "OPTIONS": {"min_length": 6},
     },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-        'OPTIONS': {'min_length': 6},
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
 
 # Password hashers
 
-if ENV == 'test':
-    PASSWORD_HASHERS = [
-        'django.contrib.auth.hashers.MD5PasswordHasher',
-    ]
+if ENV == "test":
+    PASSWORD_HASHERS = ["django.contrib.auth.hashers.MD5PasswordHasher"]
 
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = 'America/Sao_Paulo'
+TIME_ZONE = "America/Sao_Paulo"
 
 USE_I18N = True
 
@@ -148,62 +129,46 @@ USE_TZ = True
 
 # Date and time formats
 
-DATE_FORMAT = 'Y/m/d'
+DATE_FORMAT = "Y/m/d"
 
-DATETIME_FORMAT = 'Y/m/d H:i:s'
+DATETIME_FORMAT = "Y/m/d H:i:s"
 
 
 # Login/Logout URLs
 
-LOGIN_REDIRECT_URL = 'tmdb:progresses'
+LOGIN_REDIRECT_URL = "tmdb:progresses"
 
-LOGIN_URL = 'accounts:login'
+LOGIN_URL = "accounts:login"
 
-LOGOUT_REDIRECT_URL = 'tmdb:popular_shows'
+LOGOUT_REDIRECT_URL = "tmdb:popular_shows"
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
-STATIC_URL = '/static/'
+STATIC_URL = "/static/"
 
 # Extra places for collectstatic to find static files.
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'project/core/static'),
-    os.path.join(BASE_DIR, 'project/static'),
+    os.path.join(BASE_DIR, "project/core/static"),
+    os.path.join(BASE_DIR, "project/static"),
 ]
 
 
 # Django Admin
 
-ADMIN_PATH = config('ADMIN_PATH')
+ADMIN_PATH = config("ADMIN_PATH")
 
 SUIT_CONFIG = {
-    'ADMIN_NAME': 'TV Tracker',
-
-    'SEARCH_URL': '',
-
-    'MENU': (
-        '-',
-        {
-            'app': 'apps_accounts',
-            'models': ('user',),
-        },
-        {
-            'app': 'apps_emails',
-            'models': (
-                {
-                    'model': 'sendgridemail',
-                    'label': 'SendGrid',
-                },
-            ),
-        },
-        {
-            'app': 'apps_website',
-            'models': ('contact',),
-        },
+    "ADMIN_NAME": "TV Tracker",
+    "SEARCH_URL": "",
+    "MENU": (
+        "-",
+        {"app": "apps_accounts", "models": ("user",)},
+        {"app": "apps_emails", "models": ({"model": "sendgridemail", "label": "SendGrid"},)},
+        {"app": "apps_website", "models": ("contact",)},
     ),
 }
 
@@ -211,17 +176,9 @@ SUIT_CONFIG = {
 # Django Debug Toolbar
 
 if DEBUG:
-    INSTALLED_APPS += [
-        'debug_toolbar',
-    ]
-
-    MIDDLEWARE += [
-        'debug_toolbar.middleware.DebugToolbarMiddleware',
-    ]
-
-    DEBUG_TOOLBAR_CONFIG = {
-        'SHOW_TOOLBAR_CALLBACK': lambda request: True,
-    }
+    INSTALLED_APPS += ["debug_toolbar"]
+    MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware"]
+    DEBUG_TOOLBAR_CONFIG = {"SHOW_TOOLBAR_CALLBACK": lambda request: True}
 
 
 # AWS
@@ -231,31 +188,31 @@ AWS_DEFAULT_ACL = None
 
 # TMDb
 
-TMDB_API_KEY = config('TMDB_API_KEY')
-TMDB_CHECK_WAIT_SECONDS = config('TMDB_CHECK_WAIT_SECONDS', cast=int)
+TMDB_API_KEY = config("TMDB_API_KEY")
+TMDB_CHECK_WAIT_SECONDS = config("TMDB_CHECK_WAIT_SECONDS", cast=int)
 
 
 # Email
 
-DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
+DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL")
 
-if ENV in ['qa', 'production']:
-    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-    EMAIL_HOST = 'smtp.sendgrid.net'
+if ENV in ["qa", "production"]:
+    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+    EMAIL_HOST = "smtp.sendgrid.net"
     EMAIL_PORT = 587
     EMAIL_USE_TLS = True
 else:
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-    EMAIL_HOST = 'localhost'
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+    EMAIL_HOST = "localhost"
     EMAIL_PORT = 25
     EMAIL_USE_TLS = False
 
-EMAIL_HOST_USER = config('SENDGRID_USERNAME')
-EMAIL_HOST_PASSWORD = config('SENDGRID_PASSWORD')
+EMAIL_HOST_USER = config("SENDGRID_USERNAME")
+EMAIL_HOST_PASSWORD = config("SENDGRID_PASSWORD")
 
-SENDGRID_API_KEY = config('SENDGRID_API_KEY')
+SENDGRID_API_KEY = config("SENDGRID_API_KEY")
 
-if ENV == 'test':
+if ENV == "test":
     SENDGRID_SANDBOX_MODE = True
 else:
-    SENDGRID_SANDBOX_MODE = config('SENDGRID_SANDBOX_MODE', cast=bool)
+    SENDGRID_SANDBOX_MODE = config("SENDGRID_SANDBOX_MODE", cast=bool)

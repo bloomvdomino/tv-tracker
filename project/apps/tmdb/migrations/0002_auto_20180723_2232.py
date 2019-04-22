@@ -5,18 +5,20 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('apps_tmdb', '0001_initial'),
-    ]
+    dependencies = [("apps_tmdb", "0001_initial")]
 
     operations = [
         migrations.AlterModelOptions(
-            name='progress',
-            options={'ordering': ['-followed', 'next_air_date', 'show_name', 'show_id'], 'verbose_name': 'progress', 'verbose_name_plural': 'progresses'},
+            name="progress",
+            options={
+                "ordering": ["-followed", "next_air_date", "show_name", "show_id"],
+                "verbose_name": "progress",
+                "verbose_name_plural": "progresses",
+            },
         ),
         migrations.AddField(
-            model_name='progress',
-            name='followed',
-            field=models.BooleanField(default=False, verbose_name='followed'),
+            model_name="progress",
+            name="followed",
+            field=models.BooleanField(default=False, verbose_name="followed"),
         ),
     ]

@@ -9,9 +9,9 @@ from .forms import PasswordForm, SignupForm
 
 
 class SignupView(CreateView):
-    template_name = 'accounts/signup.html'
+    template_name = "accounts/signup.html"
     form_class = SignupForm
-    success_url = reverse_lazy('tmdb:progresses')
+    success_url = reverse_lazy("tmdb:progresses")
 
     def form_valid(self, form):
         self.object = form.save()
@@ -20,13 +20,13 @@ class SignupView(CreateView):
 
 
 class LoginView(views.LoginView):
-    template_name = 'accounts/login.html'
+    template_name = "accounts/login.html"
 
 
 class ProfileView(LoginRequiredMixin, UpdateView):
-    template_name = 'accounts/profile.html'
-    fields = ['email', 'time_zone']
-    success_url = reverse_lazy('accounts:profile')
+    template_name = "accounts/profile.html"
+    fields = ["email", "time_zone"]
+    success_url = reverse_lazy("accounts:profile")
 
     def get_object(self, queryset=None):
         return self.request.user
@@ -37,29 +37,29 @@ class ProfileView(LoginRequiredMixin, UpdateView):
 
 
 class PasswordView(LoginRequiredMixin, UpdateView):
-    template_name = 'accounts/password.html'
+    template_name = "accounts/password.html"
     form_class = PasswordForm
-    success_url = reverse_lazy('accounts:login')
+    success_url = reverse_lazy("accounts:login")
 
     def get_object(self, queryset=None):
         return self.request.user
 
 
 class PasswordResetView(views.PasswordResetView):
-    template_name = 'accounts/password_reset.html'
-    email_template_name = 'accounts/emails/password_reset.html'
-    subject_template_name = 'accounts/emails/password_reset_subject.txt'
-    success_url = reverse_lazy('accounts:password_reset_done')
+    template_name = "accounts/password_reset.html"
+    email_template_name = "accounts/emails/password_reset.html"
+    subject_template_name = "accounts/emails/password_reset_subject.txt"
+    success_url = reverse_lazy("accounts:password_reset_done")
 
 
 class PasswordResetDoneView(views.PasswordResetDoneView):
-    template_name = 'accounts/password_reset_done.html'
+    template_name = "accounts/password_reset_done.html"
 
 
 class PasswordResetConfirmView(views.PasswordResetConfirmView):
-    template_name = 'accounts/password_reset_confirm.html'
-    success_url = reverse_lazy('accounts:password_reset_complete')
+    template_name = "accounts/password_reset_confirm.html"
+    success_url = reverse_lazy("accounts:password_reset_complete")
 
 
 class PasswordResetCompleteView(views.PasswordResetCompleteView):
-    template_name = 'accounts/password_reset_complete.html'
+    template_name = "accounts/password_reset_complete.html"
