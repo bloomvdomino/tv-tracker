@@ -16,6 +16,7 @@ The app communicates with [TMDb API][tmdb-api] to fetch TV show data.
 
 - [Docker][docker]
 - [Docker Compose][docker-compose]
+- [Terraform][terraform]
 
 ### Useful Commands
 
@@ -39,9 +40,9 @@ Run `manage.py` commands:
 sh scripts/manage-py.sh <command>
 ```
 
-Run linters:
+Run formatters:
 ```
-sh scripts/lint.sh isort flake8
+sh scripts/format.sh [--check]
 ```
 
 Run tests:
