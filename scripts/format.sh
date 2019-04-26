@@ -18,6 +18,9 @@ then
 
     echo "Running flake8..."
     sh scripts/docker-compose.sh run --no-deps --rm web flake8 $project_dir
+
+    echo "Running terraform fmt..."
+    terraform fmt -check=true $terraform_dir
 else
     echo "Running isort..."
     $isort $project_dir
