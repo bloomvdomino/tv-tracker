@@ -1,7 +1,5 @@
 FROM python:3.7.2-alpine
 
-RUN addgroup -S tt_group && adduser -S tt_user -G tt_group
-
 ENV PYTHONUNBUFFERED 1
 
 WORKDIR /app
@@ -25,7 +23,5 @@ RUN apk update \
 
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.5.0/wait /wait
 RUN chmod +x /wait
-
-USER tt_user
 
 CMD /wait && python manage.py runserver 0:8000
