@@ -9,24 +9,38 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('apps_accounts', '0002_user_max_followed_progresses'),
-    ]
+    dependencies = [("apps_accounts", "0002_user_max_followed_progresses")]
 
     operations = [
         migrations.CreateModel(
-            name='PasswordResetToken',
+            name="PasswordResetToken",
             fields=[
-                ('created', models.DateTimeField(auto_now_add=True, verbose_name='created')),
-                ('updated', models.DateTimeField(auto_now=True, verbose_name='updated')),
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False, verbose_name='ID')),
-                ('used', models.BooleanField(default=False, verbose_name='used')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, verbose_name='user')),
+                ("created", models.DateTimeField(auto_now_add=True, verbose_name="created")),
+                ("updated", models.DateTimeField(auto_now=True, verbose_name="updated")),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("used", models.BooleanField(default=False, verbose_name="used")),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="user",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'password reset token',
-                'verbose_name_plural': 'password reset tokens',
-                'ordering': ['-created'],
+                "verbose_name": "password reset token",
+                "verbose_name_plural": "password reset tokens",
+                "ordering": ["-created"],
             },
-        ),
+        )
     ]

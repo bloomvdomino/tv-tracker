@@ -3,4 +3,4 @@
 set -e
 
 sh scripts/wait.sh
-docker-compose run --rm web python manage.py "$@"
+sh scripts/docker-compose.sh run --rm web python manage.py "$@"

@@ -9,36 +9,81 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-    ]
+    dependencies = [migrations.swappable_dependency(settings.AUTH_USER_MODEL)]
 
     operations = [
         migrations.CreateModel(
-            name='Progress',
+            name="Progress",
             fields=[
-                ('id', models.BigAutoField(editable=False, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', models.DateTimeField(auto_now_add=True, verbose_name='created')),
-                ('updated', models.DateTimeField(auto_now=True, verbose_name='updated')),
-                ('show_id', models.PositiveIntegerField(verbose_name='show ID')),
-                ('show_name', models.CharField(max_length=64, verbose_name='show name')),
-                ('show_poster_path', models.CharField(blank=True, default='', max_length=64, verbose_name='show poster path')),
-                ('show_status', models.CharField(choices=[('returning', 'Returning Series'), ('planned', 'Planned'), ('in_production', 'In Production'), ('ended', 'Ended'), ('canceled', 'Canceled'), ('pilot', 'Pilot')], max_length=16, verbose_name='show status')),
-                ('current_season', models.PositiveSmallIntegerField(default=0, verbose_name='current season')),
-                ('current_episode', models.PositiveSmallIntegerField(default=0, verbose_name='current episode')),
-                ('next_season', models.PositiveSmallIntegerField(blank=True, default=1, null=True, verbose_name='next season')),
-                ('next_episode', models.PositiveSmallIntegerField(blank=True, default=1, null=True, verbose_name='next episode')),
-                ('next_air_date', models.DateField(blank=True, null=True, verbose_name='next air date')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, verbose_name='user')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        editable=False, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                ("created", models.DateTimeField(auto_now_add=True, verbose_name="created")),
+                ("updated", models.DateTimeField(auto_now=True, verbose_name="updated")),
+                ("show_id", models.PositiveIntegerField(verbose_name="show ID")),
+                ("show_name", models.CharField(max_length=64, verbose_name="show name")),
+                (
+                    "show_poster_path",
+                    models.CharField(
+                        blank=True, default="", max_length=64, verbose_name="show poster path"
+                    ),
+                ),
+                (
+                    "show_status",
+                    models.CharField(
+                        choices=[
+                            ("returning", "Returning Series"),
+                            ("planned", "Planned"),
+                            ("in_production", "In Production"),
+                            ("ended", "Ended"),
+                            ("canceled", "Canceled"),
+                            ("pilot", "Pilot"),
+                        ],
+                        max_length=16,
+                        verbose_name="show status",
+                    ),
+                ),
+                (
+                    "current_season",
+                    models.PositiveSmallIntegerField(default=0, verbose_name="current season"),
+                ),
+                (
+                    "current_episode",
+                    models.PositiveSmallIntegerField(default=0, verbose_name="current episode"),
+                ),
+                (
+                    "next_season",
+                    models.PositiveSmallIntegerField(
+                        blank=True, default=1, null=True, verbose_name="next season"
+                    ),
+                ),
+                (
+                    "next_episode",
+                    models.PositiveSmallIntegerField(
+                        blank=True, default=1, null=True, verbose_name="next episode"
+                    ),
+                ),
+                (
+                    "next_air_date",
+                    models.DateField(blank=True, null=True, verbose_name="next air date"),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="user",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'progress',
-                'verbose_name_plural': 'progresses',
-                'ordering': ['next_air_date', 'show_name', 'show_id'],
+                "verbose_name": "progress",
+                "verbose_name_plural": "progresses",
+                "ordering": ["next_air_date", "show_name", "show_id"],
             },
         ),
-        migrations.AlterUniqueTogether(
-            name='progress',
-            unique_together={('user', 'show_id')},
-        ),
+        migrations.AlterUniqueTogether(name="progress", unique_together={("user", "show_id")}),
     ]

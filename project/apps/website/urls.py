@@ -6,6 +6,6 @@ from .views import ContactView, IndexView
 app_name = WebsiteConfig.label
 
 urlpatterns = [
-    path('', IndexView.as_view(), name='index'),
-    path('contact/', ContactView.as_view(), name='contact'),
+    path("", IndexView.as_view(), name="index"),
+    path("contact/", ContactView.as_view(), name="contact"),
 ]

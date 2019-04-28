@@ -8,13 +8,19 @@ services:
 
 before_install:
   - sudo service postgresql stop
+
+  # Install Terraform.
+  - curl -sLo /tmp/terraform.zip https://releases.hashicorp.com/terraform/0.11.13/terraform_0.11.13_linux_amd64.zip
+  - unzip /tmp/terraform.zip -d ~/bin
+  - rm -f /tmp/terraform.zip
+
   - cp .env.example .env
 
 install:
-  - docker-compose build
+  - sh scripts/docker-compose.sh build
 
 script:
-  - sh scripts/lint.sh
+  - sh scripts/format.sh --check
   - sh scripts/test.sh
 
 after_success:
@@ -24,4 +30,4 @@ after_success:
   - coveralls
 
 after_script:
-  - docker-compose down -v
+  - sh scripts/docker-compose.sh down -v

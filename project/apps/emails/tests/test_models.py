@@ -17,17 +17,17 @@ class SendGridEmailModelTests(TestCase):
         self.assertTrue(issubclass(self.model, BaseModel))
 
     def test_ordering(self):
-        self.assertEqual(self.model._meta.ordering, ['title'])
+        self.assertEqual(self.model._meta.ordering, ["title"])
 
     def test_title(self):
-        field = self.model._meta.get_field('title')
+        field = self.model._meta.get_field("title")
         self.assertEqual(type(field), models.CharField)
         self.assertEqual(field.max_length, 32)
         self.assertTrue(field.unique)
         self.assertFalse(field.blank)
 
     def test_template_id(self):
-        field = self.model._meta.get_field('template_id')
+        field = self.model._meta.get_field("template_id")
         self.assertEqual(type(field), models.CharField)
         self.assertEqual(field.max_length, 64)
         self.assertFalse(field.blank)
@@ -49,7 +49,7 @@ class SendGridEmailModelTests(TestCase):
         mail.add_category.assert_not_called()
 
     def test_add_categories_single(self):
-        email = self.model(categories='foo')
+        email = self.model(categories="foo")
         mail = MagicMock()
 
         email._add_categories(mail)
@@ -57,10 +57,10 @@ class SendGridEmailModelTests(TestCase):
         mail.add_category.assert_called_once()
         (category,), _ = mail.add_category.call_args_list[0]
         self.assertEqual(type(category), Category)
-        self.assertEqual(category.name, 'foo')
+        self.assertEqual(category.name, "foo")
 
     def test_add_categories_multiple(self):
-        email = self.model(categories='foo, bar')
+        email = self.model(categories="foo, bar")
         mail = MagicMock()
 
         email._add_categories(mail)
@@ -68,18 +68,18 @@ class SendGridEmailModelTests(TestCase):
         self.assertEqual(mail.add_category.call_count, 2)
         ((category_1,), _), ((category_2,), _) = mail.add_category.call_args_list
         self.assertEqual(type(category_1), Category)
-        self.assertEqual(category_1.name, 'foo')
+        self.assertEqual(category_1.name, "foo")
         self.assertEqual(type(category_2), Category)
-        self.assertEqual(category_2.name, 'bar')
+        self.assertEqual(category_2.name, "bar")
 
 
-@patch('project.apps.emails.models.sendgrid.SendGridAPIClient')
-@patch('project.apps.emails.models.SendGridEmail._build_mail_settings')
+@patch("project.apps.emails.models.sendgrid.SendGridAPIClient")
+@patch("project.apps.emails.models.SendGridEmail._build_mail_settings")
 class SendGridEmailModelSendTests(TestCase):
     def setUp(self):
-        self.to_email = 'to@email.com'
-        self.data = {'foo', 'bar'}
-        self.mail = SendGridEmail(template_id='template_id')
+        self.to_email = "to@email.com"
+        self.data = {"foo", "bar"}
+        self.mail = SendGridEmail(template_id="template_id")
 
     def test_exception(self, _build_mail_settings, SendGridAPIClient):
         SendGridAPIClient.return_value.client.mail.send.post.side_effect = Exception()

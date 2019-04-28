@@ -10,6 +10,11 @@
 
 .progress-card:hover { color: inherit; }
 
+.progress-card>img {
+    width: 154px;
+    height: 231px;
+}
+
 .progress-card>div {
     display: flex;
     flex-direction: column;
