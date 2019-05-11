@@ -1,4 +1,5 @@
 ENV=${env}
+VIRTUAL_HOST=${virtual_host}
 SECRET_KEY=${secret_key}
 ALLOWED_HOSTS=${allowed_hosts}
 DATABASE_URL=${database_url}

@@ -1,22 +1,20 @@
 locals {
-  env_file_web = "env_file.web"
-  env_file_db  = "env_file.db"
-  db_name      = "tt"
-  db_user      = "tt"
+  db_name = "tt"
+  db_user = "tt"
 }
 
-data "template_file" "instance_init" {
-  template = "${file("${path.module}/templates/instance_init.sh")}"
+data "template_file" "app_init" {
+  template = "${file("${path.module}/templates/app_init.sh")}"
 
   vars {
-    project                   = "${var.project}"
+    project                   = "${local.project}"
     docker_compose_base       = "${local.docker_compose_base}"
     docker_compose_production = "${local.docker_compose_production}"
   }
 }
 
 data "template_file" "env_file_web" {
-  template = "${file("${path.module}/templates/${local.env_file_web}")}"
+  template = "${file("${path.module}/templates/env_file.web")}"
 
   vars {
     secret_key        = "${data.aws_ssm_parameter.secret_key.value}"
@@ -27,17 +25,18 @@ data "template_file" "env_file_web" {
     sendgrid_api_key  = "${data.aws_ssm_parameter.sendgrid_api_key.value}"
 
     env                     = "${var.env}"
+    virtual_host            = "${local.public_domain}"
     allowed_hosts           = "${local.public_domain}"
     database_url            = "postgres://${local.db_user}:@db:5432/${local.db_name}"
-    bucket_name             = "${aws_s3_bucket.main.id}"
+    bucket_name             = "${local.infra}-${var.env}"
     tmdb_check_wait_seconds = "${var.tmdb_check_wait_seconds}"
-    default_from_email      = "do-not-respond${local.domain_env}@${var.project}.com"
+    default_from_email      = "do-not-respond${local.domain_env}@${local.project}.com"
     sendgrid_sandbox_mode   = "${var.sendgrid_sandbox_mode}"
   }
 }
 
 data "template_file" "env_file_db" {
-  template = "${file("${path.module}/templates/${local.env_file_db}")}"
+  template = "${file("${path.module}/templates/env_file.db")}"
 
   vars {
     postgres_db   = "${local.db_name}"

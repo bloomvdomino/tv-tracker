@@ -1,5 +1,5 @@
 locals {
-  parameter_store_path = "/${var.project}/${var.env}"
+  parameter_store_path = "/${local.project}/${var.env}"
 }
 
 data "aws_ssm_parameter" "secret_key" {
