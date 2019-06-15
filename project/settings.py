@@ -79,6 +79,7 @@ DATABASES = {"default": dj_database_url.parse(config("DATABASE_URL"))}
 if ENV in ["qa", "production"]:
     DBBACKUP_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
     DBBACKUP_STORAGE_OPTIONS = {"bucket_name": config("BUCKET_NAME"), "default_acl": None}
+    DBBACKUP_FILENAME_TEMPLATE = config("DATABASE_BACKUP_DIR") + "{datetime}.{extension}"
 else:
     DBBACKUP_STORAGE = "django.core.files.storage.FileSystemStorage"
     DBBACKUP_STORAGE_OPTIONS = {"location": os.path.join(BASE_DIR, "db_backups/")}
