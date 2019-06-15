@@ -15,6 +15,7 @@ The app communicates with [TMDb API][tmdb-api] to fetch TV show data.
 
 ### Requirements
 
+- [AWS][aws]
 - [Docker][docker]
 - [Docker Compose][docker-compose]
 - [Terraform][terraform]

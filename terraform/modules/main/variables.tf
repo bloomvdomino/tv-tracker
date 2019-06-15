@@ -1,10 +1,12 @@
-variable "env" {}
-
-variable "project" {
-  default = "tv-tracker"
+locals {
+  infra         = "hobby-infra"
+  project       = "tv-tracker"
+  root_domain   = "olivertso.com"
+  domain_env    = "${var.env != "production" ? ".${var.env}" : ""}"
+  public_domain = "${local.project}${local.domain_env}.${local.root_domain}"
 }
 
-variable "instance_type" {}
+variable "env" {}
 
 variable "tmdb_check_wait_seconds" {
   default = 1800
