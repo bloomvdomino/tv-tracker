@@ -28,7 +28,7 @@ data "template_file" "env_file_web" {
     virtual_host            = "${local.public_domain}"
     allowed_hosts           = "${local.public_domain}"
     database_url            = "postgres://${local.db_user}:@db:5432/${local.db_name}"
-    database_backup_dir     = "db_backups/${local.project}/"
+    database_backup_dir     = "${local.project}/db_backups/"
     bucket_name             = "${local.infra}-${var.env}"
     tmdb_check_wait_seconds = "${var.tmdb_check_wait_seconds}"
     default_from_email      = "do-not-respond${local.domain_env}@${local.project}.com"
