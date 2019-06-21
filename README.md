@@ -80,6 +80,8 @@ sh scripts/format.sh [--check]
 
 ## Deploy
 
+Creating a tag will trigger the automagic deploy from Travis.
+
 ### Requirements
 
 - [AWS][aws]
