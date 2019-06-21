@@ -13,14 +13,7 @@ The app communicates with [TMDb API][tmdb-api] to fetch TV show data.
 
 ## Development
 
-### Requirements
-
-- [AWS][aws]
-- [Docker][docker]
-- [Docker Compose][docker-compose]
-- [Terraform][terraform]
-
-### Application
+### Useful Commands
 
 Install images:
 ```
@@ -47,32 +40,6 @@ Run tests:
 sh scripts/test.sh
 ```
 
-### Infrastructure
-
-Develop and test the infrastructure in QA environment.
-
-CD to QA directory:
-```
-cd terraform/qa/
-```
-
-Initialize local configuration files:
-```
-terraform init
-```
-
-Create or update the infrastructure:
-```
-terraform apply
-```
-
-Always destroy the infrastructure after developing/testing:
-```
-terraform destroy
-```
-
-### Other Commands
-
 Run formatters:
 ```
 sh scripts/format.sh [--check]
@@ -80,16 +47,6 @@ sh scripts/format.sh [--check]
 
 ## Deploy
 
-Creating a tag will trigger the automagic deploy from Travis.
+Creating a tag will trigger an automagic deploy from Travis.
 
-### Requirements
-
-- [AWS][aws]
-- [Docker][docker]
-- [Terraform][terraform]
-
-[aws]: https://aws.amazon.com/
-[docker]: https://www.docker.com/
-[docker-compose]: https://docs.docker.com/compose/
-[terraform]: https://www.terraform.io/
 [tmdb-api]: https://developers.themoviedb.org/3
