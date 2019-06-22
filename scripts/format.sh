@@ -7,6 +7,7 @@ terraform_dir="terraform/"
 
 isort="sh scripts/docker-compose.sh run --no-deps --rm web isort -rc"
 black="sh scripts/docker-compose.sh run --no-deps --rm web black"
+flake8="sh scripts/docker-compose.sh run --no-deps --rm web flake8"
 
 if [ $# = 1 ] && [ $1 = "--check" ]
 then
@@ -17,7 +18,7 @@ then
     $black --check $project_dir
 
     echo "Running flake8..."
-    sh scripts/docker-compose.sh run --no-deps --rm web flake8 $project_dir
+    $flake8 $project_dir
 
     echo "Running terraform fmt..."
     terraform fmt -check=true $terraform_dir
@@ -27,6 +28,9 @@ else
 
     echo "Running black..."
     $black $project_dir
+
+    echo "Running flake8..."
+    $flake8 $project_dir
 
     echo "Running terraform fmt..."
     terraform fmt $terraform_dir

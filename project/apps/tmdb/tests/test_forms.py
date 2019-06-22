@@ -1,5 +1,3 @@
-from datetime import date
-
 import pytest
 
 from ..forms import ProgressForm
@@ -17,24 +15,24 @@ class TestProgressForm:
         return mocker.MagicMock(spec=_Show)
 
     @pytest.fixture
-    def get_air_date(self, mocker):
-        return mocker.patch("project.apps.tmdb.forms.get_air_date", return_value=date(2013, 3, 3))
+    def update_next_air_date(self, mocker):
+        return mocker.patch("project.apps.tmdb.models.Progress.update_next_air_date")
 
     @pytest.mark.parametrize(
-        "current_episode,next_episode,next_air_date",
+        "current_episode,next_episode",
         [
-            ((0, 0), (None, None), None),
-            ((0, 0), (1, None), None),
-            ((0, 0), (None, 1), None),
-            ((0, 0), (1, 1), date(2013, 3, 3)),
-            ((1, 1), (None, None), None),
-            ((1, 1), (1, None), None),
-            ((1, 1), (None, 1), None),
-            ((1, 1), (1, 2), date(2013, 3, 3)),
+            ((0, 0), (None, None)),
+            ((0, 0), (1, None)),
+            ((0, 0), (None, 1)),
+            ((0, 0), (1, 1)),
+            ((1, 1), (None, None)),
+            ((1, 1), (1, None)),
+            ((1, 1), (None, 1)),
+            ((1, 1), (1, 2)),
         ],
     )
     def test_update_episodes(
-        self, instance, show, get_air_date, current_episode, next_episode, next_air_date
+        self, instance, show, update_next_air_date, current_episode, next_episode
     ):
         show.get_next_episode.return_value = next_episode
         cleaned_data = {
@@ -50,4 +48,5 @@ class TestProgressForm:
         assert form.instance.current_episode == current_episode[1]
         assert form.instance.next_season == next_episode[0]
         assert form.instance.next_episode == next_episode[1]
-        assert form.instance.next_air_date == next_air_date
+
+        update_next_air_date.assert_called_once_with()

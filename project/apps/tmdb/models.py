@@ -5,7 +5,7 @@ from django.utils import timezone
 
 from project.core.models import BaseModel
 
-from .utils import format_episode_label
+from .utils import format_episode_label, get_air_date, get_show
 
 
 class Progress(BaseModel):
@@ -116,6 +116,10 @@ class Progress(BaseModel):
         return reverse("tmdb:progress_update", kwargs={"show_id": self.show_id})
 
     @property
+    def watch_next_url(self):
+        return reverse("tmdb:watch_next", kwargs={"show_id": self.show_id})
+
+    @property
     def last_watched_label(self):
         return format_episode_label(self.current_season, self.current_episode)
 
@@ -124,3 +128,22 @@ class Progress(BaseModel):
         if not (self.next_season and self.next_episode):
             return None
         return format_episode_label(self.next_season, self.next_episode)
+
+    def watch_next(self):
+        self.update_episodes()
+        self.update_next_air_date()
+        self.save()
+
+    def update_episodes(self):
+        show = get_show(self.show_id)
+
+        self.current_season, self.current_episode = self.next_season, self.next_episode
+        self.next_season, self.next_episode = show.get_next_episode(
+            self.current_season, self.current_episode
+        )
+
+    def update_next_air_date(self):
+        if self.next_season and self.next_episode:
+            self.next_air_date = get_air_date(self.show_id, self.next_season, self.next_episode)
+        else:
+            self.next_air_date = None

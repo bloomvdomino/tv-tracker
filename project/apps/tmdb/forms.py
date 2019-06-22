@@ -1,7 +1,7 @@
 from django import forms
 
 from .models import Progress
-from .utils import format_episode_label, get_air_date, search_show
+from .utils import format_episode_label, search_show
 
 
 class ProgressForm(forms.ModelForm):
@@ -67,12 +67,7 @@ class ProgressForm(forms.ModelForm):
             self.instance.current_season, self.instance.current_episode
         )
 
-        if self.instance.next_season and self.instance.next_episode:
-            self.instance.next_air_date = get_air_date(
-                self.instance.show_id, self.instance.next_season, self.instance.next_episode
-            )
-        else:
-            self.instance.next_air_date = None
+        self.instance.update_next_air_date()
 
 
 class SearchForm(forms.Form):

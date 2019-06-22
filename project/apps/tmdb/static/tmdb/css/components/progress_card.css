@@ -10,7 +10,7 @@
 
 .progress-card:hover { color: inherit; }
 
-.progress-card>img {
+.progress-card>a, .progress-card>a>img {
     width: 154px;
     height: 231px;
 }
@@ -18,10 +18,12 @@
 .progress-card>div {
     display: flex;
     flex-direction: column;
-    padding: 8px 16px;
+    padding: 6px 16px;
+    width: 100%;
 }
 
 .progress-card>div>h6 {
+    margin-bottom: 8px;
     width: 200px;
     font-size: 18px;
     font-weight: 400;
@@ -30,4 +32,6 @@
     overflow: hidden;
 }
 
-.progress-card>div>span { margin-bottom: 12px; }
+.progress-card>div>span { margin-bottom: 8px; }
+
+.progress-card button { margin-bottom: 0; }
