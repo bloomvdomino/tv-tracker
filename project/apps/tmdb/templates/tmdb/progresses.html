@@ -4,6 +4,7 @@
 
 {% block custom_css %}
 {{ block.super }}
+<link href="{% static 'core/css/components/loader.css' %}" rel="stylesheet">
 <link href="{% static 'tmdb/css/progresses.css' %}" rel="stylesheet">
 <link href="{% static 'tmdb/css/components/progress_card.css' %}" rel="stylesheet">
 <link href="{% static 'tmdb/css/components/progress_card_list.css' %}" rel="stylesheet">
@@ -31,4 +32,18 @@
     {% include 'tmdb/components/progress_card_list.html' with title="Finished" progresses=finished only %}
     {% include 'tmdb/components/progress_card_list.html' with title="Stopped" progresses=stopped only %}
 </div>
+
+{% include 'core/components/loader.html' %}
+{% endblock %}
+
+{% block js %}
+{{ block.super }}
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+  crossorigin="anonymous"></script>
+{% endblock %}
+
+{% block custom_js %}
+{{ block.super }}
+<script src="{% static 'tmdb/js/progresses.js' %}"></script>
 {% endblock %}
