@@ -29,11 +29,12 @@ after_success:
   - pip install coveralls
   - coveralls
 
-after_script:
-  - sh scripts/docker-compose.sh down -v
-
 deploy:
   provider: script
   script: sh scripts/deploy.sh
   on:
     tags: true
+
+notifications:
+  email:
+    on_success: never
