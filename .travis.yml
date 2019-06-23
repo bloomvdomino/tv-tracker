@@ -1,39 +1,48 @@
+dist: xenial
+
 language: python
 
-python:
-  - 3.6
+python: 3.7
 
 services:
   - docker
 
-before_install:
-  - sudo service postgresql stop
+jobs:
+  include:
+    - stage: test
+      name: "Unit Tests and Linters"
+      if: tag IS blank
+      addons:
+        snaps:
+          - terraform
+      before_install:
+        - sudo service postgresql stop
+        - cp .env.example .env
+      install:
+        - sh scripts/docker-compose.sh build
+      script:
+        - sh scripts/format.sh --check
+        - sh scripts/test.sh
+      after_success:
+        - sudo mkdir /app
+        - sudo cp -r project /app/project
+        - pip install coveralls
+        - coveralls
 
-  # Install Terraform.
-  - curl -sLo /tmp/terraform.zip https://releases.hashicorp.com/terraform/0.11.13/terraform_0.11.13_linux_amd64.zip
-  - unzip /tmp/terraform.zip -d ~/bin
-  - rm -f /tmp/terraform.zip
-
-  - cp .env.example .env
-
-install:
-  - sh scripts/docker-compose.sh build
-
-script:
-  - sh scripts/format.sh --check
-  - sh scripts/test.sh
-
-after_success:
-  - sudo mkdir /app
-  - sudo cp -r project /app/project
-  - pip install coveralls
-  - coveralls
-
-deploy:
-  provider: script
-  script: sh scripts/deploy.sh
-  on:
-    tags: true
+    - stage: deploy
+      name: "Deploy to AWS"
+      if: tag IS present
+      addons:
+        snaps:
+          - name: aws-cli
+            confinement: classic
+      install: skip
+      script: skip
+      deploy:
+        provider: script
+        script: sh scripts/deploy.sh
+        on:
+          tags: true
 
 notifications:
   email:
