@@ -1,6 +1,6 @@
 @keyframes spin { 100% { transform:rotate(360deg); } }
 
-.loader {
+#loader {
     display: none;
     justify-content: center;
     align-items: center;
@@ -13,7 +13,7 @@
     z-index: 9999;
 }
 
-.loader img {
+#loader img {
     width: 90px;
     height: 90px;
     animation: spin 3s linear infinite;

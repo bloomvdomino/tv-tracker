@@ -39,6 +39,7 @@
     <link href="{% static 'core/css/base.css' %}" rel="stylesheet">
     <link href="{% static 'core/css/components/header.css' %}" rel="stylesheet">
     <link href="{% static 'core/css/components/header_item.css' %}" rel="stylesheet">
+    <link href="{% static 'core/css/components/loader.css' %}" rel="stylesheet">
     {% endblock %}
 </head>
 
@@ -48,6 +49,8 @@
     <div class="container main-container">
         {% block content %}{% endblock %}
     </div>
+
+    {% include 'core/components/loader.html' %}
 
     {% block js %}{% endblock %}
     {% block custom_js %}{% endblock %}

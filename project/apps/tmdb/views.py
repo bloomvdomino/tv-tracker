@@ -16,9 +16,9 @@ from .utils import get_popular_shows, get_show
 
 @method_decorator(csrf_exempt, name="dispatch")
 class WatchNextView(LoginRequiredMixin, View):
-    http_method_names = ["post"]
+    http_method_names = ["patch"]
 
-    def post(self, request, *args, **kwargs):
+    def patch(self, request, *args, **kwargs):
         progress = request.user.progress_set.get(show_id=self.kwargs["show_id"])
         progress.watch_next()
         return HttpResponse()

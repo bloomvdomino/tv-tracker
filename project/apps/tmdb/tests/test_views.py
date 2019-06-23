@@ -11,7 +11,7 @@ class TestWatchNextView:
         assert issubclass(WatchNextView, LoginRequiredMixin)
 
     def test_allowed_methods(self):
-        assert WatchNextView.http_method_names == ["post"]
+        assert WatchNextView.http_method_names == ["patch"]
 
     @pytest.mark.django_db
     def test_post(self, mocker, client):
@@ -20,7 +20,7 @@ class TestWatchNextView:
         client.login(username=progress.user.email, password="123123")
         url = reverse("tmdb:watch_next", kwargs={"show_id": progress.show_id})
 
-        response = client.post(url, content_type="application/json")
+        response = client.patch(url, content_type="application/json")
 
         assert response.status_code == 200
         watch_next.assert_called_once_with()
