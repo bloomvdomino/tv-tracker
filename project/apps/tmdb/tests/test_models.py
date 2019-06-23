@@ -72,7 +72,7 @@ class TestProgressModel:
         assert progress.watch_next_url == "/progress/watch_next/{}/".format(progress.show_id)
 
     def test_watch_next(self, mocker):
-        update_episodes = mocker.patch("project.apps.tmdb.models.Progress.update_episodes")
+        update_episodes = mocker.patch("project.apps.tmdb.models.Progress._update_episodes")
         update_next_air_date = mocker.patch(
             "project.apps.tmdb.models.Progress.update_next_air_date"
         )
@@ -91,7 +91,7 @@ class TestProgressModel:
         get_show = mocker.patch("project.apps.tmdb.models.get_show", return_value=show)
         progress = ProgressFactory.build()
 
-        progress.update_episodes()
+        progress._update_episodes()
 
         assert progress.current_season == 1
         assert progress.current_episode == 1
