@@ -22,8 +22,8 @@
     width: 100%;
 }
 
-.progress-card>div>h6 {
-    margin-bottom: 8px;
+.progress-card h6 {
+    margin-bottom: 4px;
     width: 200px;
     font-size: 18px;
     font-weight: 400;
@@ -32,6 +32,17 @@
     overflow: hidden;
 }
 
-.progress-card>div>span { margin-bottom: 8px; }
+.progress-card .section { margin-bottom: 4px; }
 
-.progress-card button { margin-bottom: 0; }
+.progress-card .section .next-ep-section {
+    display: flex;
+    align-items: center;
+}
+
+.progress-card .section .next-ep-section button {
+    margin-left: 4px;
+    margin-bottom: 0;
+    padding: 0 8px;
+    height: 18px;
+    line-height: 18px;
+}

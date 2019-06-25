@@ -8,33 +8,30 @@
     <div>
         <h6>{{ progress.show_name }}</h6>
 
-        <span>{{ progress.get_show_status_display }}</span>
+        <div class="section">{{ progress.get_show_status_display }}</div>
 
-        <span>
+        <div class="section">
             Last Watched:<br>
             {% if progress.not_started %}
             Not started, yet.
             {% else %}
             {{ progress.last_watched_label }}
             {% endif %}
-        </span>
+        </div>
 
         {% if progress.list_in_available or progress.list_in_scheduled %}
-        <span>
-            {% if progress.list_in_available %}
-            Watch Now:
-            {% else %}
-            Scheduled:
-            {% endif %}
-            <br>{{ progress.next_to_watch_label }} - {{ progress.next_air_date }}
-        </span>
-        {% endif %}
-
-        {% if progress.list_in_available %}
-        <div>
-            <button class="watch-next-btn" data-watch-next-url="{{ progress.watch_next_url }}">
-                Next
-            </button>
+        <div class="section">
+            <div class="next-ep-section">
+                {% if progress.list_in_available %}
+                <span>Watch Now:</span>
+                <button class="watch-next-btn" data-watch-next-url="{{ progress.watch_next_url }}">
+                    Next
+                </button>
+                {% else %}
+                Scheduled:
+                {% endif %}
+            </div>
+            {{ progress.next_to_watch_label }} - {{ progress.next_air_date }}
         </div>
         {% endif %}
     </div>
