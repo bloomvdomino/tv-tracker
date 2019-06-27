@@ -69,15 +69,9 @@ class Progress(BaseModel):
         verbose_name = "progress"
         verbose_name_plural = "progresses"
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._show = None
-
     @cached_property
     def show(self):
-        if not self._show:
-            self._show = get_show(self.show_id)
-        return self._show
+        return get_show(self.show_id)
 
     @property
     def not_started(self):

@@ -10,26 +10,18 @@ from .factories import ProgressFactory
 
 
 class TestProgressModel:
-    def test_init(self):
-        progress = ProgressFactory.build()
-        assert progress._show is None
-
-    def test_show_fetched(self, mocker):
+    def test_show(self, mocker):
         show = mocker.MagicMock()
         get_show = mocker.patch("project.apps.tmdb.models.get_show", return_value=show)
         progress = ProgressFactory.build()
 
+        # Should call get_show when accessed by the first time.
         assert progress.show == show
         get_show.assert_called_once_with(progress.show_id)
 
-    def test_show_cached(self, mocker):
-        get_show = mocker.patch("project.apps.tmdb.models.get_show")
-        show = mocker.MagicMock()
-        progress = ProgressFactory.build()
-        progress._show = show
-
+        # Should not call get_show again as the show should be cached.
         assert progress.show == show
-        get_show.assert_not_called()
+        assert get_show.call_count == 1
 
     @pytest.mark.django_db
     @pytest.mark.parametrize(
@@ -117,8 +109,8 @@ class TestProgressModel:
     def test_update_episodes(self, mocker):
         show = mocker.MagicMock()
         show.get_next_episode.return_value = (1, 2)
+        mocker.patch("project.apps.tmdb.models.get_show", return_value=show)
         progress = ProgressFactory.build()
-        progress._show = show
 
         progress._update_episodes()
 
@@ -153,8 +145,8 @@ class TestProgressModel:
     def test_update_last_aired_episode(self, mocker):
         show = mocker.MagicMock()
         type(show).last_aired_episode = mocker.PropertyMock(return_value=(2, 3))
+        mocker.patch("project.apps.tmdb.models.get_show", return_value=show)
         progress = ProgressFactory.build()
-        progress._show = show
 
         progress.update_last_aired_episode()
 
