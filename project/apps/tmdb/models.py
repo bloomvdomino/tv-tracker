@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.functional import cached_property
 
 from project.core.models import BaseModel
 
@@ -55,12 +56,28 @@ class Progress(BaseModel):
         blank=True, null=True, default=1, verbose_name="next episode"
     )
     next_air_date = models.DateField(blank=True, null=True, verbose_name="next air date")
+    last_aired_season = models.PositiveSmallIntegerField(
+        blank=True, null=True, verbose_name="last aired season"
+    )
+    last_aired_episode = models.PositiveSmallIntegerField(
+        blank=True, null=True, verbose_name="last aired episode"
+    )
 
     class Meta:
         unique_together = (("user", "show_id"),)
         ordering = ["next_air_date", "show_name", "show_id"]
         verbose_name = "progress"
         verbose_name_plural = "progresses"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._show = None
+
+    @cached_property
+    def show(self):
+        if not self._show:
+            self._show = get_show(self.show_id)
+        return self._show
 
     @property
     def not_started(self):
@@ -129,16 +146,20 @@ class Progress(BaseModel):
             return None
         return format_episode_label(self.next_season, self.next_episode)
 
+    @property
+    def last_aired_label(self):
+        if not (self.last_aired_season and self.last_aired_episode):
+            return None
+        return format_episode_label(self.last_aired_season, self.last_aired_episode)
+
     def watch_next(self):
         self._update_episodes()
         self.update_next_air_date()
         self.save()
 
     def _update_episodes(self):
-        show = get_show(self.show_id)
-
         self.current_season, self.current_episode = self.next_season, self.next_episode
-        self.next_season, self.next_episode = show.get_next_episode(
+        self.next_season, self.next_episode = self.show.get_next_episode(
             self.current_season, self.current_episode
         )
 
@@ -147,3 +168,6 @@ class Progress(BaseModel):
             self.next_air_date = get_air_date(self.show_id, self.next_season, self.next_episode)
         else:
             self.next_air_date = None
+
+    def update_last_aired_episode(self):
+        self.last_aired_season, self.last_aired_episode = self.show.last_aired_episode

@@ -47,8 +47,10 @@ class ProgressForm(forms.ModelForm):
             self.instance.delete()
             return None
 
-        self._update_episodes()
         self.instance.user = self.user
+        self.instance.update_last_aired_episode()
+        self._update_episodes()
+
         return super().save(commit=commit)
 
     def _make_episode_choices(self):

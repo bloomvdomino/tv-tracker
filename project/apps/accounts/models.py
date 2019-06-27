@@ -105,6 +105,7 @@ class User(AbstractBaseUser, PermissionsMixin, BaseUUIDModel):
             next_season, next_episode = show.get_next_episode(
                 progress.current_season, progress.current_episode
             )
+            last_aired_season, last_aired_episode = show.last_aired_episode
             data.append(
                 {
                     "show_id": show.id,
@@ -113,6 +114,8 @@ class User(AbstractBaseUser, PermissionsMixin, BaseUUIDModel):
                     "show_status": show.status_value,
                     "next_season": next_season,
                     "next_episode": next_episode,
+                    "last_aired_season": last_aired_season,
+                    "last_aired_episode": last_aired_episode,
                 }
             )
         return data
@@ -125,7 +128,13 @@ class User(AbstractBaseUser, PermissionsMixin, BaseUUIDModel):
         last_check_wait = now - timedelta(seconds=settings.TMDB_CHECK_WAIT_SECONDS)
         progresses = self.progress_set.filter(
             Q(last_check__isnull=True) | Q(last_check__lte=last_check_wait),
-            ~Q(next_season__isnull=False, next_episode__isnull=False, next_air_date__isnull=False),
+            ~Q(
+                next_season__isnull=False,
+                next_episode__isnull=False,
+                next_air_date__isnull=False,
+                last_aired_season__isnull=False,
+                last_aired_episode__isnull=False,
+            ),
             status=Progress.FOLLOWING,
         )
         show_ids = list(progresses.values_list("show_id", flat=True))

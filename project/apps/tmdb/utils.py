@@ -64,7 +64,7 @@ class _Show:
         return aired_episodes
 
     def _episode_aired(self, season, episode):
-        last_aired_season, last_aired_episode = self._last_aired_episode
+        last_aired_season, last_aired_episode = self.last_aired_episode
         if not (last_aired_season and last_aired_episode):
             return False
         return not (
@@ -73,7 +73,7 @@ class _Show:
         )
 
     @cached_property
-    def _last_aired_episode(self):
+    def last_aired_episode(self):
         last_aired = self._data["last_episode_to_air"]
         if not last_aired:
             return None, None

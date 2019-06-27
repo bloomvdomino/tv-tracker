@@ -8,15 +8,17 @@
     <div>
         <h6>{{ progress.show_name }}</h6>
 
-        <div class="section">{{ progress.get_show_status_display }}</div>
+        <div class="section"><i>{{ progress.get_show_status_display }}</i></div>
 
         <div class="section">
             Last Watched:<br>
-            {% if progress.not_started %}
-            Not started, yet.
-            {% else %}
-            {{ progress.last_watched_label }}
-            {% endif %}
+            <span class="episode-label">
+                {% if progress.not_started %}
+                Not started, yet.
+                {% else %}
+                {{ progress.last_watched_label }}
+                {% endif %}
+            </span>
         </div>
 
         {% if progress.list_in_available or progress.list_in_scheduled %}
@@ -31,7 +33,16 @@
                 Scheduled:
                 {% endif %}
             </div>
-            {{ progress.next_to_watch_label }} - {{ progress.next_air_date }}
+            <span class="episode-label">
+                {{ progress.next_to_watch_label }} - {{ progress.next_air_date }}
+            </span>
+        </div>
+        {% endif %}
+
+        {% if progress.list_in_available and progress.last_aired_label %}
+        <div class="section">
+            Newest:<br>
+            <span class="episode-label">{{ progress.last_aired_label }}</span>
         </div>
         {% endif %}
     </div>

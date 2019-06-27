@@ -34,6 +34,12 @@
 
 .progress-card .section { margin-bottom: 4px; }
 
+.progress-card .section .episode-label {
+    padding: 0 5px;
+    background-color: #eeeeee;
+    border-radius: 3px;
+}
+
 .progress-card .section .next-ep-section {
     display: flex;
     align-items: center;

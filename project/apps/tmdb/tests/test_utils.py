@@ -68,7 +68,7 @@ class TestShow:
             new=mocker.PropertyMock(return_value=[{"episode_count": 3}, {"episode_count": 3}]),
         )
         mocker.patch(
-            "project.apps.tmdb.utils._Show._last_aired_episode",
+            "project.apps.tmdb.utils._Show.last_aired_episode",
             new=mocker.PropertyMock(return_value=(2, 1)),
         )
 
@@ -96,7 +96,7 @@ class TestShow:
         self, mocker, mock_set_progress_related, last_aired, season, episode, aired
     ):
         mocker.patch(
-            "project.apps.tmdb.utils._Show._last_aired_episode",
+            "project.apps.tmdb.utils._Show.last_aired_episode",
             new=mocker.PropertyMock(return_value=last_aired),
         )
         show = _Show({})
@@ -109,7 +109,7 @@ class TestShow:
     def test_last_aired_episode(self, mock_set_progress_related, last_episode_to_air, expected):
         data = {"last_episode_to_air": last_episode_to_air}
         show = _Show(data)
-        assert show._last_aired_episode == expected
+        assert show.last_aired_episode == expected
 
     @pytest.mark.parametrize(
         "episode,expected",
