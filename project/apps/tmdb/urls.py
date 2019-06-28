@@ -4,6 +4,7 @@ from .apps import TMDbConfig
 from .views import (
     PopularShowsView,
     ProgressCreateView,
+    ProgressDeleteView,
     ProgressesView,
     ProgressUpdateView,
     SearchView,
@@ -22,5 +23,8 @@ urlpatterns = [
     ),
     path(
         "show/<int:show_id>/progress/update/", ProgressUpdateView.as_view(), name="progress_update"
+    ),
+    path(
+        "show/<int:show_id>/progress/delete/", ProgressDeleteView.as_view(), name="progress_delete"
     ),
 ]

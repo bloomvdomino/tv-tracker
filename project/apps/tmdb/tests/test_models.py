@@ -80,6 +80,10 @@ class TestProgressModel:
         progress = ProgressFactory.build()
         assert progress.update_url == "/show/{}/progress/update/".format(progress.show_id)
 
+    def test_delete_url(self):
+        progress = ProgressFactory.build()
+        assert progress.delete_url == "/show/{}/progress/delete/".format(progress.show_id)
+
     def test_watch_next_url(self):
         progress = ProgressFactory.build()
         assert progress.watch_next_url == "/progress/watch_next/{}/".format(progress.show_id)

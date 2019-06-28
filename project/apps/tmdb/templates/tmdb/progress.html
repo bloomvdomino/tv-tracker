@@ -58,12 +58,18 @@
             </input>
 
             {% if progress %}
-            <div>
-                <label for="{{ form.delete.id_for_label }}">Delete:</label>
-                {{ form.delete }}
-            </div>
+            <button id="delete-btn" type="button" data-delete-url="{{ progress.delete_url }}">
+                Delete
+            </button>
             {% endif %}
         </div>
     </form>
 </div>
+{% endblock %}
+
+{% block custom_js %}
+{% if progress %}
+{{ block.super }}
+<script src="{% static 'tmdb/js/progress.js' %}"></script>
+{% endif %}
 {% endblock %}

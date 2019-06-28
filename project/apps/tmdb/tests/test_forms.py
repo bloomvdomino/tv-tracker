@@ -18,6 +18,17 @@ class TestProgressForm:
     def update_next_air_date(self, mocker):
         return mocker.patch("project.apps.tmdb.models.Progress.update_next_air_date")
 
+    def test_init(self, show, mocker):
+        make_episode_choices = mocker.patch(
+            "project.apps.tmdb.forms.ProgressForm._make_episode_choices", return_value=[1, 2]
+        )
+        form = ProgressForm(user=None, show=show)
+
+        assert form.user is None
+        assert form.show == show
+        assert form.fields["last_watched"].choices == [1, 2]
+        make_episode_choices.assert_called_once_with()
+
     @pytest.mark.parametrize(
         "current_episode,next_episode",
         [
