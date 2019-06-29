@@ -127,6 +127,10 @@ class Progress(BaseModel):
         return reverse("tmdb:progress_update", kwargs={"show_id": self.show_id})
 
     @property
+    def delete_url(self):
+        return reverse("tmdb:progress_delete", kwargs={"show_id": self.show_id})
+
+    @property
     def watch_next_url(self):
         return reverse("tmdb:watch_next", kwargs={"show_id": self.show_id})
 

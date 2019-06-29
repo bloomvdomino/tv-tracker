@@ -12,8 +12,6 @@ class ProgressForm(forms.ModelForm):
 
     last_watched = forms.ChoiceField()
 
-    delete = forms.BooleanField(required=False)
-
     class Meta:
         model = Progress
         fields = ["status", "show_id", "show_name", "show_poster_path", "show_status"]
@@ -43,14 +41,9 @@ class ProgressForm(forms.ModelForm):
         return status
 
     def save(self, commit=True):
-        if self.cleaned_data.get("delete", False):
-            self.instance.delete()
-            return None
-
         self.instance.user = self.user
         self.instance.update_last_aired_episode()
         self._update_episodes()
-
         return super().save(commit=commit)
 
     def _make_episode_choices(self):

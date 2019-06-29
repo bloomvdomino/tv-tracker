@@ -16,7 +16,7 @@ form .btn-section {
     align-items: center;
 }
 
-form .btn-section input { margin: 0; }
+form .btn-section input, form .btn-section button { margin: 0; }
 
 .successlist, .errorlist { list-style: none; }
 

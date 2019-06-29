@@ -2,16 +2,13 @@ import pytest
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 
-from ..views import WatchNextView
+from ..views import ProgressDeleteView, WatchNextView
 from .factories import ProgressFactory
 
 
 class TestWatchNextView:
     def test_login_required(self):
         assert issubclass(WatchNextView, LoginRequiredMixin)
-
-    def test_allowed_methods(self):
-        assert WatchNextView.http_method_names == ["patch"]
 
     @pytest.mark.django_db
     def test_post(self, mocker, client):
@@ -24,3 +21,20 @@ class TestWatchNextView:
 
         assert response.status_code == 200
         watch_next.assert_called_once_with()
+
+
+class TestProgressDeleteView:
+    def test_login_required(self):
+        assert issubclass(ProgressDeleteView, LoginRequiredMixin)
+
+    @pytest.mark.django_db
+    def test_patch(self, client):
+        progress = ProgressFactory()
+        user = progress.user
+        client.login(username=user.email, password="123123")
+        url = reverse("tmdb:progress_delete", kwargs={"show_id": progress.show_id})
+
+        response = client.delete(url, content_type="application/json")
+
+        assert response.status_code == 200
+        assert user.progress_set.count() == 0
