@@ -18,6 +18,7 @@ data "template_file" "env_file_web" {
 
   vars {
     secret_key        = "${data.aws_ssm_parameter.secret_key.value}"
+    admins            = "${data.aws_ssm_parameter.admins.value}"
     admin_path        = "${data.aws_ssm_parameter.admin_path.value}"
     tmdb_api_key      = "${data.aws_ssm_parameter.tmdb_api_key.value}"
     sendgrid_username = "${data.aws_ssm_parameter.sendgrid_username.value}"

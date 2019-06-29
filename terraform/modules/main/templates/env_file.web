@@ -2,6 +2,7 @@ ENV=${env}
 VIRTUAL_HOST=${virtual_host}
 SECRET_KEY=${secret_key}
 ALLOWED_HOSTS=${allowed_hosts}
+ADMINS=${admins}
 DATABASE_URL=${database_url}
 DATABASE_BACKUP_DIR=${database_backup_dir}
 BUCKET_NAME=${bucket_name}

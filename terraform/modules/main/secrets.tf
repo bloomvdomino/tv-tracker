@@ -6,6 +6,10 @@ data "aws_ssm_parameter" "secret_key" {
   name = "${local.parameter_store_path}/secret_key"
 }
 
+data "aws_ssm_parameter" "admins" {
+  name = "${local.parameter_store_path}/admins"
+}
+
 data "aws_ssm_parameter" "admin_path" {
   name = "${local.parameter_store_path}/admin_path"
 }
