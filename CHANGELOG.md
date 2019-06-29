@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Last aired episode in progress card.
 - Progress delete button in progress page. #2
 
+### Changed
+- Move isort config to pyproject.toml. #3
+
 ## [2.7.0] - 2019-06-24
 ### Added
 - Travis stages.
