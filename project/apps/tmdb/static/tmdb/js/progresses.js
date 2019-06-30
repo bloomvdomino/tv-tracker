@@ -19,6 +19,7 @@
         const xhr = new XMLHttpRequest();
 
         xhr.open('PATCH', url);
+        xhr.setRequestHeader('X-CSRFToken', Cookies.get('csrftoken'));
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.send();
 
