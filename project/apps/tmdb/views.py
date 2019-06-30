@@ -4,17 +4,14 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http.response import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import resolve, reverse
-from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
 from django.views import View
-from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import CreateView, FormView, TemplateView, UpdateView
 
 from .forms import ProgressForm, SearchForm
 from .utils import get_popular_shows, get_show
 
 
-@method_decorator(csrf_exempt, name="dispatch")
 class WatchNextView(LoginRequiredMixin, View):
     def patch(self, request, *args, **kwargs):
         progress = request.user.progress_set.get(show_id=kwargs["show_id"])
@@ -161,7 +158,6 @@ class ProgressUpdateView(ProgressEditMixin, LoginRequiredMixin, UpdateView):
         return initial
 
 
-@method_decorator(csrf_exempt, name="dispatch")
 class ProgressDeleteView(LoginRequiredMixin, View):
     def delete(self, request, *args, **kwargs):
         request.user.progress_set.filter(show_id=kwargs["show_id"]).delete()
