@@ -140,7 +140,7 @@ def get_show(id, user=None):
 
 def get_air_date(show_id, season, episode):
     endpoint = "tv/{}/season/{}/episode/{}".format(show_id, season, episode)
-    return fetch(endpoint)["air_date"]
+    return fetch(endpoint).get("air_date")
 
 
 def get_popular_shows(page, user=None):
