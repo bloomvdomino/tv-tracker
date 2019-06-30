@@ -40,9 +40,9 @@ Run tests:
 sh scripts/test.sh
 ```
 
-Run formatters:
+Run linters and formatters:
 ```
-sh scripts/format.sh [--check]
+sh scripts/lint-n-format.sh [--check]
 ```
 
 ## Deploy

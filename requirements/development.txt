@@ -1,5 +1,6 @@
 -r base.txt
 
+bandit==1.6.1
 black==19.3b0
 django-debug-toolbar==2.0
 factory_boy==2.12.0
