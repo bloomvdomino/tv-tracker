@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 - Enforce CSRF protection in AJAX requests. #6
+- Use Bandit. #9
 
 ## [2.8.0] - 2019-06-29
 ### Added
