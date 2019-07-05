@@ -8,7 +8,9 @@ class ProgressForm(forms.ModelForm):
     show_id = forms.IntegerField(widget=forms.HiddenInput())
     show_name = forms.CharField(widget=forms.HiddenInput())
     show_poster_path = forms.CharField(widget=forms.HiddenInput())
-    show_status = forms.CharField(widget=forms.HiddenInput())
+    show_status = forms.ChoiceField(
+        choices=Progress.SHOW_STATUS_CHOICES, widget=forms.HiddenInput()
+    )
 
     last_watched = forms.ChoiceField()
 
@@ -19,8 +21,22 @@ class ProgressForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop("user")
         self.show = kwargs.pop("show")
+
+        self._update_show_data(kwargs["initial"], kwargs.get("instance"))
+
         super().__init__(*args, **kwargs)
+
         self.fields["last_watched"].choices = self._make_episode_choices()
+
+    def _update_show_data(self, initial, instance):
+        if not instance:
+            return
+
+        update_fields = ["show_id", "show_name", "show_poster_path", "show_status"]
+        instance.__dict__.update(
+            **{key: value for key, value in initial.items() if key in update_fields}
+        )
+        instance.save(update_fields=update_fields)
 
     def clean_last_watched(self):
         last_watched = self.cleaned_data["last_watched"]

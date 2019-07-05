@@ -2,7 +2,7 @@ import pytest
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 
-from ..views import ProgressDeleteView, WatchNextView
+from ..views import ProgressDeleteView, ProgressEditMixin, ProgressUpdateView, WatchNextView
 from .factories import ProgressFactory
 
 
@@ -38,3 +38,81 @@ class TestProgressDeleteView:
 
         assert response.status_code == 200
         assert user.progress_set.count() == 0
+
+
+class TestProgressEditMixin:
+    @pytest.fixture
+    def dummy_view_class(self):
+        class Base:
+            def get_context_data(self, **kwargs):
+                return {"context_data": 123}
+
+            def get_form_kwargs(self):
+                return {"form_kwarg": 123}
+
+            def get_initial(self):
+                return {"initial": 123}
+
+        class Dummy(ProgressEditMixin, Base):
+            pass
+
+        return Dummy
+
+    def test_get_context_data(self, mocker, dummy_view_class):
+        view = dummy_view_class()
+        view.show = mocker.MagicMock()
+
+        context_data = view.get_context_data()
+
+        assert len(context_data) == 2
+        assert context_data["context_data"] == 123
+        assert context_data["show"] == view.show
+
+    def test_get_form_kwargs(self, mocker, dummy_view_class):
+        view = dummy_view_class()
+        view.request = mocker.MagicMock()
+        view.show = mocker.MagicMock()
+
+        form_kwargs = view.get_form_kwargs()
+
+        assert len(form_kwargs) == 3
+        assert form_kwargs["form_kwarg"] == 123
+        assert form_kwargs["user"] == view.request.user
+        assert form_kwargs["show"] == view.show
+
+    def test_get_initial(self, mocker, dummy_view_class):
+        view = dummy_view_class()
+        view.show = mocker.MagicMock()
+
+        initial = view.get_initial()
+
+        assert len(initial) == 5
+        assert initial["initial"] == 123
+        assert initial["show_id"] == view.show.id
+        assert initial["show_name"] == view.show.name
+        assert initial["show_poster_path"] == view.show.poster_path
+        assert initial["show_status"] == view.show.status_value
+
+
+class TestProgressUpdateView:
+    def test_get_initial(self, mocker):
+        show = mocker.MagicMock()
+        mocker.patch(
+            "project.apps.tmdb.views.ProgressEditMixin.show",
+            new=mocker.PropertyMock(return_value=show),
+        )
+
+        view = ProgressUpdateView()
+        view.object = ProgressFactory.build()
+
+        initial = view.get_initial()
+
+        assert len(initial) == 6
+
+        assert initial["show_id"] == show.id
+        assert initial["show_name"] == show.name
+        assert initial["show_poster_path"] == show.poster_path
+        assert initial["show_status"] == show.status_value
+
+        assert initial["status"] == view.object.status
+        assert initial["last_watched"] == "0-0"
