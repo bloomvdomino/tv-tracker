@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 - flake8 noqa. #11
 
+### Security
+- Upgrade dependencies. #13
+
 ## [2.9.0] - 2019-07-01
 ### Added
 - Clean up unused Docker data after app init. #8
