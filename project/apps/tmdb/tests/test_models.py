@@ -96,6 +96,27 @@ class TestProgressModel:
         progress = ProgressFactory.build(last_aired_season=3, last_aired_episode=5)
         assert progress.last_aired_label == "S03E05"
 
+    @pytest.mark.django_db
+    def test_update_show_data(self, mocker):
+        show = mocker.MagicMock()
+        type(show).name = mocker.PropertyMock(return_value="Foo")
+        type(show).poster_path = mocker.PropertyMock(return_value="/foo.jpg")
+        type(show).status_value = mocker.PropertyMock(return_value="ended")
+        type(show).last_aired_episode = mocker.PropertyMock(return_value=(15, 11))
+
+        get_show = mocker.patch("project.apps.tmdb.models.get_show", return_value=show)
+
+        progress = ProgressFactory()
+        progress.update_show_data()
+        progress.refresh_from_db()
+
+        get_show.assert_called_once_with(progress.show_id)
+        assert progress.show_name == show.name
+        assert progress.show_poster_path == show.poster_path
+        assert progress.show_status == show.status_value
+        assert progress.last_aired_season == show.last_aired_episode[0]
+        assert progress.last_aired_episode == show.last_aired_episode[1]
+
     def test_watch_next(self, mocker):
         update_episodes = mocker.patch("project.apps.tmdb.models.Progress._update_episodes")
         update_next_air_date = mocker.patch(
@@ -108,7 +129,15 @@ class TestProgressModel:
 
         update_episodes.assert_called_once_with()
         update_next_air_date.assert_called_once_with()
-        save.assert_called_once_with()
+        save.assert_called_once_with(
+            update_fields=[
+                "current_season",
+                "current_episode",
+                "next_season",
+                "next_episode",
+                "next_air_date",
+            ]
+        )
 
     def test_update_episodes(self, mocker):
         show = mocker.MagicMock()
@@ -145,14 +174,3 @@ class TestProgressModel:
 
         assert progress.next_air_date is None
         get_air_date.assert_not_called()
-
-    def test_update_last_aired_episode(self, mocker):
-        show = mocker.MagicMock()
-        type(show).last_aired_episode = mocker.PropertyMock(return_value=(2, 3))
-        mocker.patch("project.apps.tmdb.models.get_show", return_value=show)
-        progress = ProgressFactory.build()
-
-        progress.update_last_aired_episode()
-
-        assert progress.last_aired_season == 2
-        assert progress.last_aired_episode == 3

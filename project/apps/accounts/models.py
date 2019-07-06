@@ -81,6 +81,8 @@ class User(AbstractBaseUser, PermissionsMixin, BaseUUIDModel):
             - next_season
             - next_episode
             - next_air_date
+            - last_aired_season
+            - last_aired_episode
         """
         progresses_data = self._get_updated_progresses_data()
         next_air_dates = self._get_next_air_dates(progresses_data)
