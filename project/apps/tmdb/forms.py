@@ -23,10 +23,25 @@ class ProgressForm(forms.ModelForm):
 
         self.fields["last_watched"].choices = self._make_episode_choices()
 
+    def _make_episode_choices(self):
+        episode_choices = [("0-0", "Not started, yet.")]
+        for season, episode in self.show.aired_episodes:
+            value = "{}-{}".format(season, episode)
+            label = format_episode_label(season, episode)
+            episode_choices.append((value, label))
+        return episode_choices
+
     def clean_last_watched(self):
         last_watched = self.cleaned_data["last_watched"]
-        season, episode = map(int, last_watched.split("-"))
-        self.cleaned_data.update(current_season=season, current_episode=episode)
+
+        self.instance.current_season, self.instance.current_episode = map(
+            int, last_watched.split("-")
+        )
+        self.instance.next_season, self.instance.next_episode = self.show.get_next_episode(
+            self.instance.current_season, self.instance.current_episode
+        )
+        self.instance.update_next_air_date()
+
         return last_watched
 
     def clean_status(self):
@@ -44,31 +59,12 @@ class ProgressForm(forms.ModelForm):
     def save(self, commit=True):
         self.instance.user = self.user
         self.instance.show_id = self.show.id
-        self._update_episodes()
         super().save(commit=commit)
 
         if not self.updating:
             self.instance.update_show_data()
 
         return self.instance
-
-    def _make_episode_choices(self):
-        episode_choices = [("0-0", "Not started, yet.")]
-        for season, episode in self.show.aired_episodes:
-            value = "{}-{}".format(season, episode)
-            label = format_episode_label(season, episode)
-            episode_choices.append((value, label))
-        return episode_choices
-
-    def _update_episodes(self):
-        self.instance.current_season = self.cleaned_data["current_season"]
-        self.instance.current_episode = self.cleaned_data["current_episode"]
-
-        self.instance.next_season, self.instance.next_episode = self.show.get_next_episode(
-            self.instance.current_season, self.instance.current_episode
-        )
-
-        self.instance.update_next_air_date()
 
 
 class SearchForm(forms.Form):

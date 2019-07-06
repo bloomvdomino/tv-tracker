@@ -18,52 +18,43 @@ class TestProgressForm:
         return mocker.patch("project.apps.tmdb.models.Progress.update_show_data")
 
     @pytest.fixture
-    def make_episode_choices(self, mocker):
+    def update_next_air_date(self, mocker):
+        return mocker.patch("project.apps.tmdb.models.Progress.update_next_air_date")
+
+    @pytest.fixture
+    def episode_choices(self):
+        return [("0-0", "Not started."), ("1-1", "S01E01"), ("1-2", "S01E02")]
+
+    @pytest.fixture
+    def make_episode_choices(self, mocker, episode_choices):
         return mocker.patch(
-            "project.apps.tmdb.forms.ProgressForm._make_episode_choices", return_value=[1, 2]
+            "project.apps.tmdb.forms.ProgressForm._make_episode_choices",
+            return_value=episode_choices,
         )
 
-    def test_init_when_not_updating(self, show, update_show_data, make_episode_choices):
+    def test_init_when_not_updating(
+        self, show, update_show_data, episode_choices, make_episode_choices
+    ):
         form = ProgressForm(user=None, show=show)
 
         assert form.user is None
         assert form.show == show
-        assert form.fields["last_watched"].choices == [1, 2]
+        assert form.fields["last_watched"].choices == episode_choices
         make_episode_choices.assert_called_once_with()
         update_show_data.assert_not_called()
 
-    def test_init_when_updating(self, show, update_show_data, make_episode_choices):
+    def test_init_when_updating(
+        self, show, update_show_data, episode_choices, make_episode_choices
+    ):
         instance = ProgressFactory.build()
         form = ProgressForm(instance=instance, user=None, show=show)
 
         assert form.user is None
         assert form.show == show
-        assert form.fields["last_watched"].choices == [1, 2]
+        assert form.fields["last_watched"].choices == episode_choices
         make_episode_choices.assert_called_once_with()
         update_show_data.assert_called_once_with()
 
-    @pytest.mark.django_db
-    def test_save_when_not_updating(self, mocker, update_show_data):
-        update_episodes = mocker.patch("project.apps.tmdb.forms.ProgressForm._update_episodes")
-        user = UserFactory()
-        show = mocker.MagicMock()
-        type(show).id = mocker.PropertyMock(return_value=123)
-        data = {"status": Progress.PAUSED, "last_watched": "0-0"}
-        form = ProgressForm(data=data, user=user, show=show)
-
-        assert form.is_valid()
-        progress = form.save()
-
-        update_episodes.assert_called_once_with()
-        update_show_data.assert_called_once_with()
-
-        assert progress.user == user
-        assert progress.status == data["status"]
-        assert progress.show_id == show.id
-        assert progress.current_season == 0
-        assert progress.current_episode == 0
-
-    @pytest.mark.django_db
     @pytest.mark.parametrize(
         "current_episode,next_episode",
         [
@@ -75,31 +66,23 @@ class TestProgressForm:
             ((1, 1), (1, None)),
             ((1, 1), (None, 1)),
             ((1, 1), (1, 2)),
+            ((5, 10), (6, 1)),
         ],
     )
-    def test_update_episodes(
+    def test_clean_last_watched(
         self,
         mocker,
         show,
-        update_show_data,
+        update_next_air_date,
         make_episode_choices,
         current_episode,
         next_episode,
-        settings,
     ):
-        update_next_air_date = mocker.patch(
-            "project.apps.tmdb.models.Progress.update_next_air_date"
-        )
         show.get_next_episode.return_value = next_episode
-        cleaned_data = {
-            "current_season": current_episode[0],
-            "current_episode": current_episode[1],
-        }
-        instance = ProgressFactory(next_air_date=None)
-        form = ProgressForm(instance=instance, user=None, show=show)
-        form.cleaned_data = cleaned_data
+        form = ProgressForm(user=None, show=show)
+        form.cleaned_data = {"last_watched": "{}-{}".format(*current_episode)}
 
-        form._update_episodes()
+        form.clean_last_watched()
 
         assert form.instance.current_season == current_episode[0]
         assert form.instance.current_episode == current_episode[1]
@@ -107,3 +90,26 @@ class TestProgressForm:
         assert form.instance.next_episode == next_episode[1]
 
         update_next_air_date.assert_called_once_with()
+
+    @pytest.mark.django_db
+    def test_save_when_not_updating(
+        self, mocker, show, update_show_data, update_next_air_date, make_episode_choices
+    ):
+        user = UserFactory()
+        show.get_next_episode.return_value = (1, 2)
+        type(show).id = mocker.PropertyMock(return_value=123)
+        data = {"status": Progress.PAUSED, "last_watched": "1-1"}
+        form = ProgressForm(data=data, user=user, show=show)
+
+        assert form.is_valid()
+        progress = form.save()
+
+        update_show_data.assert_called_once_with()
+
+        assert progress.user == user
+        assert progress.status == data["status"]
+        assert progress.show_id == show.id
+        assert progress.current_season == 1
+        assert progress.current_episode == 1
+        assert progress.next_season == 1
+        assert progress.next_episode == 2
