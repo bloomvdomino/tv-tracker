@@ -16,6 +16,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 - flake8 noqa. #11
 
+### Fixed
+- Release checklist. #17
+
 ### Security
 - Upgrade dependencies. #13
 
