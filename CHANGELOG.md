@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update show data on progress page load. #12
 - Update show data when clicking next button. #14
 
+### Changed
+- Refactor clean_last_watched. #15
+
 ### Removed
 - flake8 noqa. #11
 
