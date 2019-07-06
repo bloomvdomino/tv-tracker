@@ -5,7 +5,7 @@ from django.urls import resolve
 from project.apps.accounts.tests.factories import UserFactory
 
 from ..models import Progress
-from ..utils import _Show, format_episode_label, get_air_date
+from ..utils import _Show, fetch, format_episode_label, get_air_date
 from .factories import ProgressFactory
 
 
@@ -202,21 +202,62 @@ class TestFormatEpisodeLabel:
         assert format_episode_label(season, episode) == label
 
 
+class TestFetch:
+    @pytest.fixture
+    def requests(self, mocker):
+        response = mocker.MagicMock()
+        response.json.return_value = {"id": 1}
+        requests = mocker.patch("project.apps.tmdb.utils.requests")
+        requests.get.return_value = response
+        return requests
+
+    def test_api_key_not_set(self):
+        with pytest.raises(Exception):
+            fetch("foo/bar")
+
+    def test_make_request_without_params(self, mocker, settings, requests):
+        settings.TMDB_API_KEY = "dummy-api-key"
+
+        show_data = fetch("foo/bar")
+
+        assert show_data == {"id": 1}
+
+        (endpoint,), kwargs = requests.get.call_args
+        assert endpoint == "https://api.themoviedb.org/3/foo/bar"
+        params = kwargs["params"]
+        assert len(params) == 1
+        assert params["api_key"] == settings.TMDB_API_KEY
+
+    def test_make_request_with_params(self, mocker, settings, requests):
+        settings.TMDB_API_KEY = "dummy-api-key"
+
+        show_data = fetch("foo/bar", {"param_1": "dummy-value"})
+
+        assert show_data == {"id": 1}
+
+        (endpoint,), kwargs = requests.get.call_args
+        assert endpoint == "https://api.themoviedb.org/3/foo/bar"
+        params = kwargs["params"]
+        assert len(params) == 2
+        assert params["api_key"] == settings.TMDB_API_KEY
+        assert params["param_1"] == "dummy-value"
+
+
 class TestGetAirDate:
     def test_with_air_date(self, mocker):
-        fetch = mocker.patch(
+        fetch_mock = mocker.patch(
             "project.apps.tmdb.utils.fetch", return_value={"air_date": "2019-6-30"}
         )
 
         air_date = get_air_date("123", 1, 2)
 
         assert air_date == "2019-6-30"
-        fetch.assert_called_once_with("tv/123/season/1/episode/2")
+        fetch_mock.assert_called_once_with("tv/123/season/1/episode/2")
 
     def test_without_air_date(self, mocker):
-        fetch = mocker.patch("project.apps.tmdb.utils.fetch", return_value={})
+        fetch_mock = mocker.patch("project.apps.tmdb.utils.fetch", return_value={})
 
         air_date = get_air_date("123", 1, 2)
 
         assert air_date is None
-        fetch.assert_called_once_with("tv/123/season/1/episode/2")
+        fetch_mock.assert_called_once_with("tv/123/season/1/episode/2")

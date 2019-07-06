@@ -120,6 +120,9 @@ def format_episode_label(season, episode):
 
 
 def fetch(endpoint, params=None):
+    if not settings.TMDB_API_KEY:
+        raise Exception("TMDB_API_KEY not provided.")
+
     url = "https://api.themoviedb.org/3/{}".format(endpoint)
     params = params or {}
     params.update(api_key=settings.TMDB_API_KEY)
