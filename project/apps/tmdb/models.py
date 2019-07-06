@@ -154,7 +154,16 @@ class Progress(BaseModel):
         self.show_name = self.show.name
         self.show_poster_path = self.show.poster_path
         self.show_status = self.show.status_value
-        self.save(update_fields=["show_name", "show_poster_path", "show_status"])
+        self.last_aired_season, self.last_aired_episode = self.show.last_aired_episode
+        self.save(
+            update_fields=[
+                "show_name",
+                "show_poster_path",
+                "show_status",
+                "last_aired_season",
+                "last_aired_episode",
+            ]
+        )
 
     def watch_next(self):
         self._update_episodes()
@@ -180,6 +189,3 @@ class Progress(BaseModel):
             self.next_air_date = get_air_date(self.show_id, self.next_season, self.next_episode)
         else:
             self.next_air_date = None
-
-    def update_last_aired_episode(self):
-        self.last_aired_season, self.last_aired_episode = self.show.last_aired_episode

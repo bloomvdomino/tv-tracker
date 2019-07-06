@@ -129,16 +129,6 @@ class ProgressEditMixin:
         kwargs.update(user=self.request.user, show=self.show)
         return kwargs
 
-    def get_initial(self):
-        initial = super().get_initial()
-        initial.update(
-            show_id=self.show.id,
-            show_name=self.show.name,
-            show_poster_path=self.show.poster_path,
-            show_status=self.show.status_value,
-        )
-        return initial
-
     def get_success_url(self):
         return self.request.session["progress_edit_success_url"]
 

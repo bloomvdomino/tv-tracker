@@ -52,9 +52,6 @@ class TestProgressEditMixin:
             def get_form_kwargs(self):
                 return {"form_kwarg": 123}
 
-            def get_initial(self):
-                return {"initial": 123}
-
         class Dummy(ProgressEditMixin, Base):
             pass
 
@@ -82,19 +79,6 @@ class TestProgressEditMixin:
         assert form_kwargs["user"] == view.request.user
         assert form_kwargs["show"] == view.show
 
-    def test_get_initial(self, mocker, dummy_view_class):
-        view = dummy_view_class()
-        view.show = mocker.MagicMock()
-
-        initial = view.get_initial()
-
-        assert len(initial) == 5
-        assert initial["initial"] == 123
-        assert initial["show_id"] == view.show.id
-        assert initial["show_name"] == view.show.name
-        assert initial["show_poster_path"] == view.show.poster_path
-        assert initial["show_status"] == view.show.status_value
-
 
 class TestProgressUpdateView:
     def test_get_initial(self, mocker):
@@ -109,12 +93,6 @@ class TestProgressUpdateView:
 
         initial = view.get_initial()
 
-        assert len(initial) == 6
-
-        assert initial["show_id"] == show.id
-        assert initial["show_name"] == show.name
-        assert initial["show_poster_path"] == show.poster_path
-        assert initial["show_status"] == show.status_value
-
+        assert len(initial) == 2
         assert initial["status"] == view.object.status
         assert initial["last_watched"] == "0-0"

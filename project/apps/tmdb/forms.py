@@ -5,38 +5,23 @@ from .utils import format_episode_label, search_show
 
 
 class ProgressForm(forms.ModelForm):
-    show_id = forms.IntegerField(widget=forms.HiddenInput())
-    show_name = forms.CharField(widget=forms.HiddenInput())
-    show_poster_path = forms.CharField(widget=forms.HiddenInput())
-    show_status = forms.ChoiceField(
-        choices=Progress.SHOW_STATUS_CHOICES, widget=forms.HiddenInput()
-    )
-
     last_watched = forms.ChoiceField()
 
     class Meta:
         model = Progress
-        fields = ["status", "show_id", "show_name", "show_poster_path", "show_status"]
+        fields = ["status"]
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop("user")
         self.show = kwargs.pop("show")
-
-        self._update_show_data(kwargs["initial"], kwargs.get("instance"))
+        self.updating = kwargs.get("instance") is not None
 
         super().__init__(*args, **kwargs)
 
+        if self.updating:
+            self.instance.update_show_data()
+
         self.fields["last_watched"].choices = self._make_episode_choices()
-
-    def _update_show_data(self, initial, instance):
-        if not instance:
-            return
-
-        update_fields = ["show_name", "show_poster_path", "show_status"]
-        instance.__dict__.update(
-            **{key: value for key, value in initial.items() if key in update_fields}
-        )
-        instance.save(update_fields=update_fields)
 
     def clean_last_watched(self):
         last_watched = self.cleaned_data["last_watched"]
@@ -58,9 +43,14 @@ class ProgressForm(forms.ModelForm):
 
     def save(self, commit=True):
         self.instance.user = self.user
-        self.instance.update_last_aired_episode()
+        self.instance.show_id = self.show.id
         self._update_episodes()
-        return super().save(commit=commit)
+        super().save(commit=commit)
+
+        if not self.updating:
+            self.instance.update_show_data()
+
+        return self.instance
 
     def _make_episode_choices(self):
         episode_choices = [("0-0", "Not started, yet.")]
