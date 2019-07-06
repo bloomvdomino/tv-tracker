@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Update show data on progress page load. #12
 - Update show data when clicking next button. #14
+- Release checklist. #16
 
 ### Changed
 - Refactor clean_last_watched. #15
@@ -85,6 +86,49 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Time zone not saved on signup.
 
+## [2.2.0] - 2019-03-21
+### Added
+- Local HTML coverage report.
+- `_Show` class.
+- Developing section in `README.md`.
+
+### Changed
+- Change cached_property to property of `_Show.status_display`.
+- Refactor `_Show.status_value`.
+- Titlelize labels.
+
+### Fixed
+- TMDb API of episode detail may return results without air date.
+
+## [2.1.0] - 2019-03-16
+### Added
+- Time zone support (fix progress next air date issue).
+- Code coverage.
+- Progresses page section links.
+
+### Changed
+- Update existing tests to use pytest.
+- Use Roboto for font family.
+
+### Fixed
+- Season with more than 99 episodes.
+
+## [2.0.3] - 2019-03-10
+### Fixed
+- Heroku command app option.
+
+## [2.0.2] - 2019-03-10
+### Fixed
+- Badge links in `README.md`.
+
+## [2.0.1] - 2019-03-10
+### Fixed
+- Heroku app name.
+
+## [2.0.0] - 2019-03-10
+### Changed
+- Migrate from an API to a full-stack app.
+
 [Unreleased]: https://github.com/olivertso/tv-tracker/compare/2.9.0...HEAD
 [2.9.0]: https://github.com/olivertso/tv-tracker/compare/2.8.0...2.9.0
 [2.8.0]: https://github.com/olivertso/tv-tracker/compare/2.7.0...2.8.0
@@ -95,3 +139,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [2.3.0]: https://github.com/olivertso/tv-tracker/compare/2.2.2...2.3.0
 [2.2.2]: https://github.com/olivertso/tv-tracker/compare/2.2.1...2.2.2
 [2.2.1]: https://github.com/olivertso/tv-tracker/compare/2.2.0...2.2.1
+[2.2.0]: https://github.com/olivertso/tv-tracker/compare/2.1.0...2.2.0
+[2.1.0]: https://github.com/olivertso/tv-tracker/compare/2.0.3...2.1.0
+[2.0.3]: https://github.com/olivertso/tv-tracker/compare/2.0.2...2.0.3
+[2.0.2]: https://github.com/olivertso/tv-tracker/compare/2.0.1...2.0.2
+[2.0.1]: https://github.com/olivertso/tv-tracker/compare/2.0.0...2.0.1
+[2.0.0]: https://github.com/olivertso/tv-tracker/compare/1.5.3...2.0.0

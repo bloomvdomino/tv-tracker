@@ -45,6 +45,23 @@ Run linters and formatters:
 sh scripts/lint-n-format.sh [--check]
 ```
 
+## Release
+
+- [ ] Checkout to `master` branch.
+- [ ] Pull changes.
+- [ ] Checkout to a new branch `release-x.x.x`.
+- [ ] Update `CHANGELOG.md.`.
+  - [ ] Add a blank line and `## [x.x.x] - YYYY-MM-DD` bellow `## [Unreleased]`.
+  - [ ] Add new compare link at the bottom section.
+- [ ] Commit with message `Release x.x.x.` and push.
+- [ ] Open and merge a PR with title `Release x.x.x.`.
+- [ ] Checkout to `master` branch.
+- [ ] Pull changes.
+- [ ] Create a tag `x.x.x`.
+- [ ] Push the tag.
+- [ ] Create a release with title `x.x.x`.
+  - [ ] Copy and paste the newest section from `CHANGELOG.md` to the release description.
+
 ## Deploy
 
 Creating a tag will trigger an automagic deploy from Travis.
