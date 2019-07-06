@@ -96,6 +96,24 @@ class TestProgressModel:
         progress = ProgressFactory.build(last_aired_season=3, last_aired_episode=5)
         assert progress.last_aired_label == "S03E05"
 
+    @pytest.mark.django_db
+    def test_update_show_data(self, mocker):
+        show = mocker.MagicMock()
+        type(show).name = mocker.PropertyMock(return_value="Foo")
+        type(show).poster_path = mocker.PropertyMock(return_value="/foo.jpg")
+        type(show).status_value = mocker.PropertyMock(return_value="ended")
+
+        get_show = mocker.patch("project.apps.tmdb.models.get_show", return_value=show)
+
+        progress = ProgressFactory()
+        progress.update_show_data()
+        progress.refresh_from_db()
+
+        get_show.assert_called_once_with(progress.show_id)
+        assert progress.show_name == show.name
+        assert progress.show_poster_path == show.poster_path
+        assert progress.show_status == show.status_value
+
     def test_watch_next(self, mocker):
         update_episodes = mocker.patch("project.apps.tmdb.models.Progress._update_episodes")
         update_next_air_date = mocker.patch(
@@ -108,7 +126,15 @@ class TestProgressModel:
 
         update_episodes.assert_called_once_with()
         update_next_air_date.assert_called_once_with()
-        save.assert_called_once_with()
+        save.assert_called_once_with(
+            update_fields=[
+                "current_season",
+                "current_episode",
+                "next_season",
+                "next_episode",
+                "next_air_date",
+            ]
+        )
 
     def test_update_episodes(self, mocker):
         show = mocker.MagicMock()

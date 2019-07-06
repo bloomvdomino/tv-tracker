@@ -150,10 +150,24 @@ class Progress(BaseModel):
             return None
         return format_episode_label(self.last_aired_season, self.last_aired_episode)
 
+    def update_show_data(self):
+        self.show_name = self.show.name
+        self.show_poster_path = self.show.poster_path
+        self.show_status = self.show.status_value
+        self.save(update_fields=["show_name", "show_poster_path", "show_status"])
+
     def watch_next(self):
         self._update_episodes()
         self.update_next_air_date()
-        self.save()
+        self.save(
+            update_fields=[
+                "current_season",
+                "current_episode",
+                "next_season",
+                "next_episode",
+                "next_air_date",
+            ]
+        )
 
     def _update_episodes(self):
         self.current_season, self.current_episode = self.next_season, self.next_episode

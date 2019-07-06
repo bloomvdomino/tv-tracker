@@ -15,6 +15,7 @@ from .utils import get_popular_shows, get_show
 class WatchNextView(LoginRequiredMixin, View):
     def patch(self, request, *args, **kwargs):
         progress = request.user.progress_set.get(show_id=kwargs["show_id"])
+        progress.update_show_data()
         progress.watch_next()
         return HttpResponse()
 

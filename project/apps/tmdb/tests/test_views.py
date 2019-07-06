@@ -12,6 +12,7 @@ class TestWatchNextView:
 
     @pytest.mark.django_db
     def test_post(self, mocker, client):
+        update_show_data = mocker.patch("project.apps.tmdb.models.Progress.update_show_data")
         watch_next = mocker.patch("project.apps.tmdb.models.Progress.watch_next")
         progress = ProgressFactory()
         client.login(username=progress.user.email, password="123123")
@@ -20,6 +21,7 @@ class TestWatchNextView:
         response = client.patch(url, content_type="application/json")
 
         assert response.status_code == 200
+        update_show_data.assert_called_once_with()
         watch_next.assert_called_once_with()
 
 

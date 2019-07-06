@@ -32,7 +32,7 @@ class ProgressForm(forms.ModelForm):
         if not instance:
             return
 
-        update_fields = ["show_id", "show_name", "show_poster_path", "show_status"]
+        update_fields = ["show_name", "show_poster_path", "show_status"]
         instance.__dict__.update(
             **{key: value for key, value in initial.items() if key in update_fields}
         )

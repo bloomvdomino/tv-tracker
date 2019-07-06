@@ -35,7 +35,6 @@ class TestProgressForm:
     @pytest.mark.django_db
     def test_update_show_data_called(self, show, make_episode_choices):
         initial = {
-            "show_id": 1,
             "show_name": "Foo",
             "show_poster_path": "/foo.jpg",
             "show_status": Progress.ENDED,
@@ -46,7 +45,6 @@ class TestProgressForm:
         ProgressForm(initial=initial, instance=instance, user=None, show=show)
         instance.refresh_from_db()
 
-        assert instance.show_id == initial["show_id"]
         assert instance.show_name == initial["show_name"]
         assert instance.show_poster_path == initial["show_poster_path"]
         assert instance.show_status == initial["show_status"]
