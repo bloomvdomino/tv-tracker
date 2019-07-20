@@ -21,7 +21,6 @@ RUN apk update \
     && apk del .build-deps \
     && rm -vrf /var/cache/apk/*
 
-ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.5.0/wait /wait
-RUN chmod +x /wait
-
-CMD python manage.py collectstatic --noinput --clear && /wait && gunicorn project.wsgi -c gunicorn.py
+CMD python manage.py collectstatic --noinput --clear \
+    && python manage.py migrate \
+    && gunicorn project.wsgi -c gunicorn.py

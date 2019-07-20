@@ -1,7 +1,3 @@
-locals {
-  parameter_store_path = "/${local.project}/${var.env}"
-}
-
 data "aws_ssm_parameter" "secret_key" {
   name = "${local.parameter_store_path}/secret_key"
 }
@@ -12,6 +8,10 @@ data "aws_ssm_parameter" "admins" {
 
 data "aws_ssm_parameter" "admin_path" {
   name = "${local.parameter_store_path}/admin_path"
+}
+
+data "aws_ssm_parameter" "database_url" {
+  name = "${local.parameter_store_path}/database_url"
 }
 
 data "aws_ssm_parameter" "tmdb_api_key" {

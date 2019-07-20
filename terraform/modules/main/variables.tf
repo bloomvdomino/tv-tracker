@@ -1,12 +1,17 @@
 locals {
-  infra         = "hobby-infra"
-  project       = "tv-tracker"
-  root_domain   = "olivertso.com"
-  domain_env    = "${var.env != "production" ? ".${var.env}" : ""}"
-  public_domain = "${local.project}${local.domain_env}.${local.root_domain}"
+  infra   = "hobby-infra"
+  project = "tv-tracker"
+
+  hosted_zone = "olivertso.com"
+  domain_env  = "${var.env != "production" ? ".${var.env}" : ""}"
+  domain      = "${local.project}${local.domain_env}.${local.hosted_zone}"
+
+  parameter_store_path = "/${local.project}/${var.env}"
 }
 
 variable "env" {}
+
+variable "vpc_id" {}
 
 variable "tmdb_check_wait_seconds" {
   default = 1800
