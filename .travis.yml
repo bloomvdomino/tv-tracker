@@ -9,8 +9,8 @@ services:
 
 jobs:
   include:
-    - stage: test
-      name: "Unit Tests and Linters"
+    - stage: lint_and_test
+      name: "Lint and Test"
       if: tag IS blank
       addons:
         snaps:
@@ -30,12 +30,8 @@ jobs:
         - coveralls
 
     - stage: deploy
-      name: "Deploy to AWS"
+      name: "Deploy"
       if: tag IS present
-      addons:
-        snaps:
-          - name: aws-cli
-            confinement: classic
       install: skip
       script: skip
       deploy:
