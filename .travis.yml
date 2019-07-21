@@ -9,8 +9,8 @@ services:
 
 jobs:
   include:
-    - stage: test
-      name: "Unit Tests and Linters"
+    - stage: lint_and_test
+      name: "Lint and Test"
       if: tag IS blank
       addons:
         snaps:
@@ -19,7 +19,7 @@ jobs:
         - sudo service postgresql stop
         - cp .env.example .env
       install:
-        - sh scripts/docker-compose.sh build
+        - docker-compose build
       script:
         - sh scripts/lint-n-format.sh --check
         - sh scripts/test.sh
@@ -30,12 +30,8 @@ jobs:
         - coveralls
 
     - stage: deploy
-      name: "Deploy to AWS"
+      name: "Deploy"
       if: tag IS present
-      addons:
-        snaps:
-          - name: aws-cli
-            confinement: classic
       install: skip
       script: skip
       deploy:

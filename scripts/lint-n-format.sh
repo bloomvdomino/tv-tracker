@@ -5,7 +5,7 @@ set -e
 PROJECT_DIR="project/"
 TERRAFORM_DIR="terraform/"
 
-DOCKER_COMPOSE="sh scripts/docker-compose.sh run --no-deps --rm web"
+DOCKER_COMPOSE="docker-compose run --no-deps --rm web"
 
 echo "Running bandit..."
 $DOCKER_COMPOSE bandit -rq -x **/tests/** $PROJECT_DIR

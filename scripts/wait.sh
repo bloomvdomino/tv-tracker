@@ -2,4 +2,4 @@
 
 set -e
 
-sh scripts/docker-compose.sh run --rm web /wait
+docker-compose run --rm web /wait

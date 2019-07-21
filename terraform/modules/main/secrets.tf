@@ -1,7 +1,3 @@
-locals {
-  parameter_store_path = "/${local.project}/${var.env}"
-}
-
 data "aws_ssm_parameter" "secret_key" {
   name = "${local.parameter_store_path}/secret_key"
 }
@@ -28,4 +24,10 @@ data "aws_ssm_parameter" "sendgrid_password" {
 
 data "aws_ssm_parameter" "sendgrid_api_key" {
   name = "${local.parameter_store_path}/sendgrid_api_key"
+}
+
+resource "aws_ssm_parameter" "database_url" {
+  name  = "${local.parameter_store_path}/database_url"
+  type  = "SecureString"
+  value = "${module.db.url}"
 }
