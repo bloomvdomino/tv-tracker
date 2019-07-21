@@ -17,17 +17,17 @@ The app fetches TV show data from [TMDb API][tmdb-api].
 
 Install images:
 ```
-sh scripts/docker-compose.sh build
+docker-compose build
 ```
 
 Start services (Django server at http://localhost:8000):
 ```
-sh scripts/docker-compose.sh up
+docker-compose up
 ```
 
 Stop services and clean up containers:
 ```
-sh scripts/docker-compose.sh down
+docker-compose down
 ```
 
 Run `manage.py` commands:
