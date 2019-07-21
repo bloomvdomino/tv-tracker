@@ -36,7 +36,7 @@ data "template_file" "container_definitions" {
   }
 }
 
-module "aws_ecs_app" {
+module "app" {
   source = "git@github.com:olivertso/terraform-modules.git//aws-ecs-app"
 
   infra   = "${local.infra}"
