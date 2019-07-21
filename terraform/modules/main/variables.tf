@@ -11,8 +11,6 @@ locals {
 
 variable "env" {}
 
-variable "vpc_id" {}
-
 variable "tmdb_check_wait_seconds" {
   default = 1800
 }

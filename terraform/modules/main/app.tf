@@ -1,3 +1,8 @@
+data "aws_vpc" "default" {
+  default = true
+  state   = "available"
+}
+
 data "aws_instances" "main" {
   instance_tags = {
     Name      = "${local.infra}"
@@ -38,7 +43,7 @@ module "aws_ecs_app" {
   project = "${local.project}"
   env     = "${var.env}"
 
-  vpc_id      = "${var.vpc_id}"
+  vpc_id      = "${data.aws_vpc.default.id}"
   hosted_zone = "${local.hosted_zone}"
 
   container_definitions = "${data.template_file.container_definitions.rendered}"
