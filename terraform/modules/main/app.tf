@@ -28,7 +28,7 @@ data "template_file" "container_definitions" {
     secret_key_arn        = "${data.aws_ssm_parameter.secret_key.arn}"
     admins_arn            = "${data.aws_ssm_parameter.admins.arn}"
     admin_path_arn        = "${data.aws_ssm_parameter.admin_path.arn}"
-    database_url_arn      = "${data.aws_ssm_parameter.database_url.arn}"
+    database_url_arn      = "${aws_ssm_parameter.database_url.arn}"
     tmdb_api_key_arn      = "${data.aws_ssm_parameter.tmdb_api_key.arn}"
     sendgrid_username_arn = "${data.aws_ssm_parameter.sendgrid_username.arn}"
     sendgrid_password_arn = "${data.aws_ssm_parameter.sendgrid_password.arn}"
