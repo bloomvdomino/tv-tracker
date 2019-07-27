@@ -3,6 +3,8 @@
         "name": "web",
         "image": "olivertso/tv-tracker",
         "memory": 128,
+        "memoryReservation": 100,
+        "cpu": 7,
         "portMappings": [
             {
                 "containerPort": 8000
