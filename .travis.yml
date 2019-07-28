@@ -21,7 +21,7 @@ jobs:
       install:
         - docker-compose build
       script:
-        - sh scripts/lint-n-format.sh --check
+        - sh scripts/lint.sh
         - sh scripts/test.sh
       after_success:
         - sudo mkdir /app

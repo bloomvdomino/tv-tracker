@@ -40,9 +40,14 @@ Run tests:
 sh scripts/test.sh
 ```
 
-Run linters and formatters:
+Run code formatters:
 ```
-sh scripts/lint-n-format.sh [--check]
+sh scripts/format.sh
+```
+
+Run code linters:
+```
+sh scripts/lint.sh
 ```
 
 ## Release
