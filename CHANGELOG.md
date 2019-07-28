@@ -5,14 +5,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [2.12.0] - 2019-07-28
 ### Added
 - Resource reservations #21
 - Deploy using travis #23
-- Dockerfile non-root user #25
 
 ### Changed
 - Release checklist #22
 - Split lint-n-format.sh #24
+
+### Security
+- Dockerfile non-root user #25
 
 ## [2.11.0] - 2019-07-21
 ### Changed
@@ -146,7 +150,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Migrate from an API to a full-stack app.
 
-[Unreleased]: https://github.com/olivertso/tv-tracker/compare/2.11.0...HEAD
+[Unreleased]: https://github.com/olivertso/tv-tracker/compare/2.12.0...HEAD
+[2.12.0]: https://github.com/olivertso/tv-tracker/compare/2.11.0...2.12.0
 [2.11.0]: https://github.com/olivertso/tv-tracker/compare/2.10.0...2.11.0
 [2.10.0]: https://github.com/olivertso/tv-tracker/compare/2.9.0...2.10.0
 [2.9.0]: https://github.com/olivertso/tv-tracker/compare/2.8.0...2.9.0
