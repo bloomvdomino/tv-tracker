@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Resource reservations #21
+- Deploy using travis #23
 
 ### Changed
 - Release checklist #22
