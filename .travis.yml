@@ -32,6 +32,10 @@ jobs:
     - stage: deploy
       name: "Deploy"
       if: tag IS present
+      addons:
+        snaps:
+          - name: aws-cli
+            confinement: classic
       install: skip
       script: skip
       deploy:
