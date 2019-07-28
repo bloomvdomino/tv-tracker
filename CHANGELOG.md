@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Release checklist #22
+- Split lint-n-format.sh #24
 
 ## [2.11.0] - 2019-07-21
 ### Changed
