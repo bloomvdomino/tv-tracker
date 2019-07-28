@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Resource reservations #21
 - Deploy using travis #23
+- Dockerfile non-root user #25
 
 ### Changed
 - Release checklist #22
