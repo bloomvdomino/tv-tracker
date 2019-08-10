@@ -17,5 +17,6 @@ $DOCKER_COMPOSE black --check $PROJECT_DIR
 echo "Checking flake8..."
 $DOCKER_COMPOSE flake8 $PROJECT_DIR
 
-echo "Checking terraform fmt..."
-terraform fmt -check=true terraform
+# Skip terraform fmt until snap supports terraform 0.12.
+# echo "Checking terraform fmt..."
+# terraform fmt -check=true terraform

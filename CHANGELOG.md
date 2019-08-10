@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Changed
 - Use double quotes in deploy.sh #28
+- Migrate to terraform 0.12 #29
 
 ### Security
 - Update dependencies #27
