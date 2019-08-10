@@ -24,14 +24,15 @@ data "template_file" "container_definitions" {
     tmdb_check_wait_seconds = var.tmdb_check_wait_seconds
     default_from_email      = "do-not-respond${local.domain_env}@${local.project}.com"
     sendgrid_sandbox_mode   = var.sendgrid_sandbox_mode
-    secret_key_arn          = data.aws_ssm_parameter.secret_key.arn
-    admins_arn              = data.aws_ssm_parameter.admins.arn
-    admin_path_arn          = data.aws_ssm_parameter.admin_path.arn
-    database_url_arn        = aws_ssm_parameter.database_url.arn
-    tmdb_api_key_arn        = data.aws_ssm_parameter.tmdb_api_key.arn
-    sendgrid_username_arn   = data.aws_ssm_parameter.sendgrid_username.arn
-    sendgrid_password_arn   = data.aws_ssm_parameter.sendgrid_password.arn
-    sendgrid_api_key_arn    = data.aws_ssm_parameter.sendgrid_api_key.arn
+
+    secret_key_arn        = data.aws_ssm_parameter.secret_key.arn
+    admins_arn            = data.aws_ssm_parameter.admins.arn
+    admin_path_arn        = data.aws_ssm_parameter.admin_path.arn
+    database_url_arn      = aws_ssm_parameter.database_url.arn
+    tmdb_api_key_arn      = data.aws_ssm_parameter.tmdb_api_key.arn
+    sendgrid_username_arn = data.aws_ssm_parameter.sendgrid_username.arn
+    sendgrid_password_arn = data.aws_ssm_parameter.sendgrid_password.arn
+    sendgrid_api_key_arn  = data.aws_ssm_parameter.sendgrid_api_key.arn
   }
 }
 
