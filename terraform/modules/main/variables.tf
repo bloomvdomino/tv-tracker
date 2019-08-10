@@ -3,7 +3,7 @@ locals {
   project = "tv-tracker"
 
   hosted_zone = "olivertso.com"
-  domain_env  = "${var.env != "production" ? ".${var.env}" : ""}"
+  domain_env  = var.env != "production" ? ".${var.env}" : ""
   domain      = "${local.project}${local.domain_env}.${local.hosted_zone}"
 
   parameter_store_path = "/${local.project}/${var.env}"

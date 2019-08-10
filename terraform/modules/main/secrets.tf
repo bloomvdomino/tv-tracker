@@ -29,5 +29,5 @@ data "aws_ssm_parameter" "sendgrid_api_key" {
 resource "aws_ssm_parameter" "database_url" {
   name  = "${local.parameter_store_path}/database_url"
   type  = "SecureString"
-  value = "${module.db.url}"
+  value = module.db.url
 }
