@@ -12,11 +12,11 @@ docker build -f docker/prod.Dockerfile -t $TAG .
 docker push $TAG
 
 # Replace ECS task.
-CLUSTER=$(aws ecs list-clusters | grep hobby-infra-$ENV | sed 's/"//g' | awk "{$1=$1};1")
+CLUSTER=$(aws ecs list-clusters | grep hobby-infra-$ENV | sed 's/"//g' | awk '{$1=$1};1')
 TASK=$(aws ecs list-tasks \
     --cluster $CLUSTER \
     --service-name $APP-$ENV \
     | grep arn:aws:ecs \
     | sed 's/"//g' \
-    | awk "{$1=$1};1")
+    | awk '{$1=$1};1')
 aws ecs stop-task --cluster $CLUSTER --task $TASK --reason Deploy
