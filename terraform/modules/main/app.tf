@@ -50,5 +50,5 @@ module "app" {
   container_name        = "web"
   container_port        = 8000
 
-  health_check_path = "/popular_shows/"
+  health_check_path = "/health/"
 }
