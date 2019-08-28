@@ -254,8 +254,9 @@ class TestGetAirDate:
         assert air_date == "2019-6-30"
         fetch_mock.assert_called_once_with("tv/123/season/1/episode/2")
 
-    def test_without_air_date(self, mocker):
-        fetch_mock = mocker.patch("project.apps.tmdb.utils.fetch", return_value={})
+    @pytest.mark.parametrize("fetched_data", [{}, {"air_date": ""}])
+    def test_without_air_date(self, mocker, fetched_data):
+        fetch_mock = mocker.patch("project.apps.tmdb.utils.fetch", return_value=fetched_data)
 
         air_date = get_air_date("123", 1, 2)
 
