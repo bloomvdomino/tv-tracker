@@ -143,7 +143,10 @@ def get_show(id, user=None):
 
 def get_air_date(show_id, season, episode):
     endpoint = "tv/{}/season/{}/episode/{}".format(show_id, season, episode)
-    return fetch(endpoint).get("air_date")
+
+    # air_date from response data can be empty string, we want to return None in
+    # this case as well.
+    return fetch(endpoint).get("air_date") or None
 
 
 def get_popular_shows(page, user=None):
