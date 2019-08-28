@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Update health check endpoint in terraform #34
 
+### Fixed
+- `get_air_date` returning empty string #35
+
 ## [2.14.0] - 2019-08-11
 ### Fixed
 - Deploy script #32
