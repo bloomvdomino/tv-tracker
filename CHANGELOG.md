@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [2.14.1] - 2019-08-28
 ### Changed
 - Update health check endpoint in terraform #34
 
@@ -170,7 +172,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Migrate from an API to a full-stack app.
 
-[Unreleased]: https://github.com/olivertso/tv-tracker/compare/2.14.0...HEAD
+[Unreleased]: https://github.com/olivertso/tv-tracker/compare/2.14.1...HEAD
+[2.14.1]: https://github.com/olivertso/tv-tracker/compare/2.14.0...2.14.1
 [2.14.0]: https://github.com/olivertso/tv-tracker/compare/2.13.0...2.14.0
 [2.13.0]: https://github.com/olivertso/tv-tracker/compare/2.12.0...2.13.0
 [2.12.0]: https://github.com/olivertso/tv-tracker/compare/2.11.0...2.12.0
