@@ -8,9 +8,6 @@ __pycache__
 cov_report/*
 !cov_report/.gitkeep
 
-db_backups/*
-!db_backups/.gitkeep
-
 staticfiles/*
 !staticfiles/.gitkeep
 
