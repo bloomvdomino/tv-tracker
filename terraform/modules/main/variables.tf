@@ -1,20 +1,19 @@
 locals {
-  infra   = "hobby-infra"
-  project = "tv-tracker"
-
-  hosted_zone = "olivertso.com"
-  domain_env  = var.env != "production" ? ".${var.env}" : ""
-  domain      = "${local.project}${local.domain_env}.${local.hosted_zone}"
-
+  project              = "tv-tracker"
+  app_name             = "${local.project}-olivertso${var.env == "production" ? "" : "-${var.env}"}"
   parameter_store_path = "/${local.project}/${var.env}"
 }
 
-variable "env" {}
+variable "env" {
+  type = string
+}
 
 variable "tmdb_check_wait_seconds" {
+  type    = number
   default = 1800
 }
 
 variable "sendgrid_sandbox_mode" {
+  type    = string
   default = "1"
 }
