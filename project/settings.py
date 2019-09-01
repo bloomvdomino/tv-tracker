@@ -33,7 +33,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "project.apps.accounts.apps.AccountsConfig",
-    "project.apps.emails.apps.EmailsConfig",
     "project.apps.tmdb.apps.TMDbConfig",
     "project.apps.website.apps.WebsiteConfig",
     "project.core.apps.CoreConfig",
