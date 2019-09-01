@@ -26,6 +26,4 @@ RUN mkdir /app/staticfiles && chown -R ttuser:ttuser /app/staticfiles \
 
 USER ttuser
 
-CMD python manage.py collectstatic --noinput --clear \
-    && python manage.py migrate \
-    && gunicorn project.wsgi -c gunicorn.py
+CMD python manage.py collectstatic --noinput --clear && gunicorn project.wsgi -c gunicorn.py
