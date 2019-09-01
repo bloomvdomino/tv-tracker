@@ -156,7 +156,6 @@ SUIT_CONFIG = {
     "MENU": (
         "-",
         {"app": "apps_accounts", "models": ("user",)},
-        {"app": "apps_emails", "models": ({"model": "sendgridemail", "label": "SendGrid"},)},
         {"app": "apps_website", "models": ("contact",)},
     ),
 }
@@ -168,11 +167,6 @@ if DEBUG:
     INSTALLED_APPS += ["debug_toolbar"]
     MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware"]
     DEBUG_TOOLBAR_CONFIG = {"SHOW_TOOLBAR_CALLBACK": lambda request: True}
-
-
-# AWS
-
-AWS_DEFAULT_ACL = None
 
 
 # TMDb
@@ -190,18 +184,10 @@ if ENV in ["qa", "production"]:
     EMAIL_HOST = "smtp.sendgrid.net"
     EMAIL_PORT = 587
     EMAIL_USE_TLS = True
+    EMAIL_HOST_USER = config("SENDGRID_USERNAME")
+    EMAIL_HOST_PASSWORD = config("SENDGRID_PASSWORD")
 else:
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
     EMAIL_HOST = "localhost"
     EMAIL_PORT = 25
     EMAIL_USE_TLS = False
-
-EMAIL_HOST_USER = config("SENDGRID_USERNAME")
-EMAIL_HOST_PASSWORD = config("SENDGRID_PASSWORD")
-
-SENDGRID_API_KEY = config("SENDGRID_API_KEY")
-
-if ENV == "test":
-    SENDGRID_SANDBOX_MODE = True
-else:
-    SENDGRID_SANDBOX_MODE = config("SENDGRID_SANDBOX_MODE", cast=bool)
