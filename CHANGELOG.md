@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 - `apps_emails` app #41
 
+### Fixed
+- Terraform 0.12 in CI #43
+
 ## [2.16.0] - 2019-09-01
 ### Removed
 - `SendGridEmail` model #39

@@ -2,21 +2,19 @@
 
 set -e
 
-PROJECT_DIR="project/"
 DOCKER_COMPOSE="docker-compose run --no-deps --rm web"
 
 echo "Checking bandit..."
-$DOCKER_COMPOSE bandit -rq -x **/tests/** $PROJECT_DIR
+$DOCKER_COMPOSE bandit -rq -x **/tests/** project
 
 echo "Checking isort..."
-$DOCKER_COMPOSE isort -rc -c $PROJECT_DIR
+$DOCKER_COMPOSE isort -rc -c project
 
 echo "Checking black..."
-$DOCKER_COMPOSE black --check $PROJECT_DIR
+$DOCKER_COMPOSE black --check project
 
 echo "Checking flake8..."
-$DOCKER_COMPOSE flake8 $PROJECT_DIR
+$DOCKER_COMPOSE flake8 project
 
-# Skip terraform fmt until snap supports terraform 0.12.
-# echo "Checking terraform fmt..."
-# terraform fmt -check=true terraform
+echo "Checking terraform fmt..."
+terraform fmt -recursive -check=true terraform
