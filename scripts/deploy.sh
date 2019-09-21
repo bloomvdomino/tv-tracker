@@ -4,7 +4,15 @@
 
 set -e
 
+if [ $# -ne 1 ]; then
+    exit 1
+fi
+
 APP=tv-tracker-olivertso
+if [ $1 != production ]; then
+    APP=$APP-$1
+fi
+
 PROCESS_TYPE=web
 REGISTRY=registry.heroku.com
 TAG=$REGISTRY/$APP/$PROCESS_TYPE

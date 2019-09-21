@@ -25,15 +25,22 @@ jobs:
         - coveralls
 
     - stage: deploy
-      name: "Deploy"
-      if: tag IS present
+      name: "Deploy to QA"
       before_install: skip
       install: skip
       script: skip
       after_success: echo "Skipping the after_success."  # https://github.com/travis-ci/travis-ci/issues/8337
       deploy:
         provider: script
-        script: sh scripts/deploy.sh
+        script: sh scripts/deploy.sh qa
+        on:
+          branch: qa
+
+    - name: "Deploy to Production"
+      if: tag IS present
+      deploy:
+        provider: script
+        script: sh scripts/deploy.sh production
         on:
           tags: true
 
