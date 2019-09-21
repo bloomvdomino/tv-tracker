@@ -4,7 +4,17 @@
 
 set -e
 
+if [ $# -ne 1 ]; then
+    exit 1
+fi
+
+ENV=$1
+
 APP=tv-tracker-olivertso
+if [ $ENV != production ]; then
+    APP=$APP-$ENV
+fi
+
 PROCESS_TYPE=web
 REGISTRY=registry.heroku.com
 TAG=$REGISTRY/$APP/$PROCESS_TYPE
@@ -13,6 +23,10 @@ docker login --username=_ --password=$HEROKU_API_KEY $REGISTRY
 docker build -f docker/prod.Dockerfile -t $TAG .
 docker push $TAG
 docker rmi $(docker images $TAG -q)
-heroku container:release $PROCESS_TYPE -a $APP
+heroku container:release -a $APP $PROCESS_TYPE
 
-heroku run python manage.py migrate -a $APP
+if [ $ENV != production ]; then
+    heroku pg:reset -a $APP DATABASE --confirm $APP
+fi
+
+heroku run -a $APP python manage.py migrate
