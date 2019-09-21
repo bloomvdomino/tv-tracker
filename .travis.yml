@@ -26,6 +26,7 @@ jobs:
 
     - stage: deploy
       name: "Deploy to QA"
+      if: tag IS blank && branch = qa
       before_install: skip
       install: skip
       script: skip
