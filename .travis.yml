@@ -9,7 +9,7 @@ jobs:
   include:
     - stage: lint_and_test
       name: "Lint and Test"
-      if: tag IS blank
+      if: tag IS blank && branch != qa
       before_install:
         - sudo service postgresql stop
         - cp .env.example .env
