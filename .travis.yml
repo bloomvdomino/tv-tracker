@@ -39,6 +39,7 @@ jobs:
 
     - name: "Deploy to Production"
       if: tag IS present
+      script: skip
       deploy:
         provider: script
         script: sh scripts/deploy.sh production
