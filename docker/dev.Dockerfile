@@ -10,6 +10,7 @@ COPY /manage.py /app/manage.py
 RUN apk update \
     && apk add --no-cache libpq postgresql-client \
     && apk add --no-cache --virtual .build-deps \
+        curl \
         gcc \
         libffi-dev \
         make \
@@ -18,6 +19,11 @@ RUN apk update \
         postgresql-dev \
     && pip install --no-cache-dir --upgrade pip setuptools \
     && pip install --no-cache-dir -r requirements/development.txt \
+    # Install terraform.
+    && curl -sLo /tmp/tf.zip https://releases.hashicorp.com/terraform/0.12.8/terraform_0.12.8_linux_amd64.zip \
+    && unzip /tmp/tf.zip -d /bin \
+    && rm -vf /tmp/tf.zip \
+    # Delete install dependencies.
     && apk del .build-deps \
     && rm -vrf /var/cache/apk/*
 

@@ -13,10 +13,6 @@ jobs:
       before_install:
         - sudo service postgresql stop
         - cp .env.example .env
-        # Install Terraform.
-        - curl -sLo /tmp/tf.zip https://releases.hashicorp.com/terraform/0.12.8/terraform_0.12.8_linux_amd64.zip
-        - unzip /tmp/tf.zip -d ~/bin
-        - rm -f /tmp/tf.zip
       install:
         - docker-compose build
       script:

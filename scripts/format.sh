@@ -11,4 +11,4 @@ echo "Running black..."
 $DOCKER_COMPOSE black project
 
 echo "Running terraform fmt..."
-terraform fmt -recursive terraform
+$DOCKER_COMPOSE terraform fmt -recursive terraform
