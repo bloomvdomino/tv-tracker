@@ -19,7 +19,7 @@ PROCESS_TYPE=web
 REGISTRY=registry.heroku.com
 TAG=$REGISTRY/$APP/$PROCESS_TYPE
 
-docker login --username=_ --password=$HEROKU_API_KEY $REGISTRY
+echo $HEROKU_API_KEY | docker login --username=_ --password-stdin $REGISTRY
 docker build -f docker/prod.Dockerfile -t $TAG .
 docker push $TAG
 docker rmi $(docker images $TAG -q)
