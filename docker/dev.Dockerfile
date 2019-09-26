@@ -1,4 +1,4 @@
-FROM python:3.7.2-alpine
+FROM python:3.7.4-alpine
 
 ENV PYTHONUNBUFFERED 1
 
@@ -27,7 +27,7 @@ RUN apk update \
     && apk del .build-deps \
     && rm -vrf /var/cache/apk/*
 
-ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.5.1/wait /wait
+ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.6.0/wait /wait
 RUN chmod +x /wait
 
 CMD /wait && python manage.py runserver 0:8000
