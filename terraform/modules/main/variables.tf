@@ -1,6 +1,7 @@
 locals {
   project              = "tv-tracker"
-  app_name             = "${local.project}-olivertso${var.env == "production" ? "" : "-${var.env}"}"
+  env_suffix           = var.env == "production" ? "" : "-${var.env}"
+  app_name             = "${local.project}-olivertso${local.env_suffix}"
   parameter_store_path = "/${local.project}/${var.env}"
 }
 

@@ -21,7 +21,7 @@ resource "heroku_app" "default" {
 
   config_vars = {
     ALLOWED_HOSTS           = "${local.app_name}.herokuapp.com"
-    DEFAULT_FROM_EMAIL      = "do-not-respond${var.env == "production" ? "" : ".${var.env}"}@${local.project}.com"
+    DEFAULT_FROM_EMAIL      = "noreply@${local.project}${local.env_suffix}.com"
     ENV                     = var.env
     TMDB_CHECK_WAIT_SECONDS = var.tmdb_check_wait_seconds
   }
