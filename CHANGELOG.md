@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Update python version to 3.7.4 #51
+- Change from email to `noreply@tv-tracker<-env>.com` #53
 
 ### Security
 - Docker login with --password-stdin #50
