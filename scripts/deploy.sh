@@ -20,9 +20,15 @@ REGISTRY=registry.heroku.com
 TAG=$REGISTRY/$APP/$PROCESS_TYPE
 
 echo $HEROKU_API_KEY | docker login --username=_ --password-stdin $REGISTRY
+
 docker build -f docker/prod.Dockerfile -t $TAG .
 docker push $TAG
 docker rmi $(docker images $TAG -q)
+
+if [ $ENV == production ]; then
+    heroku pg:backups:capture -a $APP
+fi
+
 heroku container:release -a $APP $PROCESS_TYPE
 
 if [ $ENV != production ]; then
