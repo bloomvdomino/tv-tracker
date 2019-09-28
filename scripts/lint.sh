@@ -7,6 +7,9 @@ DOCKER_COMPOSE="docker-compose run --no-deps --rm web"
 echo "Checking shfmt..."
 $DOCKER_COMPOSE shfmt -d -p -i=4 scripts
 
+echo "Checking hadolint..."
+$DOCKER_COMPOSE hadolint docker/*.Dockerfile
+
 echo "Checking bandit..."
 $DOCKER_COMPOSE bandit -rq -x **/tests/** project
 

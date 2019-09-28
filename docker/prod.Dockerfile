@@ -8,6 +8,7 @@ COPY /requirements /app/requirements
 COPY /gunicorn.py /app/gunicorn.py
 COPY /manage.py /app/manage.py
 COPY /project /app/project
+COPY /scripts/start-prod.sh /app/scripts/start-prod.sh
 
 RUN mkdir /app/staticfiles && chown -R ttuser:ttuser /app/staticfiles \
     && apk update \
@@ -26,4 +27,4 @@ RUN mkdir /app/staticfiles && chown -R ttuser:ttuser /app/staticfiles \
 
 USER ttuser
 
-CMD python manage.py collectstatic --noinput --clear && gunicorn project.wsgi -c gunicorn.py
+CMD ["sh", "scripts/start-prod.sh"]
