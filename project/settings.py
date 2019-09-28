@@ -21,10 +21,6 @@ ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=Csv())
 
 ADMIN_PATH = config("ADMIN_PATH")
 
-ADMINS = config(
-    "ADMINS", cast=lambda s: [tuple(pair.split(",")) for pair in s.split(";")] if s else []
-)
-
 
 # Application definition
 
@@ -161,7 +157,7 @@ TMDB_CHECK_WAIT_SECONDS = config("TMDB_CHECK_WAIT_SECONDS", cast=int)
 
 # Email
 
-SERVER_EMAIL = DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL")
+DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL")
 
 if ENV in ["qa", "production"]:
     EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"

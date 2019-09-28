@@ -25,7 +25,7 @@ docker build -f docker/prod.Dockerfile -t $TAG .
 docker push $TAG
 docker rmi $(docker images $TAG -q)
 
-if [ $ENV == production ]; then
+if [ $ENV = production ]; then
     heroku pg:backups:capture -a $APP
 fi
 

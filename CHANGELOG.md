@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 - `django-suit` #54
+- Error reports by email #56
 
 ### Security
 - Docker login with --password-stdin #50
