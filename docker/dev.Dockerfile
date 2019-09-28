@@ -19,11 +19,14 @@ RUN apk update \
         postgresql-dev \
     && pip install --no-cache-dir --upgrade pip setuptools \
     && pip install --no-cache-dir -r requirements/development.txt \
+    # Install shfmt.
+    && curl -sLo /bin/shfmt https://github.com/mvdan/sh/releases/download/v2.6.4/shfmt_v2.6.4_linux_amd64 \
+    && chmod +x /bin/shfmt \
     # Install terraform.
     && curl -sLo /tmp/tf.zip https://releases.hashicorp.com/terraform/0.12.8/terraform_0.12.8_linux_amd64.zip \
     && unzip /tmp/tf.zip -d /bin \
     && rm -vf /tmp/tf.zip \
-    # Delete install dependencies.
+    # Delete build dependencies.
     && apk del .build-deps \
     && rm -vrf /var/cache/apk/*
 

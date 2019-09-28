@@ -4,6 +4,9 @@ set -e
 
 DOCKER_COMPOSE="docker-compose run --no-deps --rm web"
 
+echo "Running shfmt..."
+$DOCKER_COMPOSE shfmt -l -w -p -i=4 scripts
+
 echo "Running isort..."
 $DOCKER_COMPOSE isort -rc .
 
