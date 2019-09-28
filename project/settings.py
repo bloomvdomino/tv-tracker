@@ -17,6 +17,8 @@ TEMPLATE_DEBUG = DEBUG
 
 ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=Csv())
 
+ADMIN_PATH = config("ADMIN_PATH")
+
 ADMINS = config(
     "ADMINS", cast=lambda s: [tuple(pair.split(",")) for pair in s.split(";")] if s else []
 )
@@ -25,7 +27,6 @@ ADMINS = config(
 # Application definition
 
 INSTALLED_APPS = [
-    "suit",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -54,7 +55,7 @@ ROOT_URLCONF = "project.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR, "project/templates/")],
+        "DIRS": [],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -139,25 +140,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATIC_URL = "/static/"
 
 # Extra places for collectstatic to find static files.
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "project/core/static"),
-    os.path.join(BASE_DIR, "project/static"),
-]
-
-
-# Django Admin
-
-ADMIN_PATH = config("ADMIN_PATH")
-
-SUIT_CONFIG = {
-    "ADMIN_NAME": "TV Tracker",
-    "SEARCH_URL": "",
-    "MENU": (
-        "-",
-        {"app": "apps_accounts", "models": ("user",)},
-        {"app": "apps_website", "models": ("contact",)},
-    ),
-}
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "project/core/static")]
 
 
 # Django Debug Toolbar
