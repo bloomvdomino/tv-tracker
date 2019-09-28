@@ -27,8 +27,8 @@ class TestShow:
         assert show.id == 123
 
     def test_name(self, mock_set_progress_related):
-        show = _Show({"original_name": "Impastor"})
-        assert show.name == "Impastor"
+        show = _Show({"original_name": "Foo", "name": "Bar"})
+        assert show.name == "Bar"
 
     def test_poster_path(self, mock_set_progress_related):
         show = _Show({"poster_path": "/foo/bar.jpg"})

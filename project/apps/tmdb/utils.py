@@ -19,7 +19,7 @@ class _Show:
 
     @property
     def name(self):
-        return self._data["original_name"]
+        return self._data["name"]
 
     @property
     def poster_path(self):
