@@ -4,23 +4,25 @@ set -e
 
 DOCKER_COMPOSE="docker-compose run --no-deps --rm web"
 
-echo "Checking shfmt..."
+echo "Running linters:"
+
+echo "shfmt..."
 $DOCKER_COMPOSE shfmt -d -p -i=4 scripts
 
-echo "Checking hadolint..."
+echo "hadolint..."
 $DOCKER_COMPOSE hadolint docker/*.Dockerfile
 
-echo "Checking bandit..."
+echo "bandit..."
 $DOCKER_COMPOSE bandit -rq -x **/tests/** project
 
-echo "Checking isort..."
+echo "isort..."
 $DOCKER_COMPOSE isort -rc -c .
 
-echo "Checking black..."
+echo "black..."
 $DOCKER_COMPOSE black --check .
 
-echo "Checking flake8..."
+echo "flake8..."
 $DOCKER_COMPOSE flake8 .
 
-echo "Checking terraform fmt..."
+echo "terraform..."
 $DOCKER_COMPOSE terraform fmt -recursive -check=true terraform
