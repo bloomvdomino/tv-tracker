@@ -44,3 +44,8 @@ resource "heroku_addon" "sendgrid" {
   app  = heroku_app.default.name
   plan = "sendgrid:starter"
 }
+
+resource "heroku_addon" "sentry" {
+  app  = heroku_app.default.name
+  plan = "sentry:f1"
+}

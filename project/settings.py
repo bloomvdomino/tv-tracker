@@ -1,7 +1,9 @@
 import os
 
 import dj_database_url
+import sentry_sdk
 from decouple import Csv, config
+from sentry_sdk.integrations.django import DjangoIntegration
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -173,3 +175,8 @@ else:
     EMAIL_HOST = "localhost"
     EMAIL_PORT = 25
     EMAIL_USE_TLS = False
+
+
+# Sentry
+
+sentry_sdk.init(dsn=config("SENTRY_DSN", default=None), integrations=[DjangoIntegration()])
