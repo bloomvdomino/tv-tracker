@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Backup database before deploying on production #52
+- Sentry #55
 
 ### Changed
 - Update python version to 3.7.4 #51
