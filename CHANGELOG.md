@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [2.18.0] - 2019-09-28
 ### Added
 - Backup database before deploying on production #52
 - Sentry #55
@@ -212,7 +214,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Migrate from an API to a full-stack app.
 
-[Unreleased]: https://github.com/olivertso/tv-tracker/compare/2.17.1...HEAD
+[Unreleased]: https://github.com/olivertso/tv-tracker/compare/2.18.0...HEAD
+[2.18.0]: https://github.com/olivertso/tv-tracker/compare/2.17.1...2.18.0
 [2.17.1]: https://github.com/olivertso/tv-tracker/compare/2.17.0...2.17.1
 [2.17.0]: https://github.com/olivertso/tv-tracker/compare/2.16.0...2.17.0
 [2.16.0]: https://github.com/olivertso/tv-tracker/compare/2.15.0...2.16.0
