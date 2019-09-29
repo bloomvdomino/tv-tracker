@@ -24,10 +24,8 @@ class ProgressesView(LoginRequiredMixin, TemplateView):
     template_name = "tmdb/progresses.html"
 
     def get_context_data(self, **kwargs):
-        user = self.request.user
-        user.update_progresses()
         context = super().get_context_data(**kwargs)
-        context.update(**user.progresses_summary)
+        context.update(**self.request.user.progresses_summary)
         return context
 
 
