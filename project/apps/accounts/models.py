@@ -34,10 +34,6 @@ class User(AbstractBaseUser, PermissionsMixin, BaseUUIDModel):
     is_staff = models.BooleanField(default=False, verbose_name="staff")
     is_superuser = models.BooleanField(default=False, verbose_name="superuser")
 
-    max_following_shows = models.PositiveSmallIntegerField(
-        default=8, verbose_name="max following shows"
-    )
-
     objects = UserManager()
 
     USERNAME_FIELD = "email"
