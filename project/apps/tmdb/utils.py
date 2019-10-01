@@ -1,8 +1,4 @@
-import asyncio
-
-import aiohttp
 import requests
-from asgiref.sync import async_to_sync
 from django.conf import settings
 from django.urls import reverse
 from django.utils.functional import cached_property
@@ -167,33 +163,3 @@ def search_show(name, user=None):
     """
     results = fetch("search/tv", params={"query": name})["results"]
     return [_Show(data, user=user) for data in results]
-
-
-async def async_fetch(session, endpoint, params=None, **extras):
-    url = "https://api.themoviedb.org/3/{}".format(endpoint)
-    params = params or {}
-    params.update(api_key=settings.TMDB_API_KEY)
-    async with session.get(url, params=params) as resp:
-        data = await resp.json()
-    for key, value in extras.items():
-        data[key] = value
-    return data
-
-
-@async_to_sync
-async def get_shows(ids, user=None):
-    async with aiohttp.ClientSession() as session:
-        coros = [async_fetch(session, "tv/{}".format(id)) for id in ids]
-        results = await asyncio.gather(*coros)
-        return [_Show(data, user=user) for data in results]
-
-
-@async_to_sync
-async def get_air_dates(params_list):
-    async with aiohttp.ClientSession() as session:
-        coros = []
-        for params in params_list:
-            endpoint = "tv/{show_id}/season/{season}/episode/{episode}".format(**params)
-            coros.append(async_fetch(session, endpoint, show_id=params["show_id"]))
-        results = await asyncio.gather(*coros)
-        return [result for result in results if result.get("air_date")]

@@ -1,13 +1,8 @@
-from datetime import timedelta
-
-from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db import models
 from django.db.models import Q
-from django.utils import timezone
 
 from project.apps.tmdb.models import Progress
-from project.apps.tmdb.utils import get_air_dates, get_shows
 from project.core.models import BaseUUIDModel
 
 from .managers import UserManager
@@ -66,95 +61,6 @@ class User(AbstractBaseUser, PermissionsMixin, BaseUUIDModel):
             following_count=self.progress_set.filter(status=Progress.FOLLOWING).count(),
         )
         return summary
-
-    def update_progresses(self):
-        """
-        Update progresses fields:
-            - status
-            - show_name
-            - show_poster_path
-            - show_status
-            - next_season
-            - next_episode
-            - next_air_date
-            - last_aired_season
-            - last_aired_episode
-        """
-        progresses_data = self._get_updated_progresses_data()
-        next_air_dates = self._get_next_air_dates(progresses_data)
-        for params in progresses_data:
-            for show_id, next_air_date in next_air_dates:
-                if params["show_id"] == show_id:
-                    params.update(next_air_date=next_air_date)
-                    break
-            self.progress_set.filter(show_id=params["show_id"]).update(**params)
-        self._stop_finished_shows()
-
-    def _get_updated_progresses_data(self):
-        """
-        Return a list of updated data of the progresses which need to be
-        updated.
-        """
-        show_ids = self._get_show_ids_to_update()
-        shows = get_shows(show_ids)
-        data = []
-        for show in shows:
-            progress = Progress.objects.get(user=self, show_id=show.id)
-            next_season, next_episode = show.get_next_episode(
-                progress.current_season, progress.current_episode
-            )
-            last_aired_season, last_aired_episode = show.last_aired_episode
-            data.append(
-                {
-                    "show_id": show.id,
-                    "show_name": show.name,
-                    "show_poster_path": show.poster_path,
-                    "show_status": show.status_value,
-                    "next_season": next_season,
-                    "next_episode": next_episode,
-                    "last_aired_season": last_aired_season,
-                    "last_aired_episode": last_aired_episode,
-                }
-            )
-        return data
-
-    def _get_show_ids_to_update(self):
-        """
-        Return a list of show IDs of the progresses which need to be updated.
-        """
-        now = timezone.now()
-        last_check_wait = now - timedelta(seconds=settings.TMDB_CHECK_WAIT_SECONDS)
-        progresses = self.progress_set.filter(
-            Q(last_check__isnull=True) | Q(last_check__lte=last_check_wait),
-            ~Q(
-                next_season__isnull=False,
-                next_episode__isnull=False,
-                next_air_date__isnull=False,
-                last_aired_season__isnull=False,
-                last_aired_episode__isnull=False,
-            ),
-            status=Progress.FOLLOWING,
-        )
-        show_ids = list(progresses.values_list("show_id", flat=True))
-        progresses.update(last_check=now)
-        return show_ids
-
-    def _get_next_air_dates(self, progresses):
-        """
-        Return a tuple (show_id, air_date) of a given list of progresses data,
-        which should contain the fields show_id, next_season and next_episode.
-        """
-        params = [
-            {
-                "show_id": progress["show_id"],
-                "season": progress["next_season"],
-                "episode": progress["next_episode"],
-            }
-            for progress in progresses
-            if progress["next_season"] and progress["next_episode"]
-        ]
-        results = get_air_dates(params)
-        return [(result["show_id"], result["air_date"]) for result in results]
 
     def _stop_finished_shows(self):
         """

@@ -154,7 +154,6 @@ if DEBUG:
 TMDB_API_URL = "https://api.themoviedb.org/3/"
 TMDB_API_KEY = config("TMDB_API_KEY")
 TMDB_FETCH_CHUNK_SIZE = 40
-TMDB_CHECK_WAIT_SECONDS = config("TMDB_CHECK_WAIT_SECONDS", cast=int)
 
 
 # Email
