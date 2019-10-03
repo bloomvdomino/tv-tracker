@@ -1,13 +1,13 @@
 import pytest
 
 from ..forms import ProgressForm
-from ..utils import _Show
+from ..utils import Show
 
 
 class TestProgressForm:
     @pytest.fixture
     def show(self, mocker):
-        return mocker.MagicMock(spec=_Show)
+        return mocker.MagicMock(spec=Show)
 
     @pytest.fixture
     def episode_choices(self):

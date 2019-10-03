@@ -8,7 +8,7 @@ from django.core.management.base import BaseCommand
 
 from project.apps.accounts.models import User
 from project.apps.tmdb.models import Progress
-from project.apps.tmdb.utils import _Show
+from project.apps.tmdb.utils import Show
 
 
 class Command(BaseCommand):
@@ -22,12 +22,12 @@ class Command(BaseCommand):
         for progress_id, data in updated_data.items():
             Progress.objects.filter(id=progress_id).update(**data)
         for user in User.objects.all():
-            user._stop_finished_shows()
+            user.stop_finished_shows()
 
     def _fetch_shows(self, show_ids):
         urls = [f"{settings.TMDB_API_URL}tv/{show_id}" for show_id in show_ids]
         responses = self._fetch_urls(urls)
-        shows = [_Show(response.json()) for response in responses]
+        shows = [Show(response.json()) for response in responses]
         return {show.id: show for show in shows}
 
     def _get_updated_progress_data(self, shows):

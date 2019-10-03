@@ -5,74 +5,74 @@ from django.urls import resolve
 from project.apps.accounts.tests.factories import UserFactory
 
 from ..models import Progress
-from ..utils import _Show, fetch, format_episode_label, get_air_date
+from ..utils import Show, fetch, format_episode_label, get_air_date
 from .factories import ProgressFactory
 
 
 class TestShow:
     @pytest.fixture
     def mock_set_progress_related(self, mocker):
-        return mocker.patch("project.apps.tmdb.utils._Show._set_progress_related")
+        return mocker.patch("project.apps.tmdb.utils.Show._set_progress_related")
 
     @pytest.mark.parametrize("user", [None, UserFactory.build()])
     def test__init__(self, mock_set_progress_related, user):
         data = {"id": 123}
-        show = _Show(data, user=user) if user else _Show(data)
+        show = Show(data, user=user) if user else Show(data)
 
         assert show._data == data
         show._set_progress_related.assert_called_once_with(user)
 
     def test_id(self, mock_set_progress_related):
-        show = _Show({"id": 123})
+        show = Show({"id": 123})
         assert show.id == 123
 
     def test_name(self, mock_set_progress_related):
-        show = _Show({"original_name": "Foo", "name": "Bar"})
+        show = Show({"original_name": "Foo", "name": "Bar"})
         assert show.name == "Bar"
 
     def test_poster_path(self, mock_set_progress_related):
-        show = _Show({"poster_path": "/foo/bar.jpg"})
+        show = Show({"poster_path": "/foo/bar.jpg"})
         assert show.poster_path == "/foo/bar.jpg"
 
     def test_vote_average(self, mock_set_progress_related):
-        show = _Show({"vote_average": 8.3})
+        show = Show({"vote_average": 8.3})
         assert show.vote_average == 8.3
 
     def test_genres(self, mock_set_progress_related):
-        show = _Show({"genres": ["foo", "bar"]})
+        show = Show({"genres": ["foo", "bar"]})
         assert show.genres == ["foo", "bar"]
 
     def test_languages(self, mock_set_progress_related):
-        show = _Show({"languages": ["foo"]})
+        show = Show({"languages": ["foo"]})
         assert show.languages == ["foo"]
 
     def test_overview(self, mock_set_progress_related):
-        show = _Show({"overview": "Foo bar."})
+        show = Show({"overview": "Foo bar."})
         assert show.overview == "Foo bar."
 
     @pytest.mark.parametrize("display", [display for _, display in Progress.SHOW_STATUS_CHOICES])
     def test_status_display(self, mock_set_progress_related, display):
         data = {"status": display}
-        show = _Show(data)
+        show = Show(data)
         assert show.status_display == display
 
     @pytest.mark.parametrize("value,display", Progress.SHOW_STATUS_CHOICES)
     def test_status_value(self, mock_set_progress_related, value, display):
         data = {"status": display}
-        show = _Show(data)
+        show = Show(data)
         assert show.status_value == value
 
     def test_aired_episodes(self, mocker, mock_set_progress_related):
         mocker.patch(
-            "project.apps.tmdb.utils._Show._seasons",
+            "project.apps.tmdb.utils.Show._seasons",
             new=mocker.PropertyMock(return_value=[{"episode_count": 3}, {"episode_count": 3}]),
         )
         mocker.patch(
-            "project.apps.tmdb.utils._Show.last_aired_episode",
+            "project.apps.tmdb.utils.Show.last_aired_episode",
             new=mocker.PropertyMock(return_value=(2, 1)),
         )
 
-        show = _Show({})
+        show = Show({})
         assert show.aired_episodes == [(1, 1), (1, 2), (1, 3), (2, 1)]
 
     @pytest.mark.parametrize(
@@ -96,10 +96,10 @@ class TestShow:
         self, mocker, mock_set_progress_related, last_aired, season, episode, aired
     ):
         mocker.patch(
-            "project.apps.tmdb.utils._Show.last_aired_episode",
+            "project.apps.tmdb.utils.Show.last_aired_episode",
             new=mocker.PropertyMock(return_value=last_aired),
         )
-        show = _Show({})
+        show = Show({})
         assert show._episode_aired(season, episode) is aired
 
     @pytest.mark.parametrize(
@@ -108,7 +108,7 @@ class TestShow:
     )
     def test_last_aired_episode(self, mock_set_progress_related, last_episode_to_air, expected):
         data = {"last_episode_to_air": last_episode_to_air}
-        show = _Show(data)
+        show = Show(data)
         assert show.last_aired_episode == expected
 
     @pytest.mark.parametrize(
@@ -126,10 +126,10 @@ class TestShow:
     )
     def test_get_next_episode(self, mocker, mock_set_progress_related, episode, expected):
         mocker.patch(
-            "project.apps.tmdb.utils._Show._seasons",
+            "project.apps.tmdb.utils.Show._seasons",
             new=mocker.PropertyMock(return_value=[{"episode_count": 3}, {"episode_count": 3}]),
         )
-        show = _Show({})
+        show = Show({})
         assert show.get_next_episode(*episode) == expected
 
     @pytest.mark.parametrize(
@@ -155,12 +155,12 @@ class TestShow:
     )
     def test_seasons(self, mock_set_progress_related, seasons, expected):
         data = {"seasons": seasons}
-        show = _Show(data)
+        show = Show(data)
         assert show._seasons == expected
 
     @pytest.mark.parametrize("user", [None, AnonymousUser()])
     def test_set_progress_related_none_or_anonymous_user(self, user):
-        show = _Show({"id": 123}, user=user)
+        show = Show({"id": 123}, user=user)
 
         assert not show.saved
 
@@ -175,7 +175,7 @@ class TestShow:
         show_id = 123
         user = UserFactory()
         ProgressFactory(user=user, show_id=show_id if saved else 321)
-        show = _Show({"id": show_id}, user=user)
+        show = Show({"id": show_id}, user=user)
 
         assert show.saved is saved
 

@@ -62,7 +62,7 @@ class User(AbstractBaseUser, PermissionsMixin, BaseUUIDModel):
         )
         return summary
 
-    def _stop_finished_shows(self):
+    def stop_finished_shows(self):
         """
         Update progress status to stopped if the show is finished and the user
         also watched all episodes.

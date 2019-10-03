@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.utils.functional import cached_property
 
 
-class _Show:
+class Show:
     def __init__(self, data, user=None):
         self._data = data
         self._set_progress_related(user)
@@ -134,7 +134,7 @@ def get_show(id, user=None):
     https://developers.themoviedb.org/3/tv/get-tv-details
     """
     data = fetch("tv/{}".format(id))
-    return _Show(data, user=user)
+    return Show(data, user=user)
 
 
 def get_air_date(show_id, season, episode):
@@ -152,7 +152,7 @@ def get_popular_shows(page, user=None):
     https://developers.themoviedb.org/3/tv/get-popular-tv-shows
     """
     results = fetch("tv/popular", params={"page": page})["results"]
-    return [_Show(data, user=user) for data in results]
+    return [Show(data, user=user) for data in results]
 
 
 def search_show(name, user=None):
@@ -162,4 +162,4 @@ def search_show(name, user=None):
     https://developers.themoviedb.org/3/search/search-tv-shows
     """
     results = fetch("search/tv", params={"query": name})["results"]
-    return [_Show(data, user=user) for data in results]
+    return [Show(data, user=user) for data in results]
