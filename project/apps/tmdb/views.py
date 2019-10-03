@@ -17,6 +17,8 @@ class WatchNextView(LoginRequiredMixin, View):
         progress = request.user.progress_set.get(show_id=kwargs["show_id"])
         progress.update_show_data()
         progress.watch_next()
+        progress.stop_if_finished()
+        progress.save()
         return HttpResponse()
 
 
@@ -124,8 +126,26 @@ class ProgressEditMixin:
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs.update(user=self.request.user, show=self.show)
+        kwargs.update(show=self.show)
         return kwargs
+
+    def get_initial(self):
+        initial = super().get_initial()
+        last_aired_season, last_aired_episode = self.show.last_aired_episode
+        initial.update(
+            show_id=self.show.id,
+            show_name=self.show.name,
+            show_poster_path=self.show.poster_path,
+            show_status=self.show.status_value,
+            last_aired_season=last_aired_season,
+            last_aired_episode=last_aired_episode,
+        )
+        return initial
+
+    def form_valid(self, form):
+        form.instance.update_next_air_date()
+        form.instance.stop_if_finished()
+        return super().form_valid(form)
 
     def get_success_url(self):
         return self.request.session["progress_edit_success_url"]
@@ -137,6 +157,10 @@ class ProgressCreateView(ProgressEditMixin, CreateView):
             to = reverse("accounts:login")
             return redirect("{}?{}".format(to, urlencode({"next": request.path})))
         return super().post(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
 
 
 class ProgressUpdateView(ProgressEditMixin, LoginRequiredMixin, UpdateView):

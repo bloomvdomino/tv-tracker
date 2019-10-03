@@ -154,37 +154,24 @@ class Progress(BaseModel):
         self.show_poster_path = self.show.poster_path
         self.show_status = self.show.status_value
         self.last_aired_season, self.last_aired_episode = self.show.last_aired_episode
-        self.save(
-            update_fields=[
-                "show_name",
-                "show_poster_path",
-                "show_status",
-                "last_aired_season",
-                "last_aired_episode",
-            ]
-        )
 
     def watch_next(self):
-        self._update_episodes()
-        self.update_next_air_date()
-        self.save(
-            update_fields=[
-                "current_season",
-                "current_episode",
-                "next_season",
-                "next_episode",
-                "next_air_date",
-            ]
-        )
-
-    def _update_episodes(self):
         self.current_season, self.current_episode = self.next_season, self.next_episode
         self.next_season, self.next_episode = self.show.get_next_episode(
             self.current_season, self.current_episode
         )
+        self.update_next_air_date()
 
     def update_next_air_date(self):
         if self.next_season and self.next_episode:
             self.next_air_date = get_air_date(self.show_id, self.next_season, self.next_episode)
         else:
             self.next_air_date = None
+
+    def stop_if_finished(self):
+        if (
+            self.status != self.STOPPED
+            and self.show_status in [self.ENDED, self.CANCELED]
+            and self.next_air_date is None
+        ):
+            self.status = self.STOPPED

@@ -9,18 +9,19 @@ class ProgressForm(forms.ModelForm):
 
     class Meta:
         model = Progress
-        fields = ["status"]
+        fields = [
+            "status",
+            "show_id",
+            "show_name",
+            "show_poster_path",
+            "show_status",
+            "last_aired_season",
+            "last_aired_episode",
+        ]
 
     def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop("user")
         self.show = kwargs.pop("show")
-        self.updating = kwargs.get("instance") is not None
-
         super().__init__(*args, **kwargs)
-
-        if self.updating:
-            self.instance.update_show_data()
-
         self.fields["last_watched"].choices = self._make_episode_choices()
 
     def _make_episode_choices(self):
@@ -40,19 +41,8 @@ class ProgressForm(forms.ModelForm):
         self.instance.next_season, self.instance.next_episode = self.show.get_next_episode(
             self.instance.current_season, self.instance.current_episode
         )
-        self.instance.update_next_air_date()
 
         return last_watched
-
-    def save(self, commit=True):
-        self.instance.user = self.user
-        self.instance.show_id = self.show.id
-        super().save(commit=commit)
-
-        if not self.updating:
-            self.instance.update_show_data()
-
-        return self.instance
 
 
 class SearchForm(forms.Form):

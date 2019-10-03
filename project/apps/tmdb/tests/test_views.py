@@ -69,23 +69,19 @@ class TestProgressEditMixin:
 
     def test_get_form_kwargs(self, mocker, dummy_view_class):
         view = dummy_view_class()
-        view.request = mocker.MagicMock()
         view.show = mocker.MagicMock()
 
         form_kwargs = view.get_form_kwargs()
 
-        assert len(form_kwargs) == 3
+        assert len(form_kwargs) == 2
         assert form_kwargs["form_kwarg"] == 123
-        assert form_kwargs["user"] == view.request.user
         assert form_kwargs["show"] == view.show
 
 
 class TestProgressUpdateView:
     def test_get_initial(self, mocker):
-        show = mocker.MagicMock()
         mocker.patch(
-            "project.apps.tmdb.views.ProgressEditMixin.show",
-            new=mocker.PropertyMock(return_value=show),
+            "project.apps.tmdb.views.ProgressEditMixin.get_initial", return_value={"initial": 123}
         )
 
         view = ProgressUpdateView()
@@ -93,6 +89,7 @@ class TestProgressUpdateView:
 
         initial = view.get_initial()
 
-        assert len(initial) == 2
+        assert len(initial) == 3
+        assert initial["initial"] == 123
         assert initial["status"] == view.object.status
         assert initial["last_watched"] == "0-0"
