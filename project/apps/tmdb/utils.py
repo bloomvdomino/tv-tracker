@@ -43,7 +43,7 @@ class Show:
 
     @cached_property
     def status_value(self):
-        from .models import Progress  # imported here to avoid circular dependency
+        from project.apps.tmdb.models import Progress  # imported here to avoid circular dependency
 
         value_display_map = dict(Progress.SHOW_STATUS_CHOICES)
         display_value_map = {display: value for value, display in value_display_map.items()}

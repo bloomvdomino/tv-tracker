@@ -2,10 +2,9 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db import models
 from django.db.models import Q
 
+from project.apps.accounts.managers import UserManager
 from project.apps.tmdb.models import Progress
 from project.core.models import BaseUUIDModel
-
-from .managers import UserManager
 
 
 class User(AbstractBaseUser, PermissionsMixin, BaseUUIDModel):

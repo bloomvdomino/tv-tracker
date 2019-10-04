@@ -1,7 +1,7 @@
 import pytest
 
-from ..forms import SignupForm
-from ..models import User
+from project.apps.accounts.forms import SignupForm
+from project.apps.accounts.models import User
 
 
 class TestSignupForm:

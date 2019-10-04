@@ -1,7 +1,7 @@
 from django.urls import path
 
-from .apps import TMDbConfig
-from .views import (
+from project.apps.tmdb.apps import TMDbConfig
+from project.apps.tmdb.views import (
     PopularShowsView,
     ProgressCreateView,
     ProgressDeleteView,

@@ -3,10 +3,9 @@ from django.contrib.auth.models import AnonymousUser
 from django.urls import resolve
 
 from project.apps.accounts.tests.factories import UserFactory
-
-from ..models import Progress
-from ..utils import Show, fetch, format_episode_label, get_air_date
-from .factories import ProgressFactory
+from project.apps.tmdb.models import Progress
+from project.apps.tmdb.tests.factories import ProgressFactory
+from project.apps.tmdb.utils import Show, fetch, format_episode_label, get_air_date
 
 
 class TestShow:

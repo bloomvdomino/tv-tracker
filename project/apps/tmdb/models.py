@@ -4,9 +4,8 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.functional import cached_property
 
+from project.apps.tmdb.utils import format_episode_label, get_air_date, get_show
 from project.core.models import BaseModel
-
-from .utils import format_episode_label, get_air_date, get_show
 
 
 class Progress(BaseModel):

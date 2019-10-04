@@ -1,7 +1,7 @@
 import pytest
 
-from ..managers import UserManager
-from ..models import User
+from project.apps.accounts.managers import UserManager
+from project.apps.accounts.models import User
 
 
 class TestUserManager:

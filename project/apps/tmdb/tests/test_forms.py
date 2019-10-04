@@ -1,7 +1,7 @@
 import pytest
 
-from ..forms import ProgressForm
-from ..utils import Show
+from project.apps.tmdb.forms import ProgressForm
+from project.apps.tmdb.utils import Show
 
 
 class TestProgressForm:

@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.password_validation import validate_password
 
-from .models import User
+from project.apps.accounts.models import User
 
 
 class PasswordField(forms.CharField):

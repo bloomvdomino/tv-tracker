@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Save show name by language #58
+- Use absolute imports #61
 
 ## [2.18.0] - 2019-09-28
 ### Added

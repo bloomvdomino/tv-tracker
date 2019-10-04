@@ -4,9 +4,8 @@ import pytest
 from freezegun import freeze_time
 
 from project.apps.accounts.models import User
-
-from ..models import Progress
-from .factories import ProgressFactory
+from project.apps.tmdb.models import Progress
+from project.apps.tmdb.tests.factories import ProgressFactory
 
 
 class TestProgressModel:

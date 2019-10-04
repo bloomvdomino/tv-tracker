@@ -1,8 +1,8 @@
 from django.contrib.auth.views import LogoutView
 from django.urls import path
 
-from .apps import AccountsConfig
-from .views import (
+from project.apps.accounts.apps import AccountsConfig
+from project.apps.accounts.views import (
     LoginView,
     PasswordResetCompleteView,
     PasswordResetConfirmView,

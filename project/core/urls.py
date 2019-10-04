@@ -1,7 +1,7 @@
 from django.urls import path
 
-from .apps import CoreConfig
-from .views import HealthCheckView
+from project.core.apps import CoreConfig
+from project.core.views import HealthCheckView
 
 app_name = CoreConfig.label
 
