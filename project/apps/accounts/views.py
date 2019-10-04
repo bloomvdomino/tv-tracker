@@ -5,7 +5,7 @@ from django.http.response import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView
 
-from .forms import PasswordForm, SignupForm
+from project.apps.accounts.forms import PasswordForm, SignupForm
 
 
 class SignupView(CreateView):

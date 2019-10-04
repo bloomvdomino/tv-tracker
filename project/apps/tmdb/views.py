@@ -8,8 +8,8 @@ from django.utils.functional import cached_property
 from django.views import View
 from django.views.generic import CreateView, FormView, TemplateView, UpdateView
 
-from .forms import ProgressForm, SearchForm
-from .utils import get_popular_shows, get_show
+from project.apps.tmdb.forms import ProgressForm, SearchForm
+from project.apps.tmdb.utils import get_popular_shows, get_show
 
 
 class WatchNextView(LoginRequiredMixin, View):

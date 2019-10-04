@@ -1,7 +1,7 @@
 from django.urls import path
 
-from .apps import WebsiteConfig
-from .views import ContactView, IndexView
+from project.apps.website.apps import WebsiteConfig
+from project.apps.website.views import ContactView, IndexView
 
 app_name = WebsiteConfig.label
 

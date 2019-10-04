@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Contact
+from project.apps.website.models import Contact
 
 
 @admin.register(Contact)

@@ -1,7 +1,7 @@
 from django import forms
 
-from .models import Progress
-from .utils import format_episode_label, search_show
+from project.apps.tmdb.models import Progress
+from project.apps.tmdb.utils import format_episode_label, search_show
 
 
 class ProgressForm(forms.ModelForm):

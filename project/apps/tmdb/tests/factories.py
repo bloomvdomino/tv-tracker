@@ -3,8 +3,7 @@ from datetime import date
 import factory
 
 from project.apps.accounts.tests.factories import UserFactory
-
-from ..models import Progress
+from project.apps.tmdb.models import Progress
 
 
 class ProgressFactory(factory.DjangoModelFactory):

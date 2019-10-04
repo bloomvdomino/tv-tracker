@@ -3,7 +3,7 @@ from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, View
 
-from .forms import ContactForm
+from project.apps.website.forms import ContactForm
 
 
 class IndexView(View):
