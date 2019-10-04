@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Shell formatter (`shfmt`) and Dockerfile linter (`hadolint`) #59
+- `update_progresses` command #60
 
 ### Changed
 - Save show name by language #58
