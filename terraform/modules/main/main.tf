@@ -16,10 +16,9 @@ resource "heroku_app" "default" {
   stack  = "container"
 
   config_vars = {
-    ALLOWED_HOSTS           = "${local.app_name}.herokuapp.com"
-    DEFAULT_FROM_EMAIL      = "noreply@${local.project}${local.env_suffix}.com"
-    ENV                     = var.env
-    TMDB_CHECK_WAIT_SECONDS = var.tmdb_check_wait_seconds
+    ALLOWED_HOSTS      = "${local.app_name}.herokuapp.com"
+    DEFAULT_FROM_EMAIL = "noreply@${local.project}${local.env_suffix}.com"
+    ENV                = var.env
   }
 
   sensitive_config_vars = {

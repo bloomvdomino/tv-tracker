@@ -38,11 +38,12 @@
     <form method="post" novalidate>
         {% csrf_token %}
 
-        <!-- Hidden fields. -->
-        {{ form.show_id }}
-        {{ form.show_name }}
-        {{ form.show_poster_path }}
-        {{ form.show_status }}
+        {{ form.show_id.as_hidden }}
+        {{ form.show_name.as_hidden }}
+        {{ form.show_poster_path.as_hidden }}
+        {{ form.show_status.as_hidden }}
+        {{ form.last_aired_season.as_hidden }}
+        {{ form.last_aired_episode.as_hidden }}
 
         <label for="{{ form.status.id_for_label }}">Status:</label>
         {{ form.status }}

@@ -23,7 +23,6 @@ class TestProgressModel:
         assert progress.show == show
         assert get_show.call_count == 1
 
-    @pytest.mark.django_db
     @pytest.mark.parametrize(
         "season,episode,not_started", [(1, 0, False), (0, 1, False), (1, 1, False), (0, 0, True)]
     )
@@ -31,14 +30,12 @@ class TestProgressModel:
         progress = ProgressFactory.build(current_season=season, current_episode=episode)
         assert progress.not_started is not_started
 
-    @pytest.mark.django_db
     @pytest.mark.parametrize("next_air_date,scheduled", [(None, False), (date(2019, 3, 16), True)])
     def test_scheduled(self, next_air_date, scheduled):
         progress = ProgressFactory.build(next_air_date=next_air_date)
         assert progress.scheduled is scheduled
 
     @freeze_time("2018-09-05")
-    @pytest.mark.django_db
     @pytest.mark.parametrize(
         "tz, next_air_date,available",
         [
@@ -54,7 +51,6 @@ class TestProgressModel:
         progress = ProgressFactory.build(user__time_zone=tz, next_air_date=next_air_date)
         assert progress.available is available
 
-    @pytest.mark.django_db
     @pytest.mark.parametrize(
         "show_status,next_air_date,finished",
         [
@@ -96,7 +92,6 @@ class TestProgressModel:
         progress = ProgressFactory.build(last_aired_season=3, last_aired_episode=5)
         assert progress.last_aired_label == "S03E05"
 
-    @pytest.mark.django_db
     def test_update_show_data(self, mocker):
         show = mocker.MagicMock()
         type(show).name = mocker.PropertyMock(return_value="Foo")
@@ -104,13 +99,12 @@ class TestProgressModel:
         type(show).status_value = mocker.PropertyMock(return_value="ended")
         type(show).last_aired_episode = mocker.PropertyMock(return_value=(15, 11))
 
-        get_show = mocker.patch("project.apps.tmdb.models.get_show", return_value=show)
+        mocker.patch("project.apps.tmdb.models.get_show", return_value=show)
 
-        progress = ProgressFactory()
+        progress = ProgressFactory.build()
+
         progress.update_show_data()
-        progress.refresh_from_db()
 
-        get_show.assert_called_once_with(progress.show_id)
         assert progress.show_name == show.name
         assert progress.show_poster_path == show.poster_path
         assert progress.show_status == show.status_value
@@ -118,41 +112,27 @@ class TestProgressModel:
         assert progress.last_aired_episode == show.last_aired_episode[1]
 
     def test_watch_next(self, mocker):
-        update_episodes = mocker.patch("project.apps.tmdb.models.Progress._update_episodes")
+        show = mocker.MagicMock()
+        show.get_next_episode.return_value = (2, 3)
+        mocker.patch("project.apps.tmdb.models.get_show", return_value=show)
+
         update_next_air_date = mocker.patch(
             "project.apps.tmdb.models.Progress.update_next_air_date"
         )
-        save = mocker.patch("project.apps.tmdb.models.Progress.save")
 
-        progress = ProgressFactory.build()
-        progress.watch_next()
-
-        update_episodes.assert_called_once_with()
-        update_next_air_date.assert_called_once_with()
-        save.assert_called_once_with(
-            update_fields=[
-                "current_season",
-                "current_episode",
-                "next_season",
-                "next_episode",
-                "next_air_date",
-            ]
+        progress = ProgressFactory.build(
+            current_season=2, current_episode=1, next_season=2, next_episode=2
         )
 
-    def test_update_episodes(self, mocker):
-        show = mocker.MagicMock()
-        show.get_next_episode.return_value = (1, 2)
-        mocker.patch("project.apps.tmdb.models.get_show", return_value=show)
-        progress = ProgressFactory.build()
+        progress.watch_next()
 
-        progress._update_episodes()
+        assert progress.current_season == 2
+        assert progress.current_episode == 2
+        assert progress.next_season == 2
+        assert progress.next_episode == 3
 
-        assert progress.current_season == 1
-        assert progress.current_episode == 1
-        assert progress.next_season == 1
-        assert progress.next_episode == 2
-
-        show.get_next_episode.assert_called_once_with(1, 1)
+        show.get_next_episode.assert_called_once_with(2, 2)
+        update_next_air_date.assert_called_once_with()
 
     def test_update_next_air_date(self, mocker):
         get_air_date = mocker.patch(
@@ -174,3 +154,23 @@ class TestProgressModel:
 
         assert progress.next_air_date is None
         get_air_date.assert_not_called()
+
+    @pytest.mark.parametrize(
+        "status,show_status,next_air_date,expected_status",
+        [
+            (Progress.FOLLOWING, Progress.ENDED, None, Progress.STOPPED),
+            (Progress.PAUSED, Progress.ENDED, None, Progress.STOPPED),
+            (Progress.FOLLOWING, Progress.CANCELED, None, Progress.STOPPED),
+            (Progress.PAUSED, Progress.CANCELED, None, Progress.STOPPED),
+            (Progress.FOLLOWING, Progress.ENDED, date(2019, 10, 1), Progress.FOLLOWING),
+            (Progress.PAUSED, Progress.ENDED, date(2019, 10, 1), Progress.PAUSED),
+            (Progress.FOLLOWING, Progress.CANCELED, date(2019, 10, 1), Progress.FOLLOWING),
+            (Progress.PAUSED, Progress.CANCELED, date(2019, 10, 1), Progress.PAUSED),
+        ],
+    )
+    def test_stop_if_finished(self, status, show_status, next_air_date, expected_status):
+        progress = ProgressFactory.build(
+            status=status, show_status=show_status, next_air_date=next_air_date
+        )
+        progress.stop_if_finished()
+        assert progress.status == expected_status
