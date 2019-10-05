@@ -1,6 +1,5 @@
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db import models
-from django.db.models import Q
 
 from project.apps.accounts.managers import UserManager
 from project.apps.tmdb.models import Progress
@@ -60,14 +59,3 @@ class User(AbstractBaseUser, PermissionsMixin, BaseUUIDModel):
             following_count=self.progress_set.filter(status=Progress.FOLLOWING).count(),
         )
         return summary
-
-    def stop_finished_shows(self):
-        """
-        Update progress status to stopped if the show is finished and the user
-        also watched all episodes.
-        """
-        self.progress_set.filter(
-            ~Q(status=Progress.STOPPED),
-            show_status__in=[Progress.ENDED, Progress.CANCELED],
-            next_air_date__isnull=True,
-        ).update(status=Progress.STOPPED)
