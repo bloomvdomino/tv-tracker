@@ -6,94 +6,71 @@ from asgiref.sync import async_to_sync
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from project.apps.accounts.models import User
 from project.apps.tmdb.models import Progress
 from project.apps.tmdb.utils import Show
 
 
 class Command(BaseCommand):
-    def handle(self, *args, **options):
-        show_ids = set(Progress.objects.values_list("show_id", flat=True))
-        shows = self._fetch_shows(show_ids)
-
-        sleep(11)
-
-        updated_data = self._get_updated_progress_data(shows)
-        updated_data = self._fetch_next_air_dates(updated_data)
-
-        for progress_id, data in updated_data.items():
-            Progress.objects.filter(id=progress_id).update(**data)
-        for user in User.objects.all():
-            user.stop_finished_shows()
-
-    def _fetch_shows(self, show_ids):
-        urls = [f"{settings.TMDB_API_URL}tv/{show_id}" for show_id in show_ids]
-        responses = self._fetch_urls(urls)
-        shows = [Show(response.json()) for response in responses if response.status_code == 200]
-        return {show.id: show for show in shows}
-
-    def _get_updated_progress_data(self, shows):
-        data = {}
-        for progress in Progress.objects.all():
-            show = shows.get(progress.show_id)
-            if not show:
-                continue
-            next_season, next_episode = show.get_next_episode(
-                progress.current_season, progress.current_episode
-            )
-            last_aired_season, last_aired_episode = show.last_aired_episode
-            data[progress.id] = {
-                "show_id": show.id,
-                "show_name": show.name,
-                "show_poster_path": show.poster_path,
-                "show_status": show.status_value,
-                "next_season": next_season,
-                "next_episode": next_episode,
-                "last_aired_season": last_aired_season,
-                "last_aired_episode": last_aired_episode,
-            }
-        return data
-
-    def _fetch_next_air_dates(self, progress_data):
-        urls = []
-        for data in progress_data.values():
-            season = data["next_season"]
-            episode = data["next_episode"]
-            if not (season and episode):
-                continue
-            show_id = data["show_id"]
-            urls.append(f"{settings.TMDB_API_URL}tv/{show_id}/season/{season}/episode/{episode}")
-
-        responses = self._fetch_urls(urls)
-        escaped = 0
-        for i, data in enumerate(progress_data.values()):
-            if not (data["next_season"] and data["next_episode"]):
-                escaped += 1
-                continue
-            response = responses[i - escaped]
-            if response.status_code == 200:
-                # air_date from response data can be empty string, we want to
-                # return None in this case.
-                data["next_air_date"] = response.json().get("air_date") or None
-            else:
-                data["next_air_date"] = None
-        return progress_data
-
     @async_to_sync
-    async def _fetch_urls(self, urls):
-        chunk_size = settings.TMDB_FETCH_CHUNK_SIZE
-        url_chunks = [urls[i : i + chunk_size] for i in range(0, len(urls), chunk_size)]
+    async def handle(self, *args, **options):
+        n = 15
+        progresses = Progress.objects.all()
+        progress_chunks = [progresses[i : i + n] for i in range(0, progresses.count(), n)]
 
-        responses = []
-        for i, url_chunk in enumerate(url_chunks):
-            responses += await asyncio.gather(*[self._fetch_url(url) for url in url_chunk])
-            if i < len(url_chunks) - 1:
+        for i, progresses in enumerate(progress_chunks):
+            await asyncio.gather(*[self._update_progress(progress) for progress in progresses])
+
+            if i < len(progress_chunks) - 1:
                 sleep(11)
-        return responses
 
-    async def _fetch_url(self, url):
-        client = httpx.AsyncClient()
-        response = await client.get(url, params={"api_key": settings.TMDB_API_KEY})
+    async def _update_progress(self, progress):
+        show = await self._get_show(progress.show_id)
+        if not show:
+            return
+
+        next_season, next_episode, next_air_date = await self._get_next(
+            show, progress.current_season, progress.current_episode
+        )
+
+        last_aired_season, last_aired_episode = show.last_aired_episode
+
+        progress.show_name = show.name
+        progress.show_poster_path = show.poster_path
+        progress.show_status = show.status_value
+        progress.next_season = next_season
+        progress.next_episode = next_episode
+        progress.next_air_date = next_air_date
+        progress.last_aired_season = last_aired_season
+        progress.last_aired_episode = last_aired_episode
+        progress.stop_if_finished()
+        progress.save()
+
+    async def _get_show(self, show_id):
+        url = f"{settings.TMDB_API_URL}tv/{show_id}"
+        response = await self._fetch(url)
+        if response.status_code == 404:
+            return None
+        return Show(response.json())
+
+    async def _get_next(self, show, current_season, current_episode):
+        next_season, next_episode = show.get_next_episode(current_season, current_episode)
+        if not (next_season and next_episode):
+            return None, None, None
+
+        next_air_date = await self._get_air_date(show.id, next_season, next_episode)
+        return next_season, next_episode, next_air_date
+
+    async def _get_air_date(self, show_id, season, episode):
+        url = f"{settings.TMDB_API_URL}tv/{show_id}/season/{season}/episode/{episode}"
+        response = await self._fetch(url)
+
+        # air_date from response data can be empty string, we want to return
+        # None in this case.
+        return response.json().get("air_date") or None
+
+    async def _fetch(self, url):
+        async with httpx.AsyncClient() as client:
+            response = await client.get(url, params={"api_key": settings.TMDB_API_KEY})
 
         # We don't want to raise error on 404 response because:
         # 1) TMDB database can change, so the show ID saved in our database may
