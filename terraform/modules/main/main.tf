@@ -34,11 +34,6 @@ resource "heroku_addon" "db" {
   plan = "heroku-postgresql:hobby-dev"
 }
 
-resource "heroku_addon" "logdna" {
-  app  = heroku_app.default.name
-  plan = "logdna:quaco"
-}
-
 resource "heroku_addon" "scheduler" {
   app  = heroku_app.default.name
   plan = "scheduler:standard"
