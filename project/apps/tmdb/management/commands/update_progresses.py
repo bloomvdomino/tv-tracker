@@ -16,6 +16,8 @@ class Command(BaseCommand):
         show_ids = set(Progress.objects.values_list("show_id", flat=True))
         shows = self._fetch_shows(show_ids)
 
+        sleep(11)
+
         updated_data = self._get_updated_progress_data(shows)
         updated_data = self._fetch_next_air_dates(updated_data)
 
@@ -27,13 +29,15 @@ class Command(BaseCommand):
     def _fetch_shows(self, show_ids):
         urls = [f"{settings.TMDB_API_URL}tv/{show_id}" for show_id in show_ids]
         responses = self._fetch_urls(urls)
-        shows = [Show(response.json()) for response in responses]
+        shows = [Show(response.json()) for response in responses if response.status_code == 200]
         return {show.id: show for show in shows}
 
     def _get_updated_progress_data(self, shows):
         data = {}
         for progress in Progress.objects.all():
-            show = shows[progress.show_id]
+            show = shows.get(progress.show_id)
+            if not show:
+                continue
             next_season, next_episode = show.get_next_episode(
                 progress.current_season, progress.current_episode
             )
@@ -66,7 +70,13 @@ class Command(BaseCommand):
             if not (data["next_season"] and data["next_episode"]):
                 escaped += 1
                 continue
-            data["next_air_date"] = responses[i - escaped].json().get("air_date")
+            response = responses[i - escaped]
+            if response.status_code == 200:
+                # air_date from response data can be empty string, we want to
+                # return None in this case.
+                data["next_air_date"] = response.json().get("air_date") or None
+            else:
+                data["next_air_date"] = None
         return progress_data
 
     @async_to_sync
@@ -84,5 +94,14 @@ class Command(BaseCommand):
     async def _fetch_url(self, url):
         client = httpx.AsyncClient()
         response = await client.get(url, params={"api_key": settings.TMDB_API_KEY})
-        response.raise_for_status()
+
+        # We don't want to raise error on 404 response because:
+        # 1) TMDB database can change, so the show ID saved in our database may
+        #    no longer exist.
+        # 2) Progresses with status not watched always have the first episode as
+        #    the next episode in our database, but may not exist in the TMDB
+        #    database.
+        if response.status_code != 404:
+            response.raise_for_status()
+
         return response

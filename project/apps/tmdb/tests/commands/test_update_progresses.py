@@ -15,7 +15,7 @@ class TestCommand:
     def test_fetch_shows(self, mocker, settings, command):
         show_ids = range(1, 4)
         urls = [f"{settings.TMDB_API_URL}tv/{show_id}" for show_id in show_ids]
-        responses = [mocker.Mock() for _ in show_ids]
+        responses = [mocker.Mock(status_code=200) for _ in show_ids]
         for show_id in show_ids:
             responses[show_id - 1].json.return_value = {"id": show_id}
         fetch_urls = mocker.patch(
@@ -34,6 +34,7 @@ class TestCommand:
         next_air_date = "2019-09-29"
 
         response = mocker.Mock()
+        response.status_code = 200
         response.json.return_value = {"air_date": next_air_date}
         fetch_urls = mocker.patch(
             "project.apps.tmdb.management.commands.update_progresses.Command._fetch_urls",
