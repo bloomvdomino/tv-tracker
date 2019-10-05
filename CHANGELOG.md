@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Shell formatter (`shfmt`) and Dockerfile linter (`hadolint`) #59
 - `update_progresses` command #60
+- LogDNA addon #64
 
 ### Changed
 - Save show name by language #58
