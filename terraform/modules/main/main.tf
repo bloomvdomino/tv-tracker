@@ -39,6 +39,11 @@ resource "heroku_addon" "logdna" {
   plan = "logdna:quaco"
 }
 
+resource "heroku_addon" "scheduler" {
+  app  = heroku_app.default.name
+  plan = "scheduler:standard"
+}
+
 resource "heroku_addon" "sendgrid" {
   app  = heroku_app.default.name
   plan = "sendgrid:starter"
