@@ -69,25 +69,17 @@ class TestCommand:
         stop_if_finished.assert_called_once_with()
 
     @pytest.mark.asyncio
-    @pytest.mark.parametrize("status_code", [200, 404])
-    async def test_get_show(self, mocker, command, status_code):
+    async def test_get_show(self, command):
         show_id = 123
-
-        response = mocker.MagicMock(status_code=status_code)
-        response.json.return_value = {"id": show_id}
 
         with asynctest.patch(
             "project.apps.tmdb.management.commands.update_progresses.Command._fetch",
-            return_value=response,
+            return_value={"id": show_id},
         ) as fetch:
             show = await command._get_show(show_id)
 
+        assert show.id == show_id
         fetch.assert_awaited_once_with(f"{settings.TMDB_API_URL}tv/{show_id}")
-
-        if status_code == 200:
-            assert show.id == show_id
-        else:
-            assert show is None
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize(
@@ -118,31 +110,24 @@ class TestCommand:
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize(
-        "status_code,data,air_date",
-        [
-            (200, {"air_date": "2019-10-05"}, "2019-10-05"),
-            (200, {"air_date": ""}, None),
-            (200, {}, None),
-            (404, {"air_date": ""}, None),
-            (404, {}, None),
-        ],
+        "data,air_date",
+        [({"air_date": "2019-10-05"}, "2019-10-05"), ({"air_date": ""}, None), ({}, None)],
     )
-    async def test_get_air_date(self, command, mocker, status_code, data, air_date):
-        response = mocker.MagicMock(status_code=status_code)
-        response.json.return_value = data
-
+    async def test_get_air_date(self, command, data, air_date):
         with asynctest.patch(
             "project.apps.tmdb.management.commands.update_progresses.Command._fetch",
-            return_value=response,
+            return_value=data,
         ) as fetch:
             assert await command._get_air_date(1, 2, 3) == air_date
 
         fetch.assert_awaited_once_with(f"{settings.TMDB_API_URL}tv/1/season/2/episode/3")
 
     @pytest.mark.asyncio
-    @pytest.mark.parametrize("status_code", [200, 404, 429, 500])
-    async def test_fetch(self, mocker, command, status_code):
-        response = mocker.MagicMock(status_code=status_code)
+    async def test_fetch(self, mocker, command):
+        data = {"foo": 123}
+
+        response = mocker.MagicMock()
+        response.json.return_value = data
 
         client = asynctest.MagicMock()
         client.get = asynctest.CoroutineMock(return_value=response)
@@ -153,12 +138,8 @@ class TestCommand:
             "project.apps.tmdb.management.commands.update_progresses.httpx.AsyncClient"
         ) as async_client:
             async_client.return_value.__aenter__.return_value = client
-            r = await command._fetch(url)
+            assert await command._fetch(url) == data
 
-        assert r == response
         client.get.assert_awaited_once_with(url, params={"api_key": settings.TMDB_API_KEY})
-
-        if status_code == 404:
-            response.raise_for_status.assert_not_called()
-        else:
-            response.raise_for_status.assert_called_once_with()
+        response.raise_for_status.assert_called_once_with()
+        response.json.assert_called_once_with()
