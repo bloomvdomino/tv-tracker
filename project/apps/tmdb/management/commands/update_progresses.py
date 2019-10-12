@@ -50,8 +50,8 @@ class Command(BaseCommand):
 
     async def _get_show(self, show_id):
         url = f"{settings.TMDB_API_URL}tv/{show_id}"
-        response = await self._fetch(url)
-        return Show(response.json())
+        data = await self._fetch(url)
+        return Show(data)
 
     async def _get_next(self, show, current_season, current_episode):
         next_season, next_episode = show.get_next_episode(current_season, current_episode)
@@ -63,14 +63,14 @@ class Command(BaseCommand):
 
     async def _get_air_date(self, show_id, season, episode):
         url = f"{settings.TMDB_API_URL}tv/{show_id}/season/{season}/episode/{episode}"
-        response = await self._fetch(url)
+        data = await self._fetch(url)
 
         # air_date from response data can be empty string, we want to return
         # None in this case.
-        return response.json().get("air_date") or None
+        return data.get("air_date") or None
 
     async def _fetch(self, url):
         async with httpx.AsyncClient() as client:
             response = await client.get(url, params={"api_key": settings.TMDB_API_KEY})
         response.raise_for_status()
-        return response
+        return response.json()
