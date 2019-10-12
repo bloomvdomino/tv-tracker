@@ -18,7 +18,10 @@ class Command(BaseCommand):
         progress_chunks = [progresses[i : i + n] for i in range(0, progresses.count(), n)]
 
         for i, progresses in enumerate(progress_chunks):
-            await asyncio.gather(*[self._update_progress(progress) for progress in progresses])
+            await asyncio.gather(
+                *[self._update_progress(progress) for progress in progresses],
+                return_exceptions=True,
+            )
 
             if i < len(progress_chunks) - 1:
                 sleep(11)
@@ -48,8 +51,6 @@ class Command(BaseCommand):
     async def _get_show(self, show_id):
         url = f"{settings.TMDB_API_URL}tv/{show_id}"
         response = await self._fetch(url)
-        if response.status_code == 404:
-            return None
         return Show(response.json())
 
     async def _get_next(self, show, current_season, current_episode):
@@ -71,14 +72,5 @@ class Command(BaseCommand):
     async def _fetch(self, url):
         async with httpx.AsyncClient() as client:
             response = await client.get(url, params={"api_key": settings.TMDB_API_KEY})
-
-        # We don't want to raise error on 404 response because:
-        # 1) TMDB database can change, so the show ID saved in our database may
-        #    no longer exist.
-        # 2) Progresses with status not watched always have the first episode as
-        #    the next episode in our database, but may not exist in the TMDB
-        #    database.
-        if response.status_code != 404:
-            response.raise_for_status()
-
+        response.raise_for_status()
         return response

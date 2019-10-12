@@ -69,11 +69,10 @@ class TestCommand:
         stop_if_finished.assert_called_once_with()
 
     @pytest.mark.asyncio
-    @pytest.mark.parametrize("status_code", [200, 404])
-    async def test_get_show(self, mocker, command, status_code):
+    async def test_get_show(self, mocker, command):
         show_id = 123
 
-        response = mocker.MagicMock(status_code=status_code)
+        response = mocker.MagicMock()
         response.json.return_value = {"id": show_id}
 
         with asynctest.patch(
@@ -82,12 +81,8 @@ class TestCommand:
         ) as fetch:
             show = await command._get_show(show_id)
 
+        assert show.id == show_id
         fetch.assert_awaited_once_with(f"{settings.TMDB_API_URL}tv/{show_id}")
-
-        if status_code == 200:
-            assert show.id == show_id
-        else:
-            assert show is None
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize(
@@ -118,17 +113,11 @@ class TestCommand:
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize(
-        "status_code,data,air_date",
-        [
-            (200, {"air_date": "2019-10-05"}, "2019-10-05"),
-            (200, {"air_date": ""}, None),
-            (200, {}, None),
-            (404, {"air_date": ""}, None),
-            (404, {}, None),
-        ],
+        "data,air_date",
+        [({"air_date": "2019-10-05"}, "2019-10-05"), ({"air_date": ""}, None), ({}, None)],
     )
-    async def test_get_air_date(self, command, mocker, status_code, data, air_date):
-        response = mocker.MagicMock(status_code=status_code)
+    async def test_get_air_date(self, command, mocker, data, air_date):
+        response = mocker.MagicMock()
         response.json.return_value = data
 
         with asynctest.patch(
@@ -140,9 +129,8 @@ class TestCommand:
         fetch.assert_awaited_once_with(f"{settings.TMDB_API_URL}tv/1/season/2/episode/3")
 
     @pytest.mark.asyncio
-    @pytest.mark.parametrize("status_code", [200, 404, 429, 500])
-    async def test_fetch(self, mocker, command, status_code):
-        response = mocker.MagicMock(status_code=status_code)
+    async def test_fetch(self, mocker, command):
+        response = mocker.MagicMock()
 
         client = asynctest.MagicMock()
         client.get = asynctest.CoroutineMock(return_value=response)
@@ -157,8 +145,4 @@ class TestCommand:
 
         assert r == response
         client.get.assert_awaited_once_with(url, params={"api_key": settings.TMDB_API_KEY})
-
-        if status_code == 404:
-            response.raise_for_status.assert_not_called()
-        else:
-            response.raise_for_status.assert_called_once_with()
+        response.raise_for_status.assert_called_once_with()
