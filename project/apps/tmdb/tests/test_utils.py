@@ -214,7 +214,9 @@ class TestFetch:
         httpx.get.return_value = response
         return httpx
 
-    def test_api_key_not_set(self):
+    def test_api_key_not_set(self, settings):
+        settings.TMDB_API_KEY = None
+
         with pytest.raises(Exception):
             fetch("foo/bar")
 
