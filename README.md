@@ -5,7 +5,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/olivertso/tv-tracker/badge.svg?branch=master)](https://coveralls.io/github/olivertso/tv-tracker?branch=master)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 
-TV-Tracker is a simple app that helps you tracking your favorite TV shows.
+TV-Tracker is a simple app that helps you to track your favorite TV shows.
 
 The app fetches TV show data from [TMDb API][tmdb-api].
 
