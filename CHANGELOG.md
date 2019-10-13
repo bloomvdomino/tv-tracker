@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Changed
 - Do not raise exception when updating progresses #72
+- Update pip requirements #73
 
 ### Removed
 - Health check endpoint #71

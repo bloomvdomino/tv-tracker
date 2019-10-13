@@ -4,11 +4,11 @@ RUN adduser -D ttuser
 
 WORKDIR /app
 
-COPY /requirements /app/requirements
-COPY /gunicorn.py /app/gunicorn.py
-COPY /manage.py /app/manage.py
 COPY /project /app/project
 COPY /scripts/start-prod.sh /app/scripts/start-prod.sh
+COPY /gunicorn.py /app/gunicorn.py
+COPY /manage.py /app/manage.py
+COPY /requirements.txt /app/requirements.txt
 
 RUN mkdir /app/staticfiles && chown -R ttuser:ttuser /app/staticfiles \
     && apk update \
@@ -21,7 +21,7 @@ RUN mkdir /app/staticfiles && chown -R ttuser:ttuser /app/staticfiles \
         openssl-dev \
         postgresql-dev \
     && pip install --no-cache-dir --upgrade pip setuptools \
-    && pip install --no-cache-dir -r requirements/production.txt \
+    && pip install --no-cache-dir -r requirements.txt \
     && apk del .build-deps \
     && rm -vrf /var/cache/apk/*
 
