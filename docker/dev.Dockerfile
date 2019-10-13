@@ -4,7 +4,8 @@ ENV PYTHONUNBUFFERED 1
 
 WORKDIR /app
 
-COPY /requirements /app/requirements
+COPY /requirements-dev.txt /app/requirements-dev.txt
+COPY /requirements.txt /app/requirements.txt
 
 RUN apk update \
     && apk add --no-cache libpq postgresql-client \
@@ -17,7 +18,7 @@ RUN apk update \
         openssl-dev \
         postgresql-dev \
     && pip install --no-cache-dir --upgrade pip setuptools \
-    && pip install --no-cache-dir -r requirements/development.txt \
+    && pip install --no-cache-dir -r requirements-dev.txt \
     # Install shfmt.
     && curl -sLo /bin/shfmt https://github.com/mvdan/sh/releases/download/v2.6.4/shfmt_v2.6.4_linux_amd64 \
     && chmod +x /bin/shfmt \
