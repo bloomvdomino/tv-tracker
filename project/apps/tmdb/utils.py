@@ -1,4 +1,4 @@
-import requests
+import httpx
 from django.conf import settings
 from django.urls import reverse
 from django.utils.functional import cached_property
@@ -122,9 +122,9 @@ def fetch(endpoint, params=None):
     url = "https://api.themoviedb.org/3/{}".format(endpoint)
     params = params or {}
     params.update(api_key=settings.TMDB_API_KEY)
-    res = requests.get(url, params=params)
-    # TODO: handle status code other than 200.
-    return res.json()
+    response = httpx.get(url, params=params)
+    response.raise_for_status()
+    return response.json()
 
 
 def get_show(id, user=None):
