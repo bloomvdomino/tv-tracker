@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Do not raise exception when updating progresses #72
 - Update pip requirements #73
+- Replace requests with httpx #74
 
 ### Removed
 - Health check endpoint #71

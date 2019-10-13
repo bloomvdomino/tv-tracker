@@ -203,43 +203,41 @@ class TestFormatEpisodeLabel:
 
 class TestFetch:
     @pytest.fixture
-    def requests(self, mocker):
+    def response(self, mocker):
         response = mocker.MagicMock()
         response.json.return_value = {"id": 1}
-        requests = mocker.patch("project.apps.tmdb.utils.requests")
-        requests.get.return_value = response
-        return requests
+        return response
 
-    def test_api_key_not_set(self):
+    @pytest.fixture
+    def httpx(self, mocker, response):
+        httpx = mocker.patch("project.apps.tmdb.utils.httpx")
+        httpx.get.return_value = response
+        return httpx
+
+    def test_api_key_not_set(self, settings):
+        settings.TMDB_API_KEY = None
+
         with pytest.raises(Exception):
             fetch("foo/bar")
 
-    def test_make_request_without_params(self, mocker, settings, requests):
-        settings.TMDB_API_KEY = "dummy-api-key"
-
+    def test_make_request_without_params(self, settings, response, httpx):
         show_data = fetch("foo/bar")
 
         assert show_data == {"id": 1}
+        httpx.get.assert_called_once_with(
+            "https://api.themoviedb.org/3/foo/bar", params={"api_key": settings.TMDB_API_KEY}
+        )
+        response.raise_for_status.assert_called_once_with()
 
-        (endpoint,), kwargs = requests.get.call_args
-        assert endpoint == "https://api.themoviedb.org/3/foo/bar"
-        params = kwargs["params"]
-        assert len(params) == 1
-        assert params["api_key"] == settings.TMDB_API_KEY
-
-    def test_make_request_with_params(self, mocker, settings, requests):
-        settings.TMDB_API_KEY = "dummy-api-key"
-
+    def test_make_request_with_params(self, settings, response, httpx):
         show_data = fetch("foo/bar", {"param_1": "dummy-value"})
 
         assert show_data == {"id": 1}
-
-        (endpoint,), kwargs = requests.get.call_args
-        assert endpoint == "https://api.themoviedb.org/3/foo/bar"
-        params = kwargs["params"]
-        assert len(params) == 2
-        assert params["api_key"] == settings.TMDB_API_KEY
-        assert params["param_1"] == "dummy-value"
+        httpx.get.assert_called_once_with(
+            "https://api.themoviedb.org/3/foo/bar",
+            params={"api_key": settings.TMDB_API_KEY, "param_1": "dummy-value"},
+        )
+        response.raise_for_status.assert_called_once_with()
 
 
 class TestGetAirDate:
