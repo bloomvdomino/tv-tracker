@@ -203,9 +203,13 @@ class TestFormatEpisodeLabel:
 
 class TestFetch:
     @pytest.fixture
-    def httpx(self, mocker):
+    def response(self, mocker):
         response = mocker.MagicMock()
         response.json.return_value = {"id": 1}
+        return response
+
+    @pytest.fixture
+    def httpx(self, mocker, response):
         httpx = mocker.patch("project.apps.tmdb.utils.httpx")
         httpx.get.return_value = response
         return httpx
@@ -214,15 +218,16 @@ class TestFetch:
         with pytest.raises(Exception):
             fetch("foo/bar")
 
-    def test_make_request_without_params(self, settings, httpx):
+    def test_make_request_without_params(self, settings, response, httpx):
         show_data = fetch("foo/bar")
 
         assert show_data == {"id": 1}
         httpx.get.assert_called_once_with(
             "https://api.themoviedb.org/3/foo/bar", params={"api_key": settings.TMDB_API_KEY}
         )
+        response.raise_for_status.assert_called_once_with()
 
-    def test_make_request_with_params(self, settings, httpx):
+    def test_make_request_with_params(self, settings, response, httpx):
         show_data = fetch("foo/bar", {"param_1": "dummy-value"})
 
         assert show_data == {"id": 1}
@@ -230,6 +235,7 @@ class TestFetch:
             "https://api.themoviedb.org/3/foo/bar",
             params={"api_key": settings.TMDB_API_KEY, "param_1": "dummy-value"},
         )
+        response.raise_for_status.assert_called_once_with()
 
 
 class TestGetAirDate:
