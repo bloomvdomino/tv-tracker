@@ -106,20 +106,20 @@ class Show:
         if user and user.is_authenticated:
             self.saved = user.progress_set.filter(show_id=self.id).exists()
         action = "update" if self.saved else "create"
-        self.edit_url = reverse("tmdb:progress_{}".format(action), kwargs={"show_id": self.id})
+        self.edit_url = reverse(f"tmdb:progress_{action}", kwargs={"show_id": self.id})
 
 
 def format_episode_label(season, episode):
-    season = "0{}".format(season)[-2:] if season < 100 else season
-    episode = "0{}".format(episode)[-2:] if episode < 100 else episode
-    return "S{}E{}".format(season, episode)
+    season = f"0{season}"[-2:] if season < 100 else season
+    episode = f"0{episode}"[-2:] if episode < 100 else episode
+    return f"S{season}E{episode}"
 
 
 def fetch(endpoint, params=None):
     if not settings.TMDB_API_KEY:
         raise Exception("TMDB_API_KEY not provided.")
 
-    url = "https://api.themoviedb.org/3/{}".format(endpoint)
+    url = f"https://api.themoviedb.org/3/{endpoint}"
     params = params or {}
     params.update(api_key=settings.TMDB_API_KEY)
     response = httpx.get(url, params=params)
@@ -127,18 +127,18 @@ def fetch(endpoint, params=None):
     return response.json()
 
 
-def get_show(id, user=None):
+def get_show(show_id, user=None):
     """
     Get a TV show detail by ID.
 
     https://developers.themoviedb.org/3/tv/get-tv-details
     """
-    data = fetch("tv/{}".format(id))
+    data = fetch(f"tv/{show_id}")
     return Show(data, user=user)
 
 
 def get_air_date(show_id, season, episode):
-    endpoint = "tv/{}/season/{}/episode/{}".format(show_id, season, episode)
+    endpoint = f"tv/{show_id}/season/{season}/episode/{episode}"
 
     # air_date from response data can be empty string, we want to return None in
     # this case as well.

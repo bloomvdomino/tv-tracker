@@ -27,7 +27,7 @@ class ProgressForm(forms.ModelForm):
     def _make_episode_choices(self):
         episode_choices = [("0-0", "Not started, yet.")]
         for season, episode in self.show.aired_episodes:
-            value = "{}-{}".format(season, episode)
+            value = f"{season}-{episode}"
             label = format_episode_label(season, episode)
             episode_choices.append((value, label))
         return episode_choices
