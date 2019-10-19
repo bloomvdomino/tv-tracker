@@ -51,7 +51,7 @@ class User(AbstractBaseUser, PermissionsMixin, BaseUUIDModel):
         }
         for progress in self.progress_set.all():
             for key, value in summary.items():
-                if getattr(progress, "list_in_{}".format(key)):
+                if getattr(progress, f"list_in_{key}"):
                     value.append(progress)
                     break
         summary.update(

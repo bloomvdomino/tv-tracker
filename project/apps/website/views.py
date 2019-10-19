@@ -9,7 +9,7 @@ from project.apps.website.forms import ContactForm
 class IndexView(View):
     def get(self, request, *args, **kwargs):
         url_name = "progresses" if request.user.is_authenticated else "popular_shows"
-        return redirect(reverse("tmdb:{}".format(url_name)))
+        return redirect(reverse(f"tmdb:{url_name}"))
 
 
 class ContactView(CreateView):

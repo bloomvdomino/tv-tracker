@@ -55,7 +55,8 @@ class PopularShowsView(TemplateView):
         return context
 
     def _make_page_link(self, page):
-        return "{}?{}".format(self.request.path, urlencode({"page": page}))
+        qs = urlencode({"page": page})
+        return f"{self.request.path}?{qs}"
 
 
 class SearchView(FormView):
@@ -97,7 +98,7 @@ class ProgressEditMixin:
         elif current_url == "progress_update" and not progress:
             action = "create"
         if action:
-            to = "tmdb:progress_{}".format(action)
+            to = f"tmdb:progress_{action}"
             return redirect(reverse(to, kwargs={"show_id": self.show.id}))
 
     def _set_progress_edit_success_url(self):
@@ -107,7 +108,7 @@ class ProgressEditMixin:
             url = components.path
             if resolve(url).url_name in ["progresses", "popular_shows", "search"]:
                 if components.query:
-                    url = "{}?{}".format(url, components.query)
+                    url = f"{url}?{components.query}"
                 self.request.session["progress_edit_success_url"] = url
                 return
         url = reverse("tmdb:popular_shows")
@@ -155,7 +156,8 @@ class ProgressCreateView(ProgressEditMixin, CreateView):
     def post(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
             to = reverse("accounts:login")
-            return redirect("{}?{}".format(to, urlencode({"next": request.path})))
+            qs = urlencode({"next": request.path})
+            return redirect(f"{to}?{qs}")
         return super().post(request, *args, **kwargs)
 
     def form_valid(self, form):
@@ -166,7 +168,7 @@ class ProgressCreateView(ProgressEditMixin, CreateView):
 class ProgressUpdateView(ProgressEditMixin, LoginRequiredMixin, UpdateView):
     def get_initial(self):
         initial = super().get_initial()
-        last_watched = "{}-{}".format(self.object.current_season, self.object.current_episode)
+        last_watched = f"{self.object.current_season}-{self.object.current_episode}"
         initial.update(status=self.object.status, last_watched=last_watched)
         return initial
 

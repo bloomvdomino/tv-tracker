@@ -180,7 +180,7 @@ class TestShow:
 
         resolved = resolve(show.edit_url)
         assert resolved.namespace == "tmdb"
-        assert resolved.url_name == "progress_{}".format(action)
+        assert resolved.url_name == f"progress_{action}"
         assert resolved.kwargs == {"show_id": show_id}
 
 

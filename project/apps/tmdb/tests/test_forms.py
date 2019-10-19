@@ -45,7 +45,7 @@ class TestProgressForm:
         self, mocker, current_episode, next_episode, show, make_episode_choices
     ):
         show.get_next_episode.return_value = next_episode
-        last_watched = "{}-{}".format(*current_episode)
+        last_watched = f"{current_episode[0]}-{current_episode[1]}"
         form = ProgressForm(show=show)
         form.cleaned_data = {"last_watched": last_watched}
 

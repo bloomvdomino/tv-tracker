@@ -73,15 +73,15 @@ class TestProgressModel:
 
     def test_update_url(self):
         progress = ProgressFactory.build()
-        assert progress.update_url == "/show/{}/progress/update/".format(progress.show_id)
+        assert progress.update_url == f"/show/{progress.show_id}/progress/update/"
 
     def test_delete_url(self):
         progress = ProgressFactory.build()
-        assert progress.delete_url == "/show/{}/progress/delete/".format(progress.show_id)
+        assert progress.delete_url == f"/show/{progress.show_id}/progress/delete/"
 
     def test_watch_next_url(self):
         progress = ProgressFactory.build()
-        assert progress.watch_next_url == "/progress/watch_next/{}/".format(progress.show_id)
+        assert progress.watch_next_url == f"/progress/watch_next/{progress.show_id}/"
 
     def test_last_aired_label_none(self):
         progress = ProgressFactory.build()
