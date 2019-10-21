@@ -39,11 +39,13 @@
         </div>
         {% endif %}
 
-        {% if progress.list_in_available and progress.last_aired_label %}
+        {% if progress.last_aired_label %}
+        {% if progress.list_in_available or progress.list_in_paused or progress.list_in_stopped %}
         <div class="section">
             Newest:<br>
             <span class="episode-label">{{ progress.last_aired_label }}</span>
         </div>
+        {% endif %}
         {% endif %}
     </div>
 </div>
