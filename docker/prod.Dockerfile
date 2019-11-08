@@ -4,13 +4,9 @@ RUN adduser -D ttuser
 
 WORKDIR /app
 
-COPY /project /app/project
-COPY /scripts/start-prod.sh /app/scripts/start-prod.sh
-COPY /gunicorn.py /app/gunicorn.py
-COPY /manage.py /app/manage.py
-COPY /requirements.txt /app/requirements.txt
+COPY /requirements.txt ./requirements.txt
 
-RUN mkdir /app/staticfiles && chown -R ttuser:ttuser /app/staticfiles \
+RUN mkdir ./staticfiles && chown -R ttuser:ttuser ./staticfiles \
     && apk update \
     && apk add --no-cache libpq postgresql-client \
     && apk add --no-cache --virtual .build-deps \
@@ -24,6 +20,11 @@ RUN mkdir /app/staticfiles && chown -R ttuser:ttuser /app/staticfiles \
     && pip install --no-cache-dir -r requirements.txt \
     && apk del .build-deps \
     && rm -vrf /var/cache/apk/*
+
+COPY /manage.py ./manage.py
+COPY /gunicorn.py ./gunicorn.py
+COPY /scripts/start-prod.sh ./scripts/start-prod.sh
+COPY /project ./project
 
 USER ttuser
 
