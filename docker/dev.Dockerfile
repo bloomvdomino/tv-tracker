@@ -4,8 +4,8 @@ ENV PYTHONUNBUFFERED 1
 
 WORKDIR /app
 
-COPY /requirements-dev.txt /app/requirements-dev.txt
-COPY /requirements.txt /app/requirements.txt
+COPY /requirements-dev.txt ./requirements-dev.txt
+COPY /requirements.txt ./requirements.txt
 
 RUN apk update \
     && apk add --no-cache libpq postgresql-client \
