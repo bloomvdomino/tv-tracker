@@ -1,11 +1,9 @@
 FROM python:3.7.4-alpine AS production
 
-RUN adduser -D ttuser
-
 WORKDIR /app
 
 # Install system dependencies.
-RUN apk update && apk add --no-cache libpq postgresql-client
+RUN apk update --no-cache && apk add --no-cache libpq postgresql-client
 
 COPY /requirements.txt ./requirements.txt
 RUN apk add --no-cache --virtual .build-deps gcc musl-dev postgresql-dev \
@@ -13,16 +11,14 @@ RUN apk add --no-cache --virtual .build-deps gcc musl-dev postgresql-dev \
     && pip install --no-cache-dir --upgrade pip setuptools \
     && pip install --no-cache-dir -r requirements.txt \
     # Delete build dependencies.
-    && apk del .build-deps \
-    && rm -vrf /var/cache/apk/*
+    && apk del .build-deps
 
 COPY /manage.py ./manage.py
 COPY /gunicorn.py ./gunicorn.py
 COPY /scripts/start-prod.sh ./scripts/start-prod.sh
 COPY /project ./project
 
-RUN mkdir ./staticfiles && chown -R ttuser:ttuser ./staticfiles
-
+RUN adduser -D ttuser && mkdir ./staticfiles && chown -R ttuser:ttuser ./staticfiles
 USER ttuser
 
 CMD ["sh", "scripts/start-prod.sh"]
@@ -53,7 +49,6 @@ RUN apk add --no-cache --virtual .build-deps curl \
     && unzip /tmp/tf.zip -d /bin \
     && rm -vf /tmp/tf.zip \
     # Delete build dependencies.
-    && apk del .build-deps \
-    && rm -vrf /var/cache/apk/*
+    && apk del .build-deps
 
 CMD ["sh", "scripts/start-dev.sh"]
