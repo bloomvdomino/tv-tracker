@@ -2,5 +2,5 @@
 
 set -e
 
-/wait
+docker-compose-wait
 python manage.py runserver 0:8000
