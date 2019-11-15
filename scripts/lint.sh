@@ -10,7 +10,7 @@ echo "shfmt..."
 $DOCKER_COMPOSE shfmt -d -p -i=4 scripts
 
 echo "hadolint..."
-$DOCKER_COMPOSE hadolint docker/*.Dockerfile
+$DOCKER_COMPOSE hadolint Dockerfile
 
 echo "bandit..."
 $DOCKER_COMPOSE bandit -rq -x **/tests/** project

@@ -51,4 +51,6 @@ RUN apk add --no-cache --virtual .build-deps curl \
     # Delete build dependencies.
     && apk del .build-deps
 
+USER ttuser
+
 CMD ["sh", "scripts/start-dev.sh"]
