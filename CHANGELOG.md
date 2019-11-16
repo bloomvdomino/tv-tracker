@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Optimize docker image caching #79
+- Improve .dockerignore #81
 
 ## [2.22.0] - 2019-10-22
 ### Added
