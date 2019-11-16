@@ -1,9 +1,12 @@
-version: "3.2"
+version: "3.4"
 services:
   web:
     build:
       context: .
-      dockerfile: docker/dev.Dockerfile
+      target: development
+    # Run as root user to avoid coverage failing to create .coverage with
+    # permission denied in travis.
+    user: root
     ports:
       - 8000:8000
     environment:
