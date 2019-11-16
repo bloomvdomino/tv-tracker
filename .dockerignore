@@ -1,6 +1,48 @@
+# Git
 .git
+.gitignore
 
-venv
+# Editor
+.vscode
+
+# Docker
+docker-compose.yml
+
+# Environment variables
+.env
+.env.example
+
+# Python
 __pycache__
 *.pyc
+*.pyd
+*.pyo
+.Python
+
+# Virtualenv
+venv
+.venv
+
+# Django
+staticfiles
+
+# Terraform
+terraform
+
+# Formatters and linters
+.hadolint.yaml
+.flake8
+pyproject.toml
+
+# Tests
+.coverage
+.coveragerc
+cov_report
+pytest.ini
+
+# CI
+.travis.yml
+
+# Others
 .DS_Store
+*.md
