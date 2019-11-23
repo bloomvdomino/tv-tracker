@@ -3,7 +3,7 @@ FROM python:3.7.4-alpine AS production
 WORKDIR /app
 
 # Install system dependencies.
-RUN apk update --no-cache && apk add --no-cache libpq postgresql-client
+RUN apk update && apk add --no-cache libpq postgresql-client
 
 COPY /requirements.txt ./requirements.txt
 RUN apk add --no-cache --virtual .build-deps gcc musl-dev postgresql-dev \
@@ -12,6 +12,8 @@ RUN apk add --no-cache --virtual .build-deps gcc musl-dev postgresql-dev \
     && pip install --no-cache-dir -r requirements.txt \
     # Delete build dependencies.
     && apk del .build-deps
+
+RUN rm -rf /var/cache/apk/*
 
 COPY /manage.py ./manage.py
 COPY /gunicorn.py ./gunicorn.py
@@ -32,7 +34,7 @@ USER root
 WORKDIR /app
 
 COPY /requirements-dev.txt ./requirements-dev.txt
-RUN apk add --no-cache --virtual .build-deps curl \
+RUN apk update && apk add --no-cache --virtual .build-deps curl \
     # Install PIP dependencies.
     && pip install --no-cache-dir -r requirements-dev.txt \
     # Install docker compose wait.
@@ -49,7 +51,8 @@ RUN apk add --no-cache --virtual .build-deps curl \
     && unzip /tmp/tf.zip -d /bin \
     && rm -vf /tmp/tf.zip \
     # Delete build dependencies.
-    && apk del .build-deps
+    && apk del .build-deps \
+    && rm -rf /var/cache/apk/*
 
 USER ttuser
 
