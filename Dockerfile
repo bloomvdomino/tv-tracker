@@ -44,7 +44,7 @@ RUN apk update && apk add --no-cache --virtual .build-deps curl \
     && curl -sLo /bin/shfmt https://github.com/mvdan/sh/releases/download/v2.6.4/shfmt_v2.6.4_linux_amd64 \
     && chmod +x /bin/shfmt \
     # Install hadolint.
-    && curl -sLo /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.17.2/hadolint-Linux-x86_64 \
+    && curl -sLo /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.17.3/hadolint-Linux-x86_64 \
     && chmod +x /bin/hadolint \
     # Install terraform.
     && curl -sLo /tmp/tf.zip https://releases.hashicorp.com/terraform/0.12.8/terraform_0.12.8_linux_amd64.zip \
