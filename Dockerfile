@@ -1,4 +1,4 @@
-FROM python:3.7.4-alpine AS production
+FROM python:3.7.5-alpine3.10 AS production
 
 WORKDIR /app
 
