@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improve .dockerignore #81
 - Use gunicorn as development server #82
 - Improve .dockerignore #83
+- Update dependencies #84
 
 ### Fixed
 - Apk ignoring apkindex warning #83
