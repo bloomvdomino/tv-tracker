@@ -2,7 +2,7 @@ import asyncio
 from time import sleep
 
 import httpx
-from asgiref.sync import async_to_sync
+from asgiref.sync import async_to_sync, sync_to_async
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
@@ -13,9 +13,7 @@ from project.apps.tmdb.utils import Show
 class Command(BaseCommand):
     @async_to_sync
     async def handle(self, *args, **options):
-        n = 15
-        progresses = Progress.objects.all()
-        progress_chunks = [progresses[i : i + n] for i in range(0, progresses.count(), n)]
+        progress_chunks = await self._get_progress_chunks(15)
 
         for i, progresses in enumerate(progress_chunks):
             await asyncio.gather(
@@ -25,6 +23,16 @@ class Command(BaseCommand):
 
             if i < len(progress_chunks) - 1:
                 sleep(11)
+
+    @sync_to_async
+    def _get_progress_chunks(self, size):
+        """
+        Avoid the SynchronousOnlyOperation error.
+        https://docs.djangoproject.com/en/3.0/topics/async/
+        """
+        # Converting to list so it executes the query now.
+        progresses = list(Progress.objects.all())
+        return [progresses[i : i + size] for i in range(0, len(progresses), size)]
 
     async def _update_progress(self, progress):
         show = await self._get_show(progress.show_id)
@@ -46,6 +54,14 @@ class Command(BaseCommand):
         progress.last_aired_season = last_aired_season
         progress.last_aired_episode = last_aired_episode
         progress.stop_if_finished()
+        await self._save_progress(progress)
+
+    @sync_to_async
+    def _save_progress(self, progress):
+        """
+        Avoid the SynchronousOnlyOperation error.
+        https://docs.djangoproject.com/en/3.0/topics/async/
+        """
         progress.save()
 
     async def _get_show(self, show_id):
