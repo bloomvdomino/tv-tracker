@@ -5,6 +5,7 @@ import httpx
 from asgiref.sync import async_to_sync, sync_to_async
 from django.conf import settings
 from django.core.management.base import BaseCommand
+from sentry_sdk import capture_exception
 
 from project.apps.tmdb.models import Progress
 from project.apps.tmdb.utils import Show
@@ -16,10 +17,11 @@ class Command(BaseCommand):
         progress_chunks = await self._get_progress_chunks(15)
 
         for i, progresses in enumerate(progress_chunks):
-            await asyncio.gather(
+            results = await asyncio.gather(
                 *[self._update_progress(progress) for progress in progresses],
                 return_exceptions=True,
             )
+            self._capture_exceptions(results)
 
             if i < len(progress_chunks) - 1:
                 sleep(11)
@@ -33,6 +35,11 @@ class Command(BaseCommand):
         # Converting to list so it executes the query now.
         progresses = list(Progress.objects.all())
         return [progresses[i : i + size] for i in range(0, len(progresses), size)]
+
+    def _capture_exceptions(self, results):
+        for result in results:
+            if isinstance(result, Exception):
+                capture_exception(result)
 
     async def _update_progress(self, progress):
         show = await self._get_show(progress.show_id)
