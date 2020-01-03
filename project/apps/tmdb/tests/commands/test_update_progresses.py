@@ -26,6 +26,29 @@ class TestCommand:
 
         assert len(chunks) == chunk_len
 
+    def test_capture_exceptions_without_error(self, mocker, command):
+        capture_exception = mocker.patch(f"{self.mock_path}.capture_exception")
+        command._capture_exceptions([1, 3, 2])
+        capture_exception.assert_not_called()
+
+    def test_capture_exceptions_with_error(self, mocker, command):
+        capture_exception = mocker.patch(f"{self.mock_path}.capture_exception")
+        results = [1, Exception(), 2]
+
+        command._capture_exceptions(results)
+
+        capture_exception.assert_called_once_with(results[1])
+
+    def test_capture_exceptions_with_errors(self, mocker, command):
+        capture_exception = mocker.patch(f"{self.mock_path}.capture_exception")
+        results = [1, Exception(), 2, Exception()]
+
+        command._capture_exceptions(results)
+
+        assert capture_exception.call_count == 2
+        capture_exception.assert_any_call(results[1])
+        capture_exception.assert_any_call(results[3])
+
     @pytest.mark.asyncio
     async def test_update_progress_skipped(self, command):
         progress = ProgressFactory.build()
