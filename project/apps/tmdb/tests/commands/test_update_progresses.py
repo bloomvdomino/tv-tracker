@@ -1,4 +1,6 @@
-import asynctest
+from unittest.mock import AsyncMock
+
+import httpx
 import pytest
 from django.conf import settings
 
@@ -50,12 +52,13 @@ class TestCommand:
         capture_exception.assert_any_call(results[3])
 
     @pytest.mark.asyncio
-    async def test_update_progress_skipped(self, command):
+    async def test_update_progress_skipped(self, mocker, command):
         progress = ProgressFactory.build()
 
-        with asynctest.patch(f"{self.mock_path}.Command._get_show", return_value=None) as get_show:
-            with asynctest.patch(f"{self.mock_path}.Command._get_next") as get_next:
-                await command._update_progress(progress)
+        get_show = mocker.patch(f"{self.mock_path}.Command._get_show", return_value=None)
+        get_next = mocker.patch(f"{self.mock_path}.Command._get_next")
+
+        await command._update_progress(progress)
 
         get_show.assert_awaited_once_with(progress.show_id)
         get_next.assert_not_awaited()
@@ -72,12 +75,11 @@ class TestCommand:
         stop_if_finished = mocker.patch("project.apps.tmdb.models.Progress.stop_if_finished")
 
         patch_path = f"{self.mock_path}.Command"
-        with asynctest.patch(f"{patch_path}._get_show", return_value=show) as get_show:
-            with asynctest.patch(
-                f"{patch_path}._get_next", return_value=(3, 2, "2019-10-05")
-            ) as get_next:
-                with asynctest.patch(f"{patch_path}._save_progress") as save_progress:
-                    await command._update_progress(progress)
+        get_show = mocker.patch(f"{patch_path}._get_show", return_value=show)
+        get_next = mocker.patch(f"{patch_path}._get_next", return_value=(3, 2, "2019-10-05"))
+        save_progress = mocker.patch(f"{patch_path}._save_progress")
+
+        await command._update_progress(progress)
 
         get_show.assert_awaited_once_with(progress.show_id)
         get_next.assert_awaited_once_with(show, progress.current_season, progress.current_episode)
@@ -102,13 +104,11 @@ class TestCommand:
         progress.save.assert_called_once_with()
 
     @pytest.mark.asyncio
-    async def test_get_show(self, command):
+    async def test_get_show(self, mocker, command):
         show_id = 123
+        fetch = mocker.patch(f"{self.mock_path}.Command._fetch", return_value={"id": show_id})
 
-        with asynctest.patch(
-            f"{self.mock_path}.Command._fetch", return_value={"id": show_id}
-        ) as fetch:
-            show = await command._get_show(show_id)
+        show = await command._get_show(show_id)
 
         assert show.id == show_id
         fetch.assert_awaited_once_with(f"{settings.TMDB_API_URL}tv/{show_id}")
@@ -127,10 +127,11 @@ class TestCommand:
         show = mocker.MagicMock(id=1)
         show.get_next_episode.return_value = returned
 
-        with asynctest.patch(
+        get_air_date = mocker.patch(
             f"{self.mock_path}.Command._get_air_date", return_value=expected[2]
-        ) as get_air_date:
-            assert await command._get_next(show, 2, 3) == expected
+        )
+
+        assert await command._get_next(show, 2, 3) == expected
 
         show.get_next_episode.assert_called_once_with(2, 3)
 
@@ -144,10 +145,9 @@ class TestCommand:
         "data,air_date",
         [({"air_date": "2019-10-05"}, "2019-10-05"), ({"air_date": ""}, None), ({}, None)],
     )
-    async def test_get_air_date(self, command, data, air_date):
-        with asynctest.patch(f"{self.mock_path}.Command._fetch", return_value=data) as fetch:
-            assert await command._get_air_date(1, 2, 3) == air_date
-
+    async def test_get_air_date(self, mocker, command, data, air_date):
+        fetch = mocker.patch(f"{self.mock_path}.Command._fetch", return_value=data)
+        assert await command._get_air_date(1, 2, 3) == air_date
         fetch.assert_awaited_once_with(f"{settings.TMDB_API_URL}tv/1/season/2/episode/3")
 
     @pytest.mark.asyncio
@@ -157,14 +157,15 @@ class TestCommand:
         response = mocker.MagicMock()
         response.json.return_value = data
 
-        client = asynctest.MagicMock()
-        client.get = asynctest.CoroutineMock(return_value=response)
+        client = AsyncMock(httpx.AsyncClient)
+        client.get.return_value = response
+
+        async_client = mocker.patch(f"{self.mock_path}.httpx.AsyncClient")
+        async_client.return_value.__aenter__.return_value = client
 
         url = "/foo/bar"
 
-        with asynctest.patch(f"{self.mock_path}.httpx.AsyncClient") as async_client:
-            async_client.return_value.__aenter__.return_value = client
-            assert await command._fetch(url) == data
+        assert await command._fetch(url) == data
 
         client.get.assert_awaited_once_with(url, params={"api_key": settings.TMDB_API_KEY})
         response.raise_for_status.assert_called_once_with()
