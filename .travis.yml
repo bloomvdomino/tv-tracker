@@ -1,6 +1,6 @@
 dist: xenial
 language: python
-python: 3.7
+python: 3.8
 
 services:
   - docker
@@ -8,7 +8,7 @@ services:
 jobs:
   include:
     - stage: lint_and_test
-      name: "Lint and Test"
+      name: 'Lint and Test'
       if: tag IS blank && branch != qa
       before_install:
         - sudo service postgresql stop
@@ -25,19 +25,19 @@ jobs:
         - coveralls
 
     - stage: deploy
-      name: "Deploy to QA"
+      name: 'Deploy to QA'
       if: tag IS blank && branch = qa
       before_install: skip
       install: skip
       script: skip
-      after_success: echo "Skipping the after_success."  # https://github.com/travis-ci/travis-ci/issues/8337
+      after_success: echo "Skipping the after_success." # https://github.com/travis-ci/travis-ci/issues/8337
       deploy:
         provider: script
         script: sh scripts/deploy.sh qa
         on:
           branch: qa
 
-    - name: "Deploy to Production"
+    - name: 'Deploy to Production'
       if: tag IS present
       script: skip
       deploy:
