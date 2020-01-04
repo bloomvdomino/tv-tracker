@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Bump python to 3.8 #90
+- Update dependencies and tools #91
 
 ## [2.24.0] - 2020-01-01
 ### Changed
