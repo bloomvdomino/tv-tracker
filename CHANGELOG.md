@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Capture exceptions when updating progresses #89
 
+### Changed
+- Bump python to 3.8 #90
+
 ## [2.24.0] - 2020-01-01
 ### Changed
 - Bump django version to 3.0.1 #87
