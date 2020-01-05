@@ -95,5 +95,10 @@ class Command(BaseCommand):
     async def _fetch(self, url):
         async with httpx.AsyncClient() as client:
             response = await client.get(url, params={"api_key": settings.TMDB_API_KEY})
-        response.raise_for_status()
+
+        # Fetching next episode may return 404, but we shouldn't treat it as an
+        # error.
+        if response.status_code != 404:
+            response.raise_for_status()
+
         return response.json()
