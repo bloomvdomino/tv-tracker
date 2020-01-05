@@ -151,10 +151,12 @@ class TestCommand:
         fetch.assert_awaited_once_with(f"{settings.TMDB_API_URL}tv/1/season/2/episode/3")
 
     @pytest.mark.asyncio
-    async def test_fetch(self, mocker, command):
+    @pytest.mark.parametrize("status_code", [200, 204, 400, 401, 404, 500, 503])
+    async def test_fetch(self, mocker, command, status_code):
         data = {"foo": 123}
 
         response = mocker.MagicMock()
+        response.status_code = status_code
         response.json.return_value = data
 
         client = AsyncMock(httpx.AsyncClient)
@@ -168,5 +170,10 @@ class TestCommand:
         assert await command._fetch(url) == data
 
         client.get.assert_awaited_once_with(url, params={"api_key": settings.TMDB_API_KEY})
-        response.raise_for_status.assert_called_once_with()
+
+        if status_code == 404:
+            response.raise_for_status.assert_not_called()
+        else:
+            response.raise_for_status.assert_called_once_with()
+
         response.json.assert_called_once_with()
