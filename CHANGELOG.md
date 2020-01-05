@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [2.25.1] - 2020-01-05
 ### Fixed
 - Do not treat 404 as error when updating progresses #93
 
@@ -279,7 +281,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Migrate from an API to a full-stack app.
 
-[Unreleased]: https://github.com/olivertso/tv-tracker/compare/2.25.0...HEAD
+[Unreleased]: https://github.com/olivertso/tv-tracker/compare/2.25.1...HEAD
+[2.25.1]: https://github.com/olivertso/tv-tracker/compare/2.25.0...2.25.1
 [2.25.0]: https://github.com/olivertso/tv-tracker/compare/2.24.0...2.25.0
 [2.24.0]: https://github.com/olivertso/tv-tracker/compare/2.23.0...2.24.0
 [2.23.0]: https://github.com/olivertso/tv-tracker/compare/2.22.0...2.23.0
