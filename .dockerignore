@@ -3,4 +3,5 @@
 !scripts/start-prod.sh
 !gunicorn.py
 !manage.py
-!requirements*.txt
+!poetry.lock
+!pyproject.toml
