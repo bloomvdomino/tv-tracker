@@ -2,5 +2,4 @@
 
 set -e
 
-scripts/wait.sh
-docker-compose run --rm web python manage.py "$@"
+scripts/run.sh web sh scripts/_manage-py.sh "$@"
