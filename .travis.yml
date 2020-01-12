@@ -1,23 +1,38 @@
 dist: xenial
+
 language: python
+
 python: 3.8
 
 services:
   - docker
 
+stages:
+  - name: check
+    if: |
+      tag IS blank && \
+      branch NOT IN (master, qa)
+
+  - name: deploy
+    if: |
+      tag IS present || \
+      branch = qa
+
 jobs:
   include:
-    - stage: lint_and_test
-      name: 'Lint and Test'
-      if: tag IS blank && branch != qa
+    - stage: check
+      name: lint
+      before_install: skip
+      install: docker-compose build
+      script: scripts/lint.sh
+
+    - stage: check
+      name: test
       before_install:
         - sudo service postgresql stop
         - cp .env.example .env
-      install:
-        - docker-compose build
-      script:
-        - scripts/lint.sh
-        - scripts/test.sh
+      install: docker-compose build
+      script: scripts/test.sh
       after_success:
         - sudo mkdir /app
         - sudo cp -r project /app/project
@@ -25,26 +40,26 @@ jobs:
         - coveralls
 
     - stage: deploy
-      name: 'Deploy to QA'
-      if: tag IS blank && branch = qa
+      name: qa
+      if: branch = qa
       before_install: skip
       install: skip
       script: skip
-      after_success: echo "Skipping the after_success." # https://github.com/travis-ci/travis-ci/issues/8337
+      after_success: true
       deploy:
         provider: script
         script: scripts/deploy.sh qa
-        on:
-          branch: qa
 
-    - name: 'Deploy to Production'
+    - stage: deploy
+      name: production
       if: tag IS present
+      before_install: skip
+      install: skip
       script: skip
+      after_success: true
       deploy:
         provider: script
         script: scripts/deploy.sh production
-        on:
-          tags: true
 
 notifications:
   email:
