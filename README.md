@@ -32,22 +32,22 @@ docker-compose down
 
 Run `manage.py` commands:
 ```
-sh scripts/manage-py.sh <command>
+scripts/manage-py.sh <command>
 ```
 
 Run tests:
 ```
-sh scripts/test.sh
+scripts/test.sh
 ```
 
 Run code formatters:
 ```
-sh scripts/format.sh
+scripts/format.sh
 ```
 
 Run code linters:
 ```
-sh scripts/lint.sh
+scripts/lint.sh
 ```
 
 ## Release

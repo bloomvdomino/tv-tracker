@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Changed
 - Use poetry #95
+- Make shell scripts executable #96
 
 ## [2.25.1] - 2020-01-05
 ### Fixed

@@ -16,8 +16,8 @@ jobs:
       install:
         - docker-compose build
       script:
-        - sh scripts/lint.sh
-        - sh scripts/test.sh
+        - scripts/lint.sh
+        - scripts/test.sh
       after_success:
         - sudo mkdir /app
         - sudo cp -r project /app/project
@@ -33,7 +33,7 @@ jobs:
       after_success: echo "Skipping the after_success." # https://github.com/travis-ci/travis-ci/issues/8337
       deploy:
         provider: script
-        script: sh scripts/deploy.sh qa
+        script: scripts/deploy.sh qa
         on:
           branch: qa
 
@@ -42,7 +42,7 @@ jobs:
       script: skip
       deploy:
         provider: script
-        script: sh scripts/deploy.sh production
+        script: scripts/deploy.sh production
         on:
           tags: true
 
