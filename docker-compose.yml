@@ -12,6 +12,7 @@ services:
       - type: bind
         source: .
         target: /app
+      - /app/.venv/ # avoid mounting virtualenv
     depends_on:
       - db
   db:
