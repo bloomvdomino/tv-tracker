@@ -1,6 +1,9 @@
 FROM python:3.8.1-alpine3.11 AS production
 
-ARG POETRY_VIRTUALENVS_CREATE=false
+ARG POETRY_VERSION=1.0.2
+
+ENV PATH="/root/.poetry/bin:$PATH"
+ENV POETRY_VIRTUALENVS_CREATE=false
 
 WORKDIR /app
 
@@ -12,8 +15,7 @@ COPY /pyproject.toml ./pyproject.toml
 RUN apk add --no-cache --virtual .build-deps curl gcc musl-dev postgresql-dev \
     # Install poetry.
     && curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python \
-    && . "$HOME/.poetry/env" \
-    # Install PIP dependencies.
+    # Install PIP packages.
     && poetry run pip install --upgrade pip setuptools \
     && poetry install --no-dev \
     # Delete build dependencies.
@@ -33,8 +35,6 @@ CMD ["sh", "scripts/start-prod.sh"]
 
 FROM production AS development
 
-ARG POETRY_VIRTUALENVS_CREATE=false
-
 ENV PYTHONUNBUFFERED 1
 
 USER root
@@ -42,8 +42,7 @@ USER root
 WORKDIR /app
 
 RUN apk update && apk add --no-cache --virtual .build-deps curl \
-    # Install PIP dependencies.
-    && . "$HOME/.poetry/env" \
+    # Install PIP packages.
     && poetry install \
     # Install docker compose wait.
     && curl -sLo /bin/docker-compose-wait https://github.com/ufoscout/docker-compose-wait/releases/download/2.7.2/wait \
