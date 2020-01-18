@@ -13,9 +13,9 @@ The app fetches TV show data from [TMDb API][tmdb-api].
 
 ## Development
 
-### Useful Commands
+### Useful commands
 
-Install images:
+Build the image:
 ```
 docker-compose build
 ```
@@ -49,6 +49,12 @@ Run code linters:
 ```
 scripts/lint.sh
 ```
+
+### Upgrade PIP packages
+
+1. Update package version(s) in `pyproject.toml`.
+2. Update `poetry.lock`: `scripts/poetry.sh lock`.
+3. Rebuild the image: `docker-compose build`.
 
 ## Release
 
