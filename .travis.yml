@@ -50,6 +50,8 @@ jobs:
       deploy:
         provider: script
         script: scripts/deploy.sh qa
+        on:
+          branch: qa
 
     - stage: deploy
       name: production
@@ -61,6 +63,8 @@ jobs:
       deploy:
         provider: script
         script: scripts/deploy.sh production
+        on:
+          tags: true
 
 notifications:
   email:
