@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refactor .travis.yml #97
 - Run docker as root user in travis instead of docker compose #100
 
+### Fixed
+- Travis deploy #102
+
 ## [2.25.1] - 2020-01-05
 ### Fixed
 - Do not treat 404 as error when updating progresses #93
