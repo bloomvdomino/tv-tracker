@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Make shell scripts executable #96
 - Refactor .travis.yml #97
 - Run docker as root user in travis instead of docker compose #100
+- Shell script chores #103
 
 ### Fixed
 - Travis deploy #102

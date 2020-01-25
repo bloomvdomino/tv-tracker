@@ -1,11 +1,11 @@
-#!/bin/bash
+#!/bin/sh
 
 set -e
 
 echo "Running linters:"
 
 echo "shfmt..."
-shfmt -d -p -i=4 scripts
+shfmt -d -p -i=4 bin
 
 echo "hadolint..."
 hadolint Dockerfile

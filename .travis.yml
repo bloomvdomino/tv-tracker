@@ -24,7 +24,7 @@ jobs:
       name: lint
       before_install: skip
       install: docker-compose build
-      script: scripts/lint.sh
+      script: bin/lint
 
     - stage: check
       name: test
@@ -33,7 +33,7 @@ jobs:
         - cp .env.example .env
       install: docker-compose build
       # FIXME: running as root user to avoid permission issues with coverage.
-      script: scripts/run.sh --user root web sh scripts/_test.sh
+      script: bin/run --user root web bin/_test
       after_success:
         - sudo mkdir /app
         - sudo cp -r project /app/project
@@ -49,7 +49,7 @@ jobs:
       after_success: true
       deploy:
         provider: script
-        script: scripts/deploy.sh qa
+        script: bin/deploy qa
         on:
           branch: qa
 
@@ -62,7 +62,7 @@ jobs:
       after_success: true
       deploy:
         provider: script
-        script: scripts/deploy.sh production
+        script: bin/deploy production
         on:
           tags: true
 
