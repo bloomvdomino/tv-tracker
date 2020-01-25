@@ -41,7 +41,7 @@ USER root
 
 WORKDIR /app
 
-RUN apk update && apk add --no-cache --virtual .build-deps curl \
+RUN apk update && apk add --no-cache --virtual .build-deps curl gcc musl-dev \
     # Install PIP packages.
     && poetry install \
     # Install docker compose wait.
