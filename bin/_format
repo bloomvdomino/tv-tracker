@@ -5,7 +5,7 @@ set -e
 echo "Running formatters:"
 
 echo "shfmt..."
-shfmt -l -w -p -i=4 scripts
+shfmt -l -w -p -i=4 bin
 
 echo "isort..."
 isort -rc .

@@ -25,13 +25,13 @@ RUN rm -rf /var/cache/apk/*
 
 COPY /manage.py ./manage.py
 COPY /gunicorn.py ./gunicorn.py
-COPY /scripts/start-prod ./scripts/start-prod
+COPY /bin/start-prod ./bin/start-prod
 COPY /project ./project
 
 RUN adduser -D ttuser && mkdir ./staticfiles && chown -R ttuser:ttuser ./staticfiles
 USER ttuser
 
-CMD ["sh", "scripts/start-prod"]
+CMD ["sh", "bin/start-prod"]
 
 FROM production AS development
 
@@ -63,4 +63,4 @@ RUN apk update && apk add --no-cache --virtual .build-deps curl \
 
 USER ttuser
 
-CMD ["sh", "scripts/start-dev"]
+CMD ["sh", "bin/start-dev"]
