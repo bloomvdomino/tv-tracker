@@ -32,28 +32,28 @@ docker-compose down
 
 Run `manage.py` commands:
 ```
-scripts/manage-py.sh <command>
+scripts/manage-py <command>
 ```
 
 Run tests:
 ```
-scripts/test.sh
+scripts/test
 ```
 
 Run code formatters:
 ```
-scripts/format.sh
+scripts/format
 ```
 
 Run code linters:
 ```
-scripts/lint.sh
+scripts/lint
 ```
 
 ### Upgrade PIP packages
 
 1. Update package version(s) in `pyproject.toml`.
-2. Update `poetry.lock`: `scripts/poetry.sh lock`.
+2. Update `poetry.lock`: `scripts/poetry lock`.
 3. Rebuild the image: `docker-compose build`.
 
 ## Release

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set -e
+
+scripts/run --no-deps web sh scripts/_format

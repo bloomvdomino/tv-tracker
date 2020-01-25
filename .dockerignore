@@ -1,6 +1,6 @@
 *
 !project
-!scripts/start-prod.sh
+!scripts/start-prod
 !gunicorn.py
 !manage.py
 !poetry.lock
