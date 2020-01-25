@@ -1,5 +1,5 @@
-#!/bin/bash
+#!/bin/sh
 
 set -e
 
-bin/run web sh bin/_test "$@"
+bin/run web bin/_test "$@"

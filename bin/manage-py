@@ -1,5 +1,5 @@
-#!/bin/bash
+#!/bin/sh
 
 set -e
 
-bin/run web sh bin/_manage-py "$@"
+bin/run web bin/_manage-py "$@"

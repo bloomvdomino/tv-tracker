@@ -31,7 +31,7 @@ COPY /project ./project
 RUN adduser -D ttuser && mkdir ./staticfiles && chown -R ttuser:ttuser ./staticfiles
 USER ttuser
 
-CMD ["sh", "bin/start-prod"]
+CMD ["bin/start-prod"]
 
 FROM production AS development
 
@@ -63,4 +63,4 @@ RUN apk update && apk add --no-cache --virtual .build-deps curl \
 
 USER ttuser
 
-CMD ["sh", "bin/start-dev"]
+CMD ["bin/start-dev"]
