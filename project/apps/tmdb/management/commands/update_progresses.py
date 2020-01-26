@@ -72,7 +72,7 @@ class Command(BaseCommand):
         progress.save()
 
     async def _get_show(self, show_id):
-        url = f"{settings.TMDB_API_URL}tv/{show_id}"
+        url = f"{settings.TMDB_API_URL}/tv/{show_id}"
         data = await self._fetch(url)
         return Show(data)
 
@@ -85,7 +85,7 @@ class Command(BaseCommand):
         return next_season, next_episode, next_air_date
 
     async def _get_air_date(self, show_id, season, episode):
-        url = f"{settings.TMDB_API_URL}tv/{show_id}/season/{season}/episode/{episode}"
+        url = f"{settings.TMDB_API_URL}/tv/{show_id}/season/{season}/episode/{episode}"
         data = await self._fetch(url)
 
         # air_date from response data can be empty string, we want to return

@@ -151,7 +151,7 @@ if DEBUG:
 
 # TMDb
 
-TMDB_API_URL = "https://api.themoviedb.org/3/"
+TMDB_API_URL = "https://api.themoviedb.org/3"
 if ENV == "test":
     TMDB_API_KEY = "dummy-api-key"
 else:

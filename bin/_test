@@ -2,8 +2,8 @@
 
 set -e
 
-export ENV=test
-export TMDB_API_KEY=""
+export ENV="test"
+export TMDB_API_KEY="dummy-api-key"
 
 find . -name "*.pyc" -delete
 docker-compose-wait
