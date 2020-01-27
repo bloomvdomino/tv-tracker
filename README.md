@@ -13,31 +13,28 @@ The app fetches TV show data from [TMDb API][tmdb-api].
 
 ## Development
 
-### Useful commands
+Create `.env` file:
+```
+cp .env.example .env
+```
+
+Issue a TMDb API key [here][tmdb-api] and update `TMDB_API_KEY` in `.env` file.
 
 Build the image:
 ```
 docker-compose build
 ```
 
-Start services (Django server at http://localhost:8000):
+Run the application at http://localhost:8000:
 ```
 docker-compose up
 ```
 
-Stop services and clean up containers:
-```
-docker-compose down
-```
+### Useful commands
 
 Run `manage.py` commands:
 ```
 bin/manage-py <command>
-```
-
-Run tests:
-```
-bin/test
 ```
 
 Run code formatters:
@@ -50,11 +47,19 @@ Run code linters:
 bin/lint
 ```
 
+Run tests:
+```
+bin/test
+```
+
 ### Upgrade PIP packages
 
-1. Update package version(s) in `pyproject.toml`.
-2. Update `poetry.lock`: `bin/poetry lock`.
-3. Rebuild the image: `docker-compose build`.
+Update package version(s) in `pyproject.toml`.
+
+Update `poetry.lock`:
+```
+bin/poetry lock
+```
 
 ## Release
 
@@ -78,4 +83,4 @@ bin/lint
 
 Creating a tag will trigger an automagic deploy from Travis.
 
-[tmdb-api]: https://developers.themoviedb.org/3
+[tmdb-api]: https://developers.themoviedb.org/3/getting-started/introduction
