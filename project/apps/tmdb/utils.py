@@ -119,7 +119,7 @@ def fetch(endpoint, params=None):
     if not settings.TMDB_API_KEY:
         raise Exception("TMDB_API_KEY not provided.")
 
-    url = f"https://api.themoviedb.org/3/{endpoint}"
+    url = f"{settings.TMDB_API_URL}/{endpoint}"
     params = params or {}
     params.update(api_key=settings.TMDB_API_KEY)
     response = httpx.get(url, params=params)

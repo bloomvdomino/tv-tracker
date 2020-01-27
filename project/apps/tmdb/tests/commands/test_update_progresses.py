@@ -111,7 +111,7 @@ class TestCommand:
         show = await command._get_show(show_id)
 
         assert show.id == show_id
-        fetch.assert_awaited_once_with(f"{settings.TMDB_API_URL}tv/{show_id}")
+        fetch.assert_awaited_once_with(f"{settings.TMDB_API_URL}/tv/{show_id}")
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize(
@@ -148,7 +148,7 @@ class TestCommand:
     async def test_get_air_date(self, mocker, command, data, air_date):
         fetch = mocker.patch(f"{self.mock_path}.Command._fetch", return_value=data)
         assert await command._get_air_date(1, 2, 3) == air_date
-        fetch.assert_awaited_once_with(f"{settings.TMDB_API_URL}tv/1/season/2/episode/3")
+        fetch.assert_awaited_once_with(f"{settings.TMDB_API_URL}/tv/1/season/2/episode/3")
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize("status_code", [200, 204, 400, 401, 404, 500, 503])
