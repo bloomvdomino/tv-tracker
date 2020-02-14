@@ -7,10 +7,13 @@ line_length = 99
 multi_line_output = 3
 skip = [
     ".git",
-    ".venv",
     "__pycache__",
     "build",
     "dist",
+    ".env",
+    ".venv",
+    "env",
+    "venv",
 ]
 
 [tool.poetry]
