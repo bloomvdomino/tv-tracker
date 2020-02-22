@@ -1,0 +1,6 @@
+#!/bin/sh
+
+set -e
+
+bin/run --no-deps web pip-compile -q --generate-hashes requirements.in
+bin/run --no-deps web pip-compile -q --generate-hashes requirements-dev.in
