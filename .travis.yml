@@ -32,8 +32,7 @@ jobs:
         - sudo service postgresql stop
         - cp .env.example .env
       install: docker-compose build
-      # FIXME: running as root user to avoid permission issues with coverage.
-      script: bin/run --user root web bin/_test
+      script: bin/run --user $(id -u):$(id -g) web bin/_test
       after_success:
         - sudo mkdir /app
         - sudo cp -r project /app/project
