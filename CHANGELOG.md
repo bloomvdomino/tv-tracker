@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Changed
 - Remove trailing slash from TMDB_API_URL #107
+- Replace poetry by pip-tools #110
 
 ## [2.26.0] - 2020-01-26
 ### Added
