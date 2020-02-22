@@ -8,3 +8,4 @@ omit =
     */wsgi.py
     */migrations/*
     */tests/*
+relative_files = true
