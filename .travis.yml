@@ -34,8 +34,6 @@ jobs:
       install: docker-compose build
       script: bin/run --user $(id -u):$(id -g) web bin/_test
       after_success:
-        - sudo mkdir /app
-        - sudo cp -r project /app/project
         - pip install coveralls
         - coveralls
 
