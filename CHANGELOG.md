@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Remove trailing slash from TMDB_API_URL #107
 - Replace poetry by pip-tools #110
 
+### Security
+- Bump django version from 3.0.2 to 3.0.3 #112
+
 ## [2.26.0] - 2020-01-26
 ### Added
 - Shell script for poetry #101
