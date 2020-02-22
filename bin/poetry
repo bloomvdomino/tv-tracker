@@ -1,5 +1,0 @@
-#!/bin/sh
-
-set -e
-
-bin/run --no-deps --user root web poetry "$@"
