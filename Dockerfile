@@ -14,13 +14,13 @@ RUN rm -rf /var/cache/apk/*
 
 COPY /manage.py ./manage.py
 COPY /gunicorn.py ./gunicorn.py
-COPY /bin/start-prod ./bin/start-prod
+COPY /bin/start_prod ./bin/start_prod
 COPY /project ./project
 
 RUN adduser -D ttuser && mkdir ./staticfiles && chown -R ttuser:ttuser ./staticfiles
 USER ttuser
 
-CMD ["bin/start-prod"]
+CMD ["bin/start_prod"]
 
 FROM production AS development
 
@@ -36,9 +36,6 @@ RUN \
     # Install docker compose wait.
     curl -sLo /bin/docker-compose-wait https://github.com/ufoscout/docker-compose-wait/releases/download/2.7.2/wait \
     && chmod +x /bin/docker-compose-wait \
-    # Install shfmt.
-    && curl -sLo /bin/shfmt https://github.com/mvdan/sh/releases/download/v3.0.0/shfmt_v3.0.0_linux_amd64 \
-    && chmod +x /bin/shfmt \
     # Install hadolint.
     && curl -sLo /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.17.3/hadolint-Linux-x86_64 \
     && chmod +x /bin/hadolint \
@@ -55,4 +52,4 @@ RUN rm -rf /var/cache/apk/*
 
 USER ttuser
 
-CMD ["bin/start-dev"]
+CMD ["bin/start_dev"]

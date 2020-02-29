@@ -2,4 +2,22 @@
 
 set -e
 
-bin/run --no-deps web bin/_lint
+echo "Running linters:"
+
+echo "hadolint..."
+bin/run --no-deps web hadolint Dockerfile
+
+echo "bandit..."
+bin/run --no-deps web bandit -rq -x **/tests/** project
+
+echo "isort..."
+bin/run --no-deps web isort -rc -c .
+
+echo "black..."
+bin/run --no-deps web black --check .
+
+echo "flake8..."
+bin/run --no-deps web flake8 .
+
+echo "terraform..."
+bin/run --no-deps web terraform fmt -recursive -check=true terraform
