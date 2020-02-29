@@ -2,4 +2,15 @@
 
 set -e
 
-bin/run web bin/_test "$@"
+DOCKER_COMPOSE_ARGS=(-e ENV="test" -e TMDB_API_KEY="dummy-api-key")
+if [ $# -gt 1 ] && [ $1 = --user ]; then
+    USER=$2
+    shift 2
+    DOCKER_COMPOSE_ARGS=(--user $USER ${DOCKER_COMPOSE_ARGS[@]})
+
+    echo "Running tests with user $USER"
+fi
+
+find . -name "*.pyc" -delete
+bin/wait
+bin/run ${DOCKER_COMPOSE_ARGS[@]} web pytest $@
