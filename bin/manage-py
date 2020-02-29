@@ -1,5 +1,0 @@
-#!/bin/sh
-
-set -e
-
-bin/run web bin/_manage-py "$@"

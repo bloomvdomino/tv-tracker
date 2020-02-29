@@ -1,6 +1,6 @@
 *
 !project
-!bin/start-prod
+!bin/start_prod
 !gunicorn.py
 !manage.py
 !requirements.txt

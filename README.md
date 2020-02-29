@@ -30,11 +30,16 @@ Run the application at http://localhost:8000:
 docker-compose up
 ```
 
-### Useful commands
+### Other commands
 
-Run `manage.py` commands:
+Run command in Docker container:
 ```
-bin/manage-py <command>
+bin/run [--no-deps] <docker-compose-service> <command>
+```
+
+Run `manage.py` command:
+```
+bin/manage_py <command>
 ```
 
 Run code formatters:
@@ -52,9 +57,9 @@ Run tests:
 bin/test
 ```
 
-Upgrade packages
+Upgrade requirements:
 ```
-bin/pip-upgrade
+bin/pip_compile
 ```
 
 [tmdb-api]: https://developers.themoviedb.org/3/getting-started/introduction

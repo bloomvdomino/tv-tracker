@@ -14,13 +14,13 @@ RUN rm -rf /var/cache/apk/*
 
 COPY /manage.py ./manage.py
 COPY /gunicorn.py ./gunicorn.py
-COPY /bin/start-prod ./bin/start-prod
+COPY /bin/start_prod ./bin/start_prod
 COPY /project ./project
 
 RUN adduser -D ttuser && mkdir ./staticfiles && chown -R ttuser:ttuser ./staticfiles
 USER ttuser
 
-CMD ["bin/start-prod"]
+CMD ["bin/start_prod"]
 
 FROM production AS development
 
@@ -52,4 +52,4 @@ RUN rm -rf /var/cache/apk/*
 
 USER ttuser
 
-CMD ["bin/start-dev"]
+CMD ["bin/start_dev"]

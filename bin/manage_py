@@ -1,0 +1,6 @@
+#!/bin/sh
+
+set -e
+
+bin/wait
+bin/run web python manage.py $@
