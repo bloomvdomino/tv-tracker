@@ -2,4 +2,13 @@
 
 set -e
 
-bin/run --no-deps web bin/_format
+echo "Running formatters:"
+
+echo "isort..."
+bin/run --no-deps web isort -rc .
+
+echo "black..."
+bin/run --no-deps web black .
+
+echo "terraform..."
+bin/run --no-deps web terraform fmt -recursive terraform
