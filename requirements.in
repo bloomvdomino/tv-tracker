@@ -7,5 +7,5 @@ httpx==0.11.1
 psycopg2-binary==2.8.4
 python-decouple==3.3
 pytz==2019.3
-sentry-sdk==0.13.5
+sentry-sdk==0.14.2
 whitenoise==5.0.1
