@@ -2,5 +2,5 @@
 
 set -e
 
-bin/run --no-deps web pip-compile -q --generate-hashes requirements.in
-bin/run --no-deps web pip-compile -q --generate-hashes requirements-dev.in
+docker build -t tv-tracker_pip_tools -f pip_tools.Dockerfile .
+docker run --rm -v ${PWD}:/tmp tv-tracker_pip_tools
