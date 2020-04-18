@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Allow running `bin/test` with different users #116
 - Update requirements #117
+- Separate pip-tools to its own Dockerfile #118
 
 ### Removed
 - `shfmt` #116

@@ -45,8 +45,7 @@ RUN \
     && rm -vf /tmp/tf.zip
 
 COPY /requirements-dev.txt ./requirements-dev.txt
-RUN pip install --no-cache-dir --disable-pip-version-check pip-tools \
-    && pip install --no-cache-dir --disable-pip-version-check --require-hashes -r requirements-dev.txt
+RUN pip install --no-cache-dir --disable-pip-version-check --require-hashes -r requirements-dev.txt
 
 RUN rm -rf /var/cache/apk/*
 
