@@ -31,9 +31,6 @@ RUN apt-get update && apt-get install -y unzip
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.7.3/wait /usr/local/bin/docker-compose-wait
 RUN chmod +x /usr/local/bin/docker-compose-wait
 
-ADD https://github.com/hadolint/hadolint/releases/download/v1.17.3/hadolint-Linux-x86_64 /usr/local/bin/hadolint
-RUN chmod +x /usr/local/bin/hadolint
-
 ADD https://releases.hashicorp.com/terraform/0.12.23/terraform_0.12.23_linux_amd64.zip /tmp/terraform.zip
 RUN unzip /tmp/terraform.zip -d /usr/local/bin && rm -vf /tmp/terraform.zip
 

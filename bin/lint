@@ -5,7 +5,7 @@ set -e
 echo "Running linters:"
 
 echo "hadolint..."
-bin/run --no-deps web hadolint Dockerfile
+docker run --rm -i hadolint/hadolint hadolint --ignore DL3008 --ignore DL3013 --ignore DL3015 - < Dockerfile
 
 echo "bandit..."
 bin/run --no-deps web bandit -rq -x **/tests/** project
