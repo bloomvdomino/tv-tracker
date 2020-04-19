@@ -1,0 +1,59 @@
+#dark {
+    color: #ffffff;
+    background: #222222;
+}
+
+#dark button {
+    color: #33c4f0;
+    background: #222222;
+    border: none;
+}
+
+#dark .successlist li { color: #00bc8c; }
+
+#dark .errorlist li { color: #E74C3C; }
+
+#dark .header {
+    background: #303030;
+    border-bottom: none;
+}
+
+#dark .header .header-section:first-child a:first-child { color: #33c4f0; }
+
+#dark .header-item { color: #ffffff; }
+
+#dark .header-item:hover { color: #33c4f0; }
+
+#dark .header-item.active { border-bottom: 2px solid #33c4f0; }
+
+#dark .container .summary-card {
+    background: #303030;
+    border: none;
+}
+
+#dark .container .summary-card a:hover {
+    color: #33c4f0;
+    background-color: #222222;
+}
+
+#dark .container .summary-card hr { border-top-color: #222222; }
+
+#dark .progress-card {
+    background: #303030;
+    border: none;
+}
+
+#dark .progress-card .section .episode-label { background: #222222; }
+
+/* Progress page delete button. */
+#dark .container .right-section form button { background: #303030; }
+
+#dark .poster-card-gallery .poster-card {
+    background: #303030;
+    border: none;
+}
+
+#dark .poster-card-gallery .poster-card.saved {
+    color: #33c4f0;
+    border: 1px solid #33c4f0;
+}

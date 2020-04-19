@@ -3,7 +3,7 @@
 <div class="header">
     <div class="container">
         <div class="header-section">
-            <img src="{% static 'core/img/logo_without_title.png' %}" class="logo" alt="Logo">
+            {% include 'core/components/header_item.html' with url_name="website:index" text="TV Tracker" %}
 
             {% if user.is_authenticated %}
             {% include 'core/components/header_item.html' with url_name="tmdb:progresses" text="Progresses" %}
