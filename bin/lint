@@ -5,7 +5,7 @@ set -e
 echo "Running linters:"
 
 echo "hadolint..."
-bin/run --no-deps web hadolint Dockerfile
+docker run --rm -i hadolint/hadolint hadolint --ignore DL3008 --ignore DL3013 --ignore DL3015 - < Dockerfile
 
 echo "bandit..."
 bin/run --no-deps web bandit -rq -x **/tests/** project
@@ -20,4 +20,4 @@ echo "flake8..."
 bin/run --no-deps web flake8 .
 
 echo "terraform..."
-bin/run --no-deps web terraform fmt -recursive -check=true terraform
+bin/terraform fmt -recursive -check=true terraform
