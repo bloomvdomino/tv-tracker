@@ -2,4 +2,4 @@
 
 set -e
 
-docker-compose run --rm $@
+docker-compose run --rm "$@"

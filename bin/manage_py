@@ -3,4 +3,4 @@
 set -e
 
 bin/wait
-bin/run web python manage.py $@
+bin/run web python manage.py "$@"

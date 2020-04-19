@@ -5,34 +5,41 @@
 set -e
 
 if [ $# -ne 1 ]; then
+    echo "Error: missing parameter 'env'"
+    echo "Usage: $0 <env>"
+    exit 1
+fi
+
+if [ $1 != production ] && [ $1 != qa ]; then
+    echo "Error: 'env' should be one of 'production' and 'qa'"
+    echo "Example: $0 qa"
     exit 1
 fi
 
 ENV=$1
 
 APP=tv-tracker-olivertso
-if [ $ENV != production ]; then
-    APP=$APP-$ENV
+if [ ${ENV} != production ]; then
+    APP="${APP}-${ENV}"
 fi
 
 PROCESS_TYPE=web
 REGISTRY=registry.heroku.com
-TAG=$REGISTRY/$APP/$PROCESS_TYPE
+TAG=${REGISTRY}/${APP}/${PROCESS_TYPE}
 
-echo $HEROKU_API_KEY | docker login --username=_ --password-stdin $REGISTRY
+echo ${HEROKU_API_KEY} | docker login --username=_ --password-stdin ${REGISTRY}
 
-docker build --target production -t $TAG .
-docker push $TAG
-docker rmi $(docker images $TAG -q)
+docker build --target production -t ${TAG} .
+docker push ${TAG}
 
-if [ $ENV = production ]; then
-    heroku pg:backups:capture -a $APP
+if [ ${ENV} = production ]; then
+    heroku pg:backups:capture -a ${APP}
 fi
 
-heroku container:release -a $APP $PROCESS_TYPE
+heroku container:release -a ${APP} ${PROCESS_TYPE}
 
-if [ $ENV != production ]; then
-    heroku pg:reset -a $APP DATABASE --confirm $APP
+if [ ${ENV} != production ]; then
+    heroku pg:reset -a ${APP} DATABASE --confirm ${APP}
 fi
 
-heroku run -a $APP python manage.py migrate
+heroku run -a ${APP} python manage.py migrate
