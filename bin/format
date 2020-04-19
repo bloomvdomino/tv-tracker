@@ -11,4 +11,4 @@ echo "black..."
 bin/run --no-deps web black .
 
 echo "terraform..."
-bin/run --no-deps web terraform fmt -recursive terraform
+bin/terraform fmt -recursive terraform

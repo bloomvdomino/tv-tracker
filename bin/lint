@@ -20,4 +20,4 @@ echo "flake8..."
 bin/run --no-deps web flake8 .
 
 echo "terraform..."
-bin/run --no-deps web terraform fmt -recursive -check=true terraform
+bin/terraform fmt -recursive -check=true terraform
