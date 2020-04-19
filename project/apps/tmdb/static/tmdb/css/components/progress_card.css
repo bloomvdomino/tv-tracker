@@ -15,6 +15,11 @@
     height: 231px;
 }
 
+.progress-card>a>img {
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+}
+
 .progress-card>div {
     display: flex;
     flex-direction: column;
