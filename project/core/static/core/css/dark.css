@@ -16,6 +16,7 @@
 #dark .header {
     background: #303030;
     border-bottom: none;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 #dark .header .header-section:first-child a:first-child { color: #33c4f0; }
@@ -29,6 +30,7 @@
 #dark .container .summary-card {
     background: #303030;
     border: none;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 #dark .container .summary-card a:hover {
@@ -41,9 +43,12 @@
 #dark .progress-card {
     background: #303030;
     border: none;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 #dark .progress-card .section .episode-label { background: #222222; }
+
+#dark .container .poster { box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); }
 
 /* Progress page delete button. */
 #dark .container .right-section form button { background: #303030; }
@@ -51,6 +56,7 @@
 #dark .poster-card-gallery .poster-card {
     background: #303030;
     border: none;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 #dark .poster-card-gallery .poster-card.saved {
