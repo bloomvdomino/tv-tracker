@@ -2,5 +2,5 @@
 
 set -e
 
-docker build -t tv-tracker_pip_tools -f pip_tools.Dockerfile .
-docker run --rm -v ${PWD}:/tmp tv-tracker_pip_tools
+docker run --rm -v ${PWD}:/tmp olivertso/pip-tools pip-compile -q --generate-hashes requirements.in
+docker run --rm -v ${PWD}:/tmp olivertso/pip-tools pip-compile -q --generate-hashes requirements-dev.in
