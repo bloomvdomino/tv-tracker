@@ -17,7 +17,7 @@ FROM base AS production
 COPY manage.py manage.py
 COPY gunicorn.py gunicorn.py
 COPY bin/start_prod bin/start_prod
-COPY project project
+COPY source source
 
 USER appuser
 
