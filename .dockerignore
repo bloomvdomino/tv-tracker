@@ -1,7 +1,7 @@
 *
-!project
 !bin/start_prod
+!source
 !gunicorn.py
 !manage.py
-!requirements.txt
 !requirements-dev.txt
+!requirements.txt

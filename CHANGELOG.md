@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Changed
 - Use `olivertso/pip-tools` docker image #124
+- Rename directory project to source #125
 
 ## [2.29.0] - 2020-04-19
 ### Changed

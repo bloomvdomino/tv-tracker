@@ -8,7 +8,7 @@ echo "hadolint..."
 docker run --rm -i hadolint/hadolint hadolint --ignore DL3008 --ignore DL3013 --ignore DL3015 - < Dockerfile
 
 echo "bandit..."
-bin/run --no-deps web bandit -rq -x **/tests/** project
+bin/run --no-deps web bandit -rq -x **/tests/** source
 
 echo "isort..."
 bin/run --no-deps web isort -rc -c .

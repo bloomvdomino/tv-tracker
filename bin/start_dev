@@ -3,7 +3,7 @@
 set -e
 
 docker-compose-wait
-gunicorn project.wsgi \
+gunicorn source.wsgi \
     --config gunicorn.py \
     --reload \
     --access-logfile - \

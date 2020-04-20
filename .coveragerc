@@ -1,6 +1,6 @@
 [run]
 omit =
-    project/settings.py
+    source/settings.py
     */__init__.py
     */admin.py
     */apps.py
