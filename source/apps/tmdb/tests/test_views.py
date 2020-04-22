@@ -134,12 +134,13 @@ class TestProgressEditMixin:
 
         initial = view.get_initial()
 
-        assert len(initial) == 7
+        assert len(initial) == 8
         assert initial["initial"] == 123
         assert initial["show_id"] == view.show.id
         assert initial["show_name"] == view.show.name
         assert initial["show_poster_path"] == view.show.poster_path
         assert initial["show_status"] == view.show.status_value
+        assert initial["show_languages"] == view.show.languages
         assert initial["last_aired_season"] == 4
         assert initial["last_aired_episode"] == 5
 

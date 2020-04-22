@@ -55,6 +55,7 @@ class Command(BaseCommand):
         progress.show_name = show.name
         progress.show_poster_path = show.poster_path
         progress.show_status = show.status_value
+        progress.show_languages = show.languages
         progress.next_season = next_season
         progress.next_episode = next_episode
         progress.next_air_date = next_air_date
