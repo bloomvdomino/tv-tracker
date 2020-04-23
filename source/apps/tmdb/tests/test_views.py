@@ -9,7 +9,6 @@ from source.apps.tmdb.views import (
     ProgressCreateView,
     ProgressDeleteView,
     ProgressEditMixin,
-    ProgressesView,
     ProgressUpdateView,
     WatchNextView,
 )
@@ -39,20 +38,48 @@ class TestWatchNextView:
         save.assert_called_once_with()
 
 
+@pytest.mark.django_db
 class TestProgressesView:
-    def test_login_required(self):
-        assert issubclass(ProgressesView, LoginRequiredMixin)
+    @pytest.fixture
+    def url(self):
+        return reverse("tmdb:progresses")
 
-    def test_get_context_data(self, mocker):
-        user = mocker.MagicMock(progresses_summary={"foo": 123})
-        request = mocker.MagicMock(user=user)
-        view = ProgressesView(request=request)
+    @pytest.fixture
+    def user(self):
+        return UserFactory()
 
-        context_data = view.get_context_data()
+    @pytest.fixture
+    def auth_client(self, client, user):
+        client.login(username=user.email, password="123123")
+        return client
 
-        assert len(context_data) == 2
-        assert context_data["view"] == view
-        assert context_data["foo"] == 123
+    @pytest.mark.parametrize("method", ["get", "post"])
+    def test_get_and_post_without_filter(self, url, user, auth_client, method):
+        p1 = ProgressFactory(user=user, show_id=1, show_name="Vikings", show_languages=["en"])
+        p2 = ProgressFactory(
+            user=user, show_id=2, show_name="Itaewon Class", show_languages=["ko", "en"]
+        )
+
+        response = getattr(auth_client, method)(url)
+
+        assert response.status_code == 200
+        available = response.context["available"]
+        assert len(available) == 2
+        assert p1 in available
+        assert p2 in available
+
+    def test_post_with_filter(self, url, user, auth_client):
+        ProgressFactory(user=user, show_id=1, show_name="Vikings", show_languages=["en"])
+        p2 = ProgressFactory(
+            user=user, show_id=2, show_name="Itaewon Class", show_languages=["ko", "en"]
+        )
+
+        response = auth_client.post(url, data={"language": "ko"})
+
+        assert response.status_code == 200
+        available = response.context["available"]
+        assert len(available) == 1
+        assert p2 in available
 
 
 class TestProgressEditMixin:

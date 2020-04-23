@@ -11,6 +11,15 @@
 
 {% block content %}
 <div class="summary-card">
+    <form method="post" novalidate>
+        {% csrf_token %}
+
+        <label for="{{ form.language.id_for_label }}">Language:</label>
+        {{ form.language }}
+
+        <button type="submit">Filter</button>
+    </form>
+    <hr>
     <span>Saved: {{ saved_count }}</span>
     <span>Following: {{ following_count }}</span>
     <hr>

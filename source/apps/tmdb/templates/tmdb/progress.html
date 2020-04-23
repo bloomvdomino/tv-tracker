@@ -28,7 +28,7 @@
         <div>
             Languages:
             {% for language in show.languages %}
-            <span>{{ language }}{% if not forloop.last %}, {% endif %}</span>
+            <span>{{ language.upper }}{% if not forloop.last %}, {% endif %}</span>
             {% endfor %}
         </div>
     </div>

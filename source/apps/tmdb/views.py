@@ -8,7 +8,7 @@ from django.utils.functional import cached_property
 from django.views import View
 from django.views.generic import CreateView, FormView, TemplateView, UpdateView
 
-from source.apps.tmdb.forms import ProgressForm, SearchForm
+from source.apps.tmdb.forms import FilterForm, ProgressForm, SearchForm
 from source.apps.tmdb.utils import get_popular_shows, get_show
 
 
@@ -22,12 +22,27 @@ class WatchNextView(LoginRequiredMixin, View):
         return HttpResponse()
 
 
-class ProgressesView(LoginRequiredMixin, TemplateView):
+class ProgressesView(LoginRequiredMixin, FormView):
     template_name = "tmdb/progresses.html"
+    form_class = FilterForm
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        return self.render_to_response(self.get_context_data(form=form))
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update(user=self.request.user)
+        return kwargs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context.update(**self.request.user.progresses_summary)
+        form = context["form"]
+        if self.request.method == "GET":
+            context.update(**self.request.user.progresses_summary())
+        elif form.is_valid():
+            language = form.cleaned_data["language"]
+            context.update(**self.request.user.progresses_summary(language=language))
         return context
 
 

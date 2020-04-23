@@ -36,8 +36,7 @@ class User(AbstractBaseUser, PermissionsMixin, BaseUUIDModel):
         verbose_name = "user"
         verbose_name_plural = "users"
 
-    @property
-    def progresses_summary(self):
+    def progresses_summary(self, language=None):
         """
         Return a summary about the progresses.
         """
@@ -49,13 +48,16 @@ class User(AbstractBaseUser, PermissionsMixin, BaseUUIDModel):
             "finished": [],
             "stopped": [],
         }
-        for progress in self.progress_set.all():
+        progresses = self.progress_set.all()
+        if language:
+            progresses = progresses.filter(show_languages__contains=[language])
+        for progress in progresses:
             for key, value in summary.items():
                 if getattr(progress, f"list_in_{key}"):
                     value.append(progress)
                     break
         summary.update(
-            saved_count=self.progress_set.count(),
-            following_count=self.progress_set.filter(status=Progress.FOLLOWING).count(),
+            saved_count=progresses.count(),
+            following_count=progresses.filter(status=Progress.FOLLOWING).count(),
         )
         return summary

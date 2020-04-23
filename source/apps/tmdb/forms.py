@@ -1,7 +1,24 @@
+from itertools import chain
+
 from django import forms
 
 from source.apps.tmdb.models import Progress
 from source.apps.tmdb.utils import format_episode_label, search_show
+
+
+class FilterForm(forms.Form):
+    language = forms.ChoiceField(required=False)
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop("user")
+        super().__init__(*args, **kwargs)
+        self.fields["language"].choices = self._make_language_choices()
+
+    def _make_language_choices(self):
+        languages = self.user.progress_set.values_list("show_languages", flat=True)
+        return [("", "-")] + [
+            (langauge, langauge.upper()) for langauge in sorted(set(chain(*languages)))
+        ]
 
 
 class ProgressForm(forms.ModelForm):
