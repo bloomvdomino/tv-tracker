@@ -96,6 +96,7 @@ class TestProgressModel:
         type(show).name = mocker.PropertyMock(return_value="Foo")
         type(show).poster_path = mocker.PropertyMock(return_value="/foo.jpg")
         type(show).status_value = mocker.PropertyMock(return_value="ended")
+        type(show).languages = mocker.PropertyMock(return_value=["en"])
         type(show).last_aired_episode = mocker.PropertyMock(return_value=(15, 11))
 
         mocker.patch("source.apps.tmdb.models.get_show", return_value=show)
@@ -107,6 +108,7 @@ class TestProgressModel:
         assert progress.show_name == show.name
         assert progress.show_poster_path == show.poster_path
         assert progress.show_status == show.status_value
+        assert progress.show_languages == show.languages
         assert progress.last_aired_season == show.last_aired_episode[0]
         assert progress.last_aired_episode == show.last_aired_episode[1]
 

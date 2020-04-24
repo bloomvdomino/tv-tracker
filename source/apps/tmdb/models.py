@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
@@ -43,6 +44,9 @@ class Progress(BaseModel):
     )
     show_status = models.CharField(
         max_length=16, choices=SHOW_STATUS_CHOICES, verbose_name="show status"
+    )
+    show_languages = ArrayField(
+        models.CharField(max_length=8), default=list, verbose_name="show languages"
     )
 
     current_season = models.PositiveSmallIntegerField(default=0, verbose_name="current season")
@@ -152,6 +156,7 @@ class Progress(BaseModel):
         self.show_name = self.show.name
         self.show_poster_path = self.show.poster_path
         self.show_status = self.show.status_value
+        self.show_languages = self.show.languages
         self.last_aired_season, self.last_aired_episode = self.show.last_aired_episode
 
     def watch_next(self):

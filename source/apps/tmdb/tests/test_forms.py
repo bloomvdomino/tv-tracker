@@ -1,7 +1,30 @@
 import pytest
 
-from source.apps.tmdb.forms import ProgressForm
+from source.apps.accounts.tests.factories import UserFactory
+from source.apps.tmdb.forms import FilterForm, ProgressForm
+from source.apps.tmdb.tests.factories import ProgressFactory
 from source.apps.tmdb.utils import Show
+
+
+class TestFilterForm:
+    @pytest.mark.django_db
+    def test(self):
+        user = UserFactory()
+        ProgressFactory(user=user, show_id=1, show_languages=["en"])
+        ProgressFactory(user=user, show_id=2, show_languages=["ko", "en"])
+        ProgressFactory(user=user, show_id=3, show_languages=["zh"])
+
+        ProgressFactory(user=UserFactory(email="u2@tt.com"), show_id=4, show_languages=["pt"])
+
+        form = FilterForm(user=user)
+
+        assert form.user == user
+        assert form.fields["language"].choices == [
+            ("", "-"),
+            ("en", "EN"),
+            ("ko", "KO"),
+            ("zh", "ZH"),
+        ]
 
 
 class TestProgressForm:

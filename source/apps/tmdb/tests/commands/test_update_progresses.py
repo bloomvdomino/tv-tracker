@@ -68,7 +68,10 @@ class TestCommand:
         progress = ProgressFactory.build()
 
         show = mocker.MagicMock(
-            poster_path="/foo.jpg", status_value=Progress.ENDED, last_aired_episode=(4, 5)
+            poster_path="/foo.jpg",
+            status_value=Progress.ENDED,
+            languages=["en"],
+            last_aired_episode=(4, 5),
         )
         show.name = "Foo"
 
@@ -87,6 +90,7 @@ class TestCommand:
         assert progress.show_name == show.name
         assert progress.show_poster_path == show.poster_path
         assert progress.show_status == show.status_value
+        assert progress.show_languages == show.languages
         assert progress.next_season == 3
         assert progress.next_episode == 2
         assert progress.next_air_date == "2019-10-05"

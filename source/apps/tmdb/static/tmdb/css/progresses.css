@@ -16,9 +16,11 @@
     box-sizing: border-box;
 }
 
-.container .summary-card a, .container .summary-card span {
+.container .summary-card form,
+.container .summary-card a,
+.container .summary-card span {
     margin: 4px 0;
-    padding-left: 8px;
+    padding: 0 8px;
 }
 
 .container .summary-card a {
