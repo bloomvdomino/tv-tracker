@@ -153,6 +153,7 @@ class ProgressEditMixin:
             show_name=self.show.name,
             show_poster_path=self.show.poster_path,
             show_status=self.show.status_value,
+            show_genres=self.show.genres,
             show_languages=self.show.languages,
             last_aired_season=last_aired_season,
             last_aired_episode=last_aired_episode,

@@ -32,6 +32,7 @@ class ProgressForm(forms.ModelForm):
             "show_name",
             "show_poster_path",
             "show_status",
+            "show_genres",
             "show_languages",
             "last_aired_season",
             "last_aired_episode",

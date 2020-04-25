@@ -27,7 +27,7 @@ class Show:
 
     @property
     def genres(self):
-        return self._data["genres"]
+        return [genre["name"] for genre in self._data["genres"]]
 
     @property
     def languages(self):

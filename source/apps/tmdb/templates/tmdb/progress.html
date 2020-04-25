@@ -22,7 +22,7 @@
         <div>
             Genres:
             {% for genre in show.genres %}
-            <span>{{ genre.name }}{% if not forloop.last %}, {% endif %}</span>
+            <span>{{ genre }}{% if not forloop.last %}, {% endif %}</span>
             {% endfor %}
         </div>
         <div>
@@ -42,6 +42,7 @@
         {{ form.show_name.as_hidden }}
         {{ form.show_poster_path.as_hidden }}
         {{ form.show_status.as_hidden }}
+        {{ form.show_genres.as_hidden }}
         {{ form.show_languages.as_hidden }}
         {{ form.last_aired_season.as_hidden }}
         {{ form.last_aired_episode.as_hidden }}
