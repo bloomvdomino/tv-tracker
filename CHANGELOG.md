@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [2.30.0] - 2020-04-25
 ### Added
 - Add language filter on progresses page #126
 - Add genre filter on progresses page #127
@@ -334,7 +336,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Migrate from an API to a full-stack app.
 
-[Unreleased]: https://github.com/olivertso/tv-tracker/compare/2.29.0...HEAD
+[Unreleased]: https://github.com/olivertso/tv-tracker/compare/2.30.0...HEAD
+[2.30.0]: https://github.com/olivertso/tv-tracker/compare/2.29.0...2.30.0
 [2.29.0]: https://github.com/olivertso/tv-tracker/compare/2.28.0...2.29.0
 [2.28.0]: https://github.com/olivertso/tv-tracker/compare/2.27.0...2.28.0
 [2.27.0]: https://github.com/olivertso/tv-tracker/compare/2.26.0...2.27.0
