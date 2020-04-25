@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Add language filter on progresses page #126
+- Add genre filter on progresses page #127
 
 ### Changed
 - Use `olivertso/pip-tools` docker image #124

@@ -14,6 +14,9 @@
     <form method="post" novalidate>
         {% csrf_token %}
 
+        <label for="{{ form.genre.id_for_label }}">Genre:</label>
+        {{ form.genre }}
+
         <label for="{{ form.language.id_for_label }}">Language:</label>
         {{ form.language }}
 

@@ -38,8 +38,18 @@ class TestShow:
         assert show.vote_average == 8.3
 
     def test_genres(self, mock_set_progress_related):
-        show = Show({"genres": ["foo", "bar"]})
-        assert show.genres == ["foo", "bar"]
+        genres = [
+            {"id": 10765, "name": "Sci-Fi & Fantasy"},
+            {"id": 18, "name": "Drama"},
+            {"id": 10759, "name": "Action & Adventure"},
+        ]
+
+        show = Show({"genres": genres})
+
+        assert len(show.genres) == 3
+        assert "Sci-Fi & Fantasy" in show.genres
+        assert "Drama" in show.genres
+        assert "Action & Adventure" in show.genres
 
     def test_languages(self, mock_set_progress_related):
         show = Show({"languages": ["foo"]})

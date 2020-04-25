@@ -70,6 +70,7 @@ class TestCommand:
         show = mocker.MagicMock(
             poster_path="/foo.jpg",
             status_value=Progress.ENDED,
+            genres=["Action"],
             languages=["en"],
             last_aired_episode=(4, 5),
         )
@@ -90,6 +91,7 @@ class TestCommand:
         assert progress.show_name == show.name
         assert progress.show_poster_path == show.poster_path
         assert progress.show_status == show.status_value
+        assert progress.show_genres == show.genres
         assert progress.show_languages == show.languages
         assert progress.next_season == 3
         assert progress.next_episode == 2

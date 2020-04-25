@@ -41,8 +41,9 @@ class ProgressesView(LoginRequiredMixin, FormView):
         if self.request.method == "GET":
             context.update(**self.request.user.progresses_summary())
         elif form.is_valid():
+            genre = form.cleaned_data["genre"]
             language = form.cleaned_data["language"]
-            context.update(**self.request.user.progresses_summary(language=language))
+            context.update(**self.request.user.progresses_summary(genre=genre, language=language))
         return context
 
 
@@ -153,6 +154,7 @@ class ProgressEditMixin:
             show_name=self.show.name,
             show_poster_path=self.show.poster_path,
             show_status=self.show.status_value,
+            show_genres=self.show.genres,
             show_languages=self.show.languages,
             last_aired_season=last_aired_season,
             last_aired_episode=last_aired_episode,
