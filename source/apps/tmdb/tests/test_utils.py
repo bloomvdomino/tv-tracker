@@ -29,9 +29,10 @@ class TestShow:
         show = Show({"original_name": "Foo", "name": "Bar"})
         assert show.name == "Bar"
 
-    def test_poster_path(self, mock_set_progress_related):
-        show = Show({"poster_path": "/foo/bar.jpg"})
-        assert show.poster_path == "/foo/bar.jpg"
+    @pytest.mark.parametrize("in_,out", [("/foo/bar.jpg", "/foo/bar.jpg"), (None, "")])
+    def test_poster_path(self, mock_set_progress_related, in_, out):
+        show = Show({"poster_path": in_})
+        assert show.poster_path == out
 
     def test_vote_average(self, mock_set_progress_related):
         show = Show({"vote_average": 8.3})

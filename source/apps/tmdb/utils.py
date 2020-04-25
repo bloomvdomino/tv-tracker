@@ -19,7 +19,8 @@ class Show:
 
     @property
     def poster_path(self):
-        return self._data["poster_path"]
+        # Return empty string instead of None to avoid violating not-null constraint.
+        return self._data["poster_path"] or ""
 
     @property
     def vote_average(self):
