@@ -10,15 +10,23 @@ class TestFilterForm:
     @pytest.mark.django_db
     def test(self):
         user = UserFactory()
-        ProgressFactory(user=user, show_id=1, show_languages=["en"])
-        ProgressFactory(user=user, show_id=2, show_languages=["ko", "en"])
-        ProgressFactory(user=user, show_id=3, show_languages=["zh"])
+        ProgressFactory(
+            user=user, show_id=1, show_genres=["Action", "Drama"], show_languages=["en"]
+        )
+        ProgressFactory(user=user, show_id=2, show_genres=["Drama"], show_languages=["ko", "en"])
+        ProgressFactory(user=user, show_id=3, show_genres=["Comedy"], show_languages=["zh"])
 
         ProgressFactory(user=UserFactory(email="u2@tt.com"), show_id=4, show_languages=["pt"])
 
         form = FilterForm(user=user)
 
         assert form.user == user
+        assert form.fields["genre"].choices == [
+            ("", "-"),
+            ("Action", "Action"),
+            ("Comedy", "Comedy"),
+            ("Drama", "Drama"),
+        ]
         assert form.fields["language"].choices == [
             ("", "-"),
             ("en", "EN"),

@@ -55,9 +55,19 @@ class TestProgressesView:
 
     @pytest.mark.parametrize("method", ["get", "post"])
     def test_get_and_post_without_filter(self, url, user, auth_client, method):
-        p1 = ProgressFactory(user=user, show_id=1, show_name="Vikings", show_languages=["en"])
+        p1 = ProgressFactory(
+            user=user,
+            show_id=1,
+            show_name="Vikings",
+            show_genres=["Adventure, Drama"],
+            show_languages=["en"],
+        )
         p2 = ProgressFactory(
-            user=user, show_id=2, show_name="Itaewon Class", show_languages=["ko", "en"]
+            user=user,
+            show_id=2,
+            show_name="Itaewon Class",
+            show_genres=["Drama"],
+            show_languages=["ko", "en"],
         )
 
         response = getattr(auth_client, method)(url)
@@ -69,17 +79,34 @@ class TestProgressesView:
         assert p2 in available
 
     def test_post_with_filter(self, url, user, auth_client):
-        ProgressFactory(user=user, show_id=1, show_name="Vikings", show_languages=["en"])
-        p2 = ProgressFactory(
-            user=user, show_id=2, show_name="Itaewon Class", show_languages=["ko", "en"]
+        ProgressFactory(
+            user=user,
+            show_id=1,
+            show_name="Vikings",
+            show_genres=["Adventure, Drama"],
+            show_languages=["en"],
+        )
+        p = ProgressFactory(
+            user=user,
+            show_id=2,
+            show_name="Itaewon Class",
+            show_genres=["Drama"],
+            show_languages=["ko", "en"],
+        )
+        ProgressFactory(
+            user=user,
+            show_id=3,
+            show_name="Rooftop Prince",
+            show_genres=["Comedy"],
+            show_languages=["ko"],
         )
 
-        response = auth_client.post(url, data={"language": "ko"})
+        response = auth_client.post(url, data={"genre": "Drama", "language": "ko"})
 
         assert response.status_code == 200
         available = response.context["available"]
         assert len(available) == 1
-        assert p2 in available
+        assert p in available
 
 
 class TestProgressEditMixin:

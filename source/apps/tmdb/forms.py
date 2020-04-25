@@ -7,12 +7,20 @@ from source.apps.tmdb.utils import format_episode_label, search_show
 
 
 class FilterForm(forms.Form):
+    genre = forms.ChoiceField(required=False)
     language = forms.ChoiceField(required=False)
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop("user")
+
         super().__init__(*args, **kwargs)
+
+        self.fields["genre"].choices = self._make_genre_choices()
         self.fields["language"].choices = self._make_language_choices()
+
+    def _make_genre_choices(self):
+        genres = self.user.progress_set.values_list("show_genres", flat=True)
+        return [("", "-")] + [(genre, genre) for genre in sorted(set(chain(*genres)))]
 
     def _make_language_choices(self):
         languages = self.user.progress_set.values_list("show_languages", flat=True)

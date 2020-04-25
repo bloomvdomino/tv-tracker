@@ -36,7 +36,7 @@ class User(AbstractBaseUser, PermissionsMixin, BaseUUIDModel):
         verbose_name = "user"
         verbose_name_plural = "users"
 
-    def progresses_summary(self, language=None):
+    def progresses_summary(self, genre=None, language=None):
         """
         Return a summary about the progresses.
         """
@@ -49,6 +49,8 @@ class User(AbstractBaseUser, PermissionsMixin, BaseUUIDModel):
             "stopped": [],
         }
         progresses = self.progress_set.all()
+        if genre:
+            progresses = progresses.filter(show_genres__contains=[genre])
         if language:
             progresses = progresses.filter(show_languages__contains=[language])
         for progress in progresses:
