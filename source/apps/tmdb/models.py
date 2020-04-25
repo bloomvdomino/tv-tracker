@@ -45,6 +45,9 @@ class Progress(BaseModel):
     show_status = models.CharField(
         max_length=16, choices=SHOW_STATUS_CHOICES, verbose_name="show status"
     )
+    show_genres = ArrayField(
+        models.CharField(max_length=32), default=list, verbose_name="show genres"
+    )
     show_languages = ArrayField(
         models.CharField(max_length=8), default=list, verbose_name="show languages"
     )
