@@ -19,3 +19,5 @@ staticfiles/*
 *.tfstate.lock.info
 
 .vscode
+
+docker-compose.override.yml
